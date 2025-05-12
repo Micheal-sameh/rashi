@@ -15,4 +15,20 @@ class UserService
 
         return $user;
     }
+
+    public function index()
+    {
+        $users = $this->userRepository->index();
+        $users->load('roles');
+
+        return $users;
+    }
+
+    public function show($id)
+    {
+        $user = $this->userRepository->show($id);
+        $user->load('roles');
+
+        return $user;
+    }
 }

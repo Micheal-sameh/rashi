@@ -4,6 +4,9 @@ namespace App\Repositories;
 
 use App\DTOs\UserLoginDTO;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserRepository extends BaseRepository
 {
@@ -15,6 +18,15 @@ class UserRepository extends BaseRepository
     protected function model(): string
     {
         return User::class;
+    }
+
+    public bool $pagination = true;
+
+    public int $perPage = 10;
+
+    protected function execute(Builder $query): Collection|LengthAwarePaginator
+    {
+        return $this->pagination ? $query->paginate($this->perPage) : $query->get();
     }
 
     public function updateOrCreate(UserLoginDTO $input): User
@@ -40,5 +52,17 @@ class UserRepository extends BaseRepository
         }
 
         return $user;
+    }
+
+    public function index()
+    {
+        $query = $this->model->query();
+
+        return $this->execute($query);
+    }
+
+    public function show($id)
+    {
+        return $this->findById($id);
     }
 }
