@@ -8,17 +8,9 @@ abstract class BaseRepository
 {
     protected Model $model;
 
-    public function __construct()
+    public function __construct(Model $model)
     {
-        $this->model = $this->getModelInstance();
-    }
-
-    // Child classes must define this method
-    abstract protected function model(): string;
-
-    protected function getModelInstance(): Model
-    {
-        return app($this->model());
+        $this->model = $model;
     }
 
     public function findById(int $id): ?Model
@@ -30,4 +22,6 @@ abstract class BaseRepository
     {
         return $this->model->findOrFail($id);
     }
+
+    abstract protected function model(): string;
 }
