@@ -41,6 +41,11 @@ Route::group(['middleware' => ['setlocale']], function () {
 
         Route::prefix('competitions')->group(function () {
             Route::get('/', [CompetitionController::class, 'index'])->name('competitions.index');
+            Route::get('/create', [CompetitionController::class, 'create'])->name('competitions.create');
+            Route::get('/{id}/edit', [CompetitionController::class, 'edit'])->name('competitions.edit');
+            Route::delete('/{id}', [CompetitionController::class, 'delete'])->name('competitions.delete');
+            Route::post('/change-status', [CompetitionController::class, 'changeStatus'])->name('competitions.changeStatus');
+            Route::post('/', [CompetitionController::class, 'store'])->name('competitions.store');
         });
     });
 });

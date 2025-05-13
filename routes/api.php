@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CompetitionController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/', [UserController::class, 'index']);
         Route::get('/{id}/show', [UserController::class, 'show']);
         Route::post('/profile-pic', [UserController::class, 'profilePic']);
+    });
+
+    Route::group(['prefix' => 'competition'], function () {
+        Route::get('/', [CompetitionController::class, 'index']);
+        Route::get('/post', [CompetitionController::class, 'create']);
     });
 });
 
