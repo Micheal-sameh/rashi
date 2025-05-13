@@ -26,4 +26,9 @@ class CompetitionService
     {
         return $this->competitionRepository->store($input, $image);
     }
+
+    public function update($id, $input, $image)
+    {
+        return $this->competitionRepository->update($id, $input, $image);
+    }
 }

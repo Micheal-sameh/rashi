@@ -28,12 +28,30 @@ class CompetitionController extends Controller
     public function store(CreateCompetitionRequest $request)
     {
         $input = new CompetitionCreateDTO(...$request->only(
-            'name', 'start_at', 'end_at', 'status',
+            'name', 'start_at', 'end_at',
         ));
 
         $this->competitionService->store($input, $request->image);
 
         return redirect()->route('competitions.index')->with('success', 'Competition created successfully');
 
+    }
+
+    public function edit($id)
+    {
+        $competition = $this->competitionService->show($id);
+
+        return view('competitions.edit', compact('competition'));
+    }
+
+    public function update($id, CreateCompetitionRequest $request)
+    {
+        $input = new CompetitionCreateDTO(...$request->only(
+            'name', 'start_at', 'end_at',
+        ));
+
+        $this->competitionService->update($id, $input, $request->image);
+
+        return redirect()->route('competitions.index')->with('success', 'Competition updated successfully');
     }
 }

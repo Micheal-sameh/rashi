@@ -11,8 +11,8 @@ class CreateCompetitionRequest extends FormRequest
         return [
             'name' => 'required|string',
             'start_at' => 'required|date|after_or_equal:today',
-            'end_at' => 'required|date|after:start_at',
-            'image' => 'required|image|mimes:png,jpg',
+            'end_at' => 'required|date|after_or_equal:start_at',
+            'image' => 'image|mimes:png,jpg'.($this->route('id') == null ? '|required' : ''),
         ];
     }
 }

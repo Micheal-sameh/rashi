@@ -79,6 +79,15 @@
                 @endforeach
             </tbody>
         </table>
+        <div class="text-center">
+            @if($competitions->hasPages())
+                <div class="pagination">
+                    @foreach ($competitions->getUrlRange(1, $competitions->lastPage()) as $page => $url)
+                        <a href="{{ $url }}" class="page-link">{{ $page }}</a>
+                    @endforeach
+                </div>
+            @endif
+        </div>
     @else
         <p>No competitions found.</p>
     @endif

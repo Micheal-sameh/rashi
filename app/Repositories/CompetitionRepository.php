@@ -32,7 +32,8 @@ class CompetitionRepository extends BaseRepository
 
     public function index()
     {
-        $query = $this->model->query();
+        $query = $this->model
+            ->where('status', '!=', CompetitionStatus::CANCELLED);
 
         return $this->execute($query);
     }
@@ -51,6 +52,22 @@ class CompetitionRepository extends BaseRepository
             'status' => $input->start_at > today() ? CompetitionStatus::PENDING : CompetitionStatus::ACTIVE,
         ]);
         $competition->addMedia($image)->toMediaCollection('competitions_images');
+
+        return $competition;
+    }
+
+    public function update($id, $input, $image)
+    {
+        $competition = $this->findById($id);
+        $competition->update([
+            'name' => $input->name,
+            'start_at' => Carbon::parse($input->start_at),
+            'end_at' => Carbon::parse($input->end_at),
+        ]);
+        if ($image) {
+            $competition->clearMediaCollection('competitions_images');
+            $competition->addMedia($image)->toMediaCollection('competitions_images');
+        }
 
         return $competition;
     }
