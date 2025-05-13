@@ -68,9 +68,9 @@
                             </a>
 
                             <!-- Delete Form -->
-                            <form action="{{ route('competitions.delete', $competition->id) }}" method="POST" style="display:inline;">
+                            <form action="{{ route('competitions.cancel', $competition->id) }}" method="POST" style="display:inline;">
                                 @csrf
-                                @method('DELETE')
+                                @method('put')
                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this competition?')"><i class="fa fa-trash"></i></button>
                             </form>
                         </td>

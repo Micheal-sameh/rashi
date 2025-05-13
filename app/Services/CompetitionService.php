@@ -31,4 +31,9 @@ class CompetitionService
     {
         return $this->competitionRepository->update($id, $input, $image);
     }
+
+    public function cancel($id)
+    {
+        return $this->competitionRepository->cancel($id);
+    }
 }

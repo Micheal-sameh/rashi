@@ -71,4 +71,10 @@ class CompetitionRepository extends BaseRepository
 
         return $competition;
     }
+
+    public function cancel($id)
+    {
+        $competition = $this->findById($id);
+        $competition->update(['status', CompetitionStatus::CANCELLED]);
+    }
 }

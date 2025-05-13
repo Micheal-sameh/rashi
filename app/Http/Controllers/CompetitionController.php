@@ -54,4 +54,11 @@ class CompetitionController extends Controller
 
         return redirect()->route('competitions.index')->with('success', 'Competition updated successfully');
     }
+
+    public function cancel($id)
+    {
+        $this->competitionService->cancel($id);
+
+        return redirect()->route('competitions.index')->with('success', 'Competition cancelled successfully');
+    }
 }
