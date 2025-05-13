@@ -31,4 +31,12 @@ class UserService
 
         return $user;
     }
+
+    public function profilePic($image)
+    {
+        $user = $this->userRepository->profilePic($image);
+        $user->load('roles');
+
+        return $user;
+    }
 }

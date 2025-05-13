@@ -4,12 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Traits\ResponseHandler;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 
-class BaseController extends Controller implements HasMedia
+class BaseController extends Controller
 {
-    use InteractsWithMedia;
     use ResponseHandler;
 
     public function __construct()

@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 class UserRepository extends BaseRepository
 {
@@ -64,5 +65,13 @@ class UserRepository extends BaseRepository
     public function show($id)
     {
         return $this->findById($id);
+    }
+
+    public function profilePic($image)
+    {
+        $user = $this->findById(Auth::id());
+        $user->addMedia($image)->toMediaCollection('profile_images');
+
+        return $user;
     }
 }
