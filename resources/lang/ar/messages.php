@@ -103,4 +103,9 @@ return [
     'Visit created successfully' => 'تم انشاء الزيارة بنجاح',
     'Error has ocurred' => 'حدث خطأ',
     'membership_code' => 'رقم العضوية',
+    'competitions' => 'المنافسات',
+    'start_at' => 'بداية المنافسة',
+    'end_at' => 'نهاية المنافسة',
+    'create_competitions' => 'اضف منافسة جديدة',
+    'image' => 'الصورة',
 ];

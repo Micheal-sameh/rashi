@@ -159,9 +159,9 @@
                     {{-- @can('users_list') --}}
                         {{-- <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('users.index') }}"> {{__('messages.users')}}</a></li> --}}
                     {{-- @endcan --}}
-                    @can('procedures_list')
-                        {{-- <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('procedures.index') }}">{{__('messages.procedures')}}</a></li> --}}
-                    @endcan
+                    {{-- @can('competitions_list') --}}
+                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('competitions.index') }}">{{__('messages.competitions')}}</a></li>
+                    {{-- @endcan --}}
                     @can('reservations_list')
                         {{-- <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('reservations.index') }}">{{__('messages.reservations')}}</a></li> --}}
                     @endcan

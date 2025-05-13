@@ -102,4 +102,9 @@ return [
     'Visit created successfully' => 'Visit created successfully',
     'Error has ocurred' => 'Error has ocurred',
     'membership_code' => 'Membership Code',
+    'competitions' => 'Competitions',
+    'start_at' => 'Start At',
+    'end_at' => 'End At',
+    'create_competitions' => 'Create New Competitions',
+    'image' => 'Image',
 ];

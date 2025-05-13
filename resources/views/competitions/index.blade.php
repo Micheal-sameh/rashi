@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="container">
-    <h2>Competitions List</h2>
+    <h2>{{__('messages.competitions')}}</h2>
 
-    <a href="{{ route('competitions.create') }}" class="btn btn-success mb-3">Create New Competition</a>
+    <a href="{{ route('competitions.create') }}" class="btn btn-success mb-3">{{__('messages.create_competitions')}}</a>
 
     @if(session('success'))
         <div class="alert alert-success">
@@ -16,12 +16,12 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Start At</th>
-                    <th>End At</th>
-                    <th>Status</th>
-                    <th>Image</th>
-                    <th>Actions</th>
+                    <th>{{__('messages.name')}}</th>
+                    <th>{{__('messages.start_at')}}</th>
+                    <th>{{__('messages.end_at')}}</th>
+                    <th>{{__('messages.status')}}</th>
+                    <th>{{__('messages.image')}}</th>
+                    <th>{{__('messages.actions')}}</th>
                 </tr>
             </thead>
             <tbody>
