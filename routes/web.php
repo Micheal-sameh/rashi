@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompetitionController;
+use App\Http\Controllers\QuizController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,6 +48,13 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::post('/', [CompetitionController::class, 'store'])->name('competitions.store');
             Route::put('/{id}', [CompetitionController::class, 'update'])->name('competitions.update');
             Route::put('/{id}/cancel', [CompetitionController::class, 'cancel'])->name('competitions.cancel');
+        });
+        Route::prefix('quizzes')->group(function () {
+            Route::get('/', [QuizController::class, 'index'])->name('quizzes.index');
+            Route::get('/create', [QuizController::class, 'create'])->name('quizzes.create');
+            Route::get('/{id}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
+            Route::post('/', [QuizController::class, 'store'])->name('quizzes.store');
+            Route::put('/{id}', [QuizController::class, 'update'])->name('quizzes.update');
         });
     });
 });

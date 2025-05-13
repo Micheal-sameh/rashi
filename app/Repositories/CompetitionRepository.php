@@ -77,4 +77,10 @@ class CompetitionRepository extends BaseRepository
         $competition = $this->findById($id);
         $competition->update(['status', CompetitionStatus::CANCELLED]);
     }
+
+    public function dropdown()
+    {
+        return $this->model
+            ->where('status', '!=', CompetitionStatus::CANCELLED)->get();
+    }
 }

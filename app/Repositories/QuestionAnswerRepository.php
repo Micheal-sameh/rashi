@@ -2,22 +2,22 @@
 
 namespace App\Repositories;
 
-use App\Models\Quiz;
+use App\Models\QuestionAnswer;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class QuizRepository extends BaseRepository
+class QuestionAnswerRepository extends BaseRepository
 {
-    public function __construct(Quiz $model)
+    public function __construct(QuestionAnswer $model)
     {
         $this->model = $model;
     }
 
     protected function model(): string
     {
-        return Quiz::class;
+        return QuestionAnswer::class;
     }
 
     public bool $pagination = true;
@@ -41,12 +41,12 @@ class QuizRepository extends BaseRepository
         return $this->findById($id);
     }
 
-    public function store($input)
+    public function store($question_id, $input, $is_correct)
     {
         return $this->model->create([
-            'name' => $input->name,
-            'date' => Carbon::parse($input->date),
-            'competition_id' => $input->competition_id,
+            'answer' => $input,
+            'is_correct' => $is_correct,
+            'quiz_question_id' => $question_id,
         ]);
     }
 

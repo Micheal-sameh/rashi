@@ -36,4 +36,10 @@ class CompetitionService
     {
         return $this->competitionRepository->cancel($id);
     }
+
+    public function dropdown()
+    {
+        return $this->competitionRepository->dropdown();
+
+    }
 }
