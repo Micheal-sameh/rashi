@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CompetitionController;
+use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -42,9 +43,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/profile-pic', [UserController::class, 'profilePic']);
     });
 
-    Route::group(['prefix' => 'competition'], function () {
+    Route::group(['prefix' => 'competitions'], function () {
         Route::get('/', [CompetitionController::class, 'index']);
-        Route::get('/post', [CompetitionController::class, 'create']);
+    });
+    Route::group(['prefix' => 'quizzes'], function () {
+        Route::get('/', [QuizController::class, 'index']);
     });
 });
 
