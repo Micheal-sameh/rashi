@@ -10,11 +10,6 @@ class SetLocale
 {
     public function handle(Request $request, Closure $next)
     {
-        // $lang = $request->route('lang', session('lang', 'en'));
-        $lang = $request->header('Accept-Language') ?? 'en';
-        $languageCode = explode(',', $lang)[0];
-        App::setLocale($languageCode);
-        session(['lang' => $lang]);
         // Default locale
         $defaultLocale = 'ar';
         $locale = $defaultLocale;
