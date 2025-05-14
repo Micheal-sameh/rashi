@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\QuizQuestion;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -58,14 +57,13 @@ class QuizQuestionRepository extends BaseRepository
 
     public function update($id, $input)
     {
-        $competition = $this->findById($id);
-        $competition->update([
-            'name' => $input->name,
-            'date' => Carbon::parse($input->date),
-            'competition_id' => $input->competition_id,
+        $question = $this->findById($id);
+        $question->update([
+            'question' => $input->question,
+            'points' => $input->points,
         ]);
 
-        return $competition;
+        return $question;
     }
 
     public function create($input)

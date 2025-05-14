@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\QuestionAnswer;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -50,13 +49,12 @@ class QuestionAnswerRepository extends BaseRepository
         ]);
     }
 
-    public function update($id, $input)
+    public function update($id, $input, $is_correct)
     {
         $competition = $this->findById($id);
         $competition->update([
-            'name' => $input->name,
-            'date' => Carbon::parse($input->date),
-            'competition_id' => $input->competition_id,
+            'answer' => $input,
+            'is_correct' => $is_correct,
         ]);
 
         return $competition;

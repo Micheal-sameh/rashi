@@ -60,9 +60,11 @@ class QuizQuestionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $question = $this->quizQuestionService->show($id);
+
+        return view('quiz_questions.edit', compact('question'));
     }
 
     /**
@@ -70,7 +72,12 @@ class QuizQuestionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $input = new QuestionCreateDTO(...$request->only(
+            'question', 'quiz_id', 'points', 'answers', 'correct'
+        ));
+        $this->quizQuestionService->update($id, $input);
+
+        return redirect()->route('questions.index')->with('success', 'Question updated successfully');
     }
 
     /**

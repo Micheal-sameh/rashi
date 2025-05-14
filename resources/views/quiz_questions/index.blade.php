@@ -56,7 +56,7 @@
                     <tr>
                         <td>{{ $question->question }}</td>
                         <td>{{ $question->points }}</td>
-                        @foreach($question->answeres as $answer)
+                        @foreach($question->answers as $answer)
                             <td style="color: {{ $answer->is_correct ? 'blue' : 'inherit' }};">
                                 {{ $answer->answer }}
                             </td>

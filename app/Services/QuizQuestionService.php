@@ -24,9 +24,10 @@ class QuizQuestionService
 
     public function show($id)
     {
-        $quiz = $this->quizQuestionRepository->show($id);
+        $question = $this->quizQuestionRepository->show($id);
+        $question->load('answers', 'quiz');
 
-        return $quiz;
+        return $question;
     }
 
     public function store($input)
@@ -49,7 +50,11 @@ class QuizQuestionService
 
     public function update($id, $input)
     {
-        return $this->quizQuestionRepository->update($id, $input);
+        $question = $this->quizQuestionRepository->update($id, $input);
+        $answers = $question->answers()->pluck('id');
+        foreach ($answers as $key => $answer_id) {
+            $this->questionAnswerRepository->update($answer_id, $input->answers[$key + 1], ($input->correct == $key + 1) ? 1 : 0);
+        }
     }
 
     public function create($input)
