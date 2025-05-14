@@ -14,4 +14,14 @@ class QuizQuestion extends Model
         'question',
         'points',
     ];
+
+    public function quiz()
+    {
+        return $this->belongsTo(Quiz::class);
+    }
+
+    public function answeres()
+    {
+        return $this->hasMany(QuestionAnswer::class);
+    }
 }

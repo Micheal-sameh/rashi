@@ -50,5 +50,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/', [QuizController::class, 'index']);
     });
 });
+Route::get('/quizzes/dropdown/{id}', [QuizController::class, 'dropdown']);
 
 // });

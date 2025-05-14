@@ -11,8 +11,15 @@ class QuizController extends BaseController
 
     public function index()
     {
-        $competitions = $this->quizService->index();
+        $quizzes = $this->quizService->index();
 
-        return $this->respondResource(QuizResource::collection($competitions));
+        return $this->respondResource(QuizResource::collection($quizzes));
+    }
+
+    public function dropdown($id)
+    {
+        $quizzes = $this->quizService->dropdown($id);
+
+        return $this->apiResponse(QuizResource::collection($quizzes));
     }
 }

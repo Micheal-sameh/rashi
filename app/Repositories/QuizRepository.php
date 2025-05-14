@@ -60,4 +60,9 @@ class QuizRepository extends BaseRepository
 
         return $quiz;
     }
+
+    public function dropdown($id)
+    {
+        return $this->model->where('competition_id', $id)->get();
+    }
 }

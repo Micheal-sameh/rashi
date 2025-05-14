@@ -7,7 +7,7 @@ use App\Repositories\QuizQuestionRepository;
 use App\Repositories\QuizRepository;
 use Illuminate\Support\Facades\DB;
 
-class QuizService
+class QuizQuestionService
 {
     public function __construct(
         protected QuizRepository $quizRepository,
@@ -15,18 +15,16 @@ class QuizService
         protected QuestionAnswerRepository $questionAnswerRepository,
     ) {}
 
-    public function index()
+    public function index($input)
     {
-        $quizzes = $this->quizRepository->index();
-        $quizzes->load('competition');
+        $quizzes = $this->quizQuestionRepository->index($input);
 
         return $quizzes;
     }
 
     public function show($id)
     {
-        $quiz = $this->quizRepository->show($id);
-        $quiz->load('competition');
+        $quiz = $this->quizQuestionRepository->show($id);
 
         return $quiz;
     }
@@ -34,7 +32,7 @@ class QuizService
     public function store($input)
     {
         DB::beginTransaction();
-        $quiz = $this->quizRepository->store($input);
+        $quiz = $this->quizQuestionRepository->store($input);
         foreach ($input->questions as $question) {
             $question_id = $this->quizQuestionRepository->store($quiz, $question);
             $i = 0;
@@ -51,11 +49,17 @@ class QuizService
 
     public function update($id, $input)
     {
-        return $this->quizRepository->update($id, $input);
+        return $this->quizQuestionRepository->update($id, $input);
     }
 
-    public function dropdown($id = null)
+    public function create($input)
     {
-        return $this->quizRepository->dropdown($id);
+        $question = $this->quizQuestionRepository->create($input);
+        for ($i = 0; $i < 4; $i++) {
+            $this->questionAnswerRepository->store($question->id, $input->answers[$i + 1], $input->correct == $i ? 1 : 0);
+        }
+
+        return $question;
+
     }
 }

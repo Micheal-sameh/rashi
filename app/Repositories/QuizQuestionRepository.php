@@ -29,9 +29,13 @@ class QuizQuestionRepository extends BaseRepository
         return $this->pagination ? $query->paginate($this->perPage) : $query->get();
     }
 
-    public function index()
+    public function index($input)
     {
-        $query = $this->model->latest('date');
+        $query = $this->model
+            ->when(isset($input['quiz_id']), fn ($q) => $q->where('quiz_id', $input['quiz_id']))
+            ->whereHas('quiz', function ($query) use ($input) {
+                $query->whereHas('competition', fn ($q) => $q->where('id', $input['competition_id']));
+            });
 
         return $this->execute($query);
     }
@@ -62,5 +66,16 @@ class QuizQuestionRepository extends BaseRepository
         ]);
 
         return $competition;
+    }
+
+    public function create($input)
+    {
+        $question = $this->model->create([
+            'question' => $input->question,
+            'points' => $input->points,
+            'quiz_id' => $input->quiz_id,
+        ]);
+
+        return $question;
     }
 }

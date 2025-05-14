@@ -111,4 +111,13 @@ return [
     'quizzes' => 'الاختبارات',
     'create_quizzes' => 'اضف اختبار جديد',
     'competition' => 'المنافسة',
+    'quiz' => 'الاختبار',
+    'questions' => 'الاسئلة',
+    'question' => 'السؤال',
+    'create_questions' => 'اضف سؤال جديد',
+    'points' => 'النقاط',
+    'answer' => 'الجواب',
+    'select_quiz' => 'اختر اختبار',
+    'select_competition' => 'اختر منافسة',
+    'correct' => 'صحيح',
 ];

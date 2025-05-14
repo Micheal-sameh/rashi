@@ -165,9 +165,9 @@
                     {{-- @can('reservations_list') --}}
                         <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('quizzes.index') }}">{{__('messages.quizzes')}}</a></li>
                     {{-- @endcan --}}
-                    @can('workDays_list')
-                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('working-days.index') }}">{{__('messages.working_days')}}</a></li>
-                    @endcan
+                    {{-- @can('workDays_list') --}}
+                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('questions.index') }}">{{__('messages.questions')}}</a></li>
+                    {{-- @endcan --}}
                     @can('reports_list')
                         <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('reports.index') }}">{{__('messages.reports')}}</a></li>
                     @endcan

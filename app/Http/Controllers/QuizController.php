@@ -59,4 +59,11 @@ class QuizController extends Controller
 
         return redirect()->route('quizzes.index')->with('success', 'quiz updated successfully');
     }
+
+    public function dropdown($id)
+    {
+        $quizzes = $this->quizService->dropdown($id);
+
+        return $quizzes;
+    }
 }

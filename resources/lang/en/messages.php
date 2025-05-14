@@ -110,4 +110,11 @@ return [
     'quizzes' => 'Quizzes',
     'create_quizzes' => 'Create New Quizzes',
     'competition' => 'Competition',
+    'quiz' => 'Quiz',
+    'questions' => 'Questions',
+    'question' => 'Question',
+    'create_questions' => 'Create New Questions',
+    'points' => 'Points',
+    'select_quiz' => 'Select Quiz',
+    'select_competition' => 'Select Competition',
 ];

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\QuizQuestionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,12 +50,23 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::put('/{id}', [CompetitionController::class, 'update'])->name('competitions.update');
             Route::put('/{id}/cancel', [CompetitionController::class, 'cancel'])->name('competitions.cancel');
         });
+
         Route::prefix('quizzes')->group(function () {
             Route::get('/', [QuizController::class, 'index'])->name('quizzes.index');
             Route::get('/create', [QuizController::class, 'create'])->name('quizzes.create');
             Route::get('/{id}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
             Route::post('/', [QuizController::class, 'store'])->name('quizzes.store');
             Route::put('/{id}', [QuizController::class, 'update'])->name('quizzes.update');
+            Route::get('/dropdown/{id}', [QuizController::class, 'dropdown'])->name('quizzes.dropdown');
+        });
+
+        Route::prefix('questions')->group(function () {
+            Route::get('/', [QuizQuestionController::class, 'index'])->name('questions.index');
+            Route::get('/create', [QuizQuestionController::class, 'create'])->name('questions.create');
+            Route::get('/{id}/edit', [QuizQuestionController::class, 'edit'])->name('questions.edit');
+            Route::post('/', [QuizQuestionController::class, 'store'])->name('questions.store');
+            Route::put('/{id}', [QuizQuestionController::class, 'update'])->name('questions.update');
+
         });
     });
 });

@@ -1,0 +1,83 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\DTOs\QuestionCreateDTO;
+use App\Http\Requests\CreateQuestionRequest;
+use App\Http\Requests\QuizQuestionIndexRequest;
+use App\Services\CompetitionService;
+use App\Services\QuizQuestionService;
+use App\Services\QuizService;
+use Illuminate\Http\Request;
+
+class QuizQuestionController extends Controller
+{
+    public function __construct(
+        protected QuizQuestionService $quizQuestionService,
+        protected QuizService $quizService,
+        protected CompetitionService $competitionService
+    ) {}
+
+    public function index(QuizQuestionIndexRequest $request)
+    {
+        $questions = $this->quizQuestionService->index($request);
+        $competitions = $this->competitionService->dropdown();
+
+        return view('quiz_questions.index', compact('questions', 'competitions'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(Request $request)
+    {
+        $quiz_id = $request->quiz_id;
+
+        return view('quiz_questions.create', compact('quiz_id'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(CreateQuestionRequest $request)
+    {
+        $input = new QuestionCreateDTO(...$request->only(
+            'question', 'quiz_id', 'points', 'answers', 'correct'
+        ));
+        $this->quizQuestionService->create($input);
+
+        return redirect()->back()->with('success', 'Question created successfully');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}
