@@ -162,9 +162,9 @@
                     {{-- @can('competitions_list') --}}
                         <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('competitions.index') }}">{{__('messages.competitions')}}</a></li>
                     {{-- @endcan --}}
-                    @can('reservations_list')
-                        {{-- <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('reservations.index') }}">{{__('messages.reservations')}}</a></li> --}}
-                    @endcan
+                    {{-- @can('reservations_list') --}}
+                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('quizzes.index') }}">{{__('messages.quizzes')}}</a></li>
+                    {{-- @endcan --}}
                     @can('workDays_list')
                         <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('working-days.index') }}">{{__('messages.working_days')}}</a></li>
                     @endcan

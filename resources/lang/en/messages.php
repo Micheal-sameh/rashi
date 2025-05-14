@@ -107,4 +107,7 @@ return [
     'end_at' => 'End At',
     'create_competitions' => 'Create New Competitions',
     'image' => 'Image',
+    'quizzes' => 'Quizzes',
+    'create_quizzes' => 'Create New Quizzes',
+    'competition' => 'Competition',
 ];

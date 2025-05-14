@@ -18,6 +18,7 @@ class QuizService
     public function index()
     {
         $quizzes = $this->quizRepository->index();
+        $quizzes->load('competition');
 
         return $quizzes;
     }

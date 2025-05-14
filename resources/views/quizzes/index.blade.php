@@ -17,6 +17,7 @@
             <thead>
                 <tr>
                     <th>{{__('messages.name')}}</th>
+                    <th>{{__('messages.competition')}}</th>
                     <th>{{__('messages.date')}}</th>
                     <th>{{__('messages.actions')}}</th>
                 </tr>
@@ -25,6 +26,7 @@
                 @foreach($quizzes as $quiz)
                     <tr>
                         <td>{{ $quiz->name }}</td>
+                        <td>{{ $quiz->relationLoaded('competition') ? $quiz->competition->name : '' }}</td>
                         <td>{{ Carbon\Carbon::parse($quiz->date)->format('d-m-Y') }}</td>
 
                         </td>

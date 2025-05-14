@@ -108,4 +108,7 @@ return [
     'end_at' => 'نهاية المنافسة',
     'create_competitions' => 'اضف منافسة جديدة',
     'image' => 'الصورة',
+    'quizzes' => 'الاختبارات',
+    'create_quizzes' => 'اضف اختبار جديد',
+    'competition' => 'المنافسة',
 ];
