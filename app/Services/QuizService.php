@@ -26,6 +26,7 @@ class QuizService
     public function show($id)
     {
         $quiz = $this->quizRepository->show($id);
+        $quiz->load('competition');
 
         return $quiz;
     }

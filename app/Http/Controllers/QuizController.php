@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DTOs\quizCreateDTO;
 use App\Http\Requests\CreateQuizRequest;
+use App\Http\Requests\UpdateQuizRequest;
 use App\Services\CompetitionService;
 use App\Services\QuizService;
 
@@ -48,13 +49,13 @@ class QuizController extends Controller
         return view('quizzes.edit', compact('quiz'));
     }
 
-    public function update($id, CreatequizRequest $request)
+    public function update($id, UpdateQuizRequest $request)
     {
         $input = new quizCreateDTO(...$request->only(
-            'name', 'start_at', 'end_at',
+            'name', 'date',
         ));
 
-        $this->quizService->update($id, $input, $request->image);
+        $this->quizService->update($id, $input);
 
         return redirect()->route('quizzes.index')->with('success', 'quiz updated successfully');
     }

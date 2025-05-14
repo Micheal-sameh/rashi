@@ -52,13 +52,12 @@ class QuizRepository extends BaseRepository
 
     public function update($id, $input)
     {
-        $competition = $this->findById($id);
-        $competition->update([
+        $quiz = $this->findById($id);
+        $quiz->update([
             'name' => $input->name,
             'date' => Carbon::parse($input->date),
-            'competition_id' => $input->competition_id,
         ]);
 
-        return $competition;
+        return $quiz;
     }
 }
