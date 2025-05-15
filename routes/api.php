@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CompetitionController;
 use App\Http\Controllers\Api\QuizController;
+use App\Http\Controllers\Api\UserAnswerController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,10 +47,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => 'competitions'], function () {
         Route::get('/', [CompetitionController::class, 'index']);
     });
+
     Route::group(['prefix' => 'quizzes'], function () {
         Route::get('/', [QuizController::class, 'index']);
     });
+
+    Route::group(['prefix' => 'user-answers'], function () {
+        Route::post('/', [UserAnswerController::class, 'store']);
+    });
 });
+
 Route::get('/quizzes/dropdown/{id}', [QuizController::class, 'dropdown']);
 
 // });

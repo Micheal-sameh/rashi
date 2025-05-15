@@ -59,4 +59,12 @@ class QuestionAnswerRepository extends BaseRepository
 
         return $competition;
     }
+
+    public function isCorrect($input)
+    {
+        $correctAnswer = $this->model->where('quiz_question_id', $input['question_id'])
+            ->where('is_correct', 1)->first();
+
+        return $correctAnswer->id == $input['answer_id'];
+    }
 }
