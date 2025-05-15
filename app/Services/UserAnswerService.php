@@ -19,8 +19,11 @@ class UserAnswerService
         $correctAnswers = $score = 0;
         for ($i = 0; $i < count($input); $i++) {
             $isCorrect = $this->questionAnswerRepository->isCorrect($input[$i]);
-            $points = $isCorrect ? $this->quizQuestionRepository->findById($input[$i]['question_id'])?->points : 0;
-
+            $points = 0;
+            if ($isCorrect) {
+                $quizQuestion = $this->quizQuestionRepository->findById($input[$i]['question_id']);
+                $points = $quizQuestion->points;
+            }
             $correctAnswers = $isCorrect ? $correctAnswers + 1 : $correctAnswers;
             $score += $points;
             $this->userAnswerRepository->store($input[$i], $points);
@@ -28,6 +31,7 @@ class UserAnswerService
         $data['correct_answers'] = $correctAnswers;
         $data['score'] = $score;
         $data['total_questions'] = count($input);
+        $data['subject'] = $quizQuestion->quiz;
 
         return $data;
     }

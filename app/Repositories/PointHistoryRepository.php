@@ -2,22 +2,22 @@
 
 namespace App\Repositories;
 
-use App\Models\UserAnswer;
+use App\Models\PointHistory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 
-class UserAnswerRepository extends BaseRepository
+class PointHistoryRepository extends BaseRepository
 {
-    public function __construct(UserAnswer $model)
+    public function __construct(PointHistory $model)
     {
         $this->model = $model;
     }
 
     protected function model(): string
     {
-        return UserAnswer::class;
+        return PointHistory::class;
     }
 
     public bool $pagination = true;
@@ -29,13 +29,17 @@ class UserAnswerRepository extends BaseRepository
         return $this->pagination ? $query->paginate($this->perPage) : $query->get();
     }
 
-    public function store($input, $points = 0)
+    public function store($data)
     {
+        $user = Auth::user();
+
         return $this->model->create([
-            'user_id' => Auth::id(),
-            'quiz_question_id' => $input['question_id'],
-            'question_answer_id' => $input['answer_id'],
-            'points' => $points,
+            'user_id' => $user->id,
+            'amount' => $data['score'],
+            'points' => $user->points + $data['score'],
+            'score' => $user->score + $data['score'],
+            'subject_id' => $data['subject']->id,
+            'subject_type' => get_class($data['subject']),
         ]);
     }
 }

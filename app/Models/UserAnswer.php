@@ -30,4 +30,14 @@ class UserAnswer extends Model
     {
         return $this->belongsTo(QuestionAnswer::class);
     }
+
+    public function getBalanceSheetAmount()
+    {
+        $this->points;
+    }
+
+    public function getBalanceSheetAccountable()
+    {
+        return $this->user;
+    }
 }
