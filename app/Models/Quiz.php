@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Quiz extends Model
 {
@@ -18,5 +19,15 @@ class Quiz extends Model
     public function competition()
     {
         return $this->belongsTo(Competition::class);
+    }
+
+    public function pointHistories()
+    {
+        return $this->morphMany(PointHistory::class, 'subject');
+    }
+
+    public function isSolved()
+    {
+        return $this->pointHistories()->where('user_id', Auth::id());
     }
 }
