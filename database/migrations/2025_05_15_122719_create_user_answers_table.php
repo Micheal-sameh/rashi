@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('user_answers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('question_id')->constrained();
-            $table->foreignId('answer_id')->constrained();
+            $table->foreignId('quiz_question_id')->constrained();
+            $table->foreignId('question_answer_id')->constrained();
             $table->integer('points')->default(0);
             $table->timestamps();
         });
