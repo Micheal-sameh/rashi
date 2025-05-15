@@ -26,7 +26,7 @@ class User extends Authenticatable implements HasMedia
         'membership_code',
         'phone',
         'score',
-        'point',
+        'points',
         'email_verified_at',
         'password',
         'image',

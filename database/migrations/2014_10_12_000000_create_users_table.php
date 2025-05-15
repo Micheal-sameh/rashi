@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('membership_code')->unique();
             $table->string('phone')->unique()->nullable();
             $table->integer('score')->default(0);
-            $table->integer('point')->default(0);
+            $table->integer('points')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
