@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DTOs\quizCreateDTO;
 use App\Http\Requests\CreateQuizRequest;
 use App\Http\Requests\UpdateQuizRequest;
+use App\Models\Quiz;
 use App\Rules\CheckIsActiveRule;
 use App\Services\CompetitionService;
 use App\Services\QuizService;
@@ -72,7 +73,7 @@ class QuizController extends Controller
     public function delete($id)
     {
         $validator = Validator::make(['id' => $id], [
-            'id' => [new CheckIsActiveRule],
+            'id' => [new CheckIsActiveRule(new Quiz)],
         ]);
 
         if ($validator->fails()) {

@@ -3,23 +3,28 @@
 namespace App\Rules;
 
 use App\Enums\CompetitionStatus;
-use App\Repositories\QuizRepository;
+use App\Models\Competition;
+use App\Models\Quiz;
+use App\Models\QuizQuestion;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class CheckIsActiveRule implements ValidationRule
 {
-    /**
-     * Run the validation rule.
-     *
-     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
-     */
+    public function __construct(protected object $model) {}
+
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $quizRepository = app(QuizRepository::class);
-        $quiz = $quizRepository->findById($value);
-        if (! $quiz || $quiz->competition->status == CompetitionStatus::ACTIVE) {
-            $fail('Quiz is active cannot be deleted');
+        $object = $this->model->find($value);
+
+        $is_active = match (get_class($object)) {
+            Competition::class => $object->status == CompetitionStatus::ACTIVE,
+            Quiz::class => $object->competition->status == CompetitionStatus::ACTIVE,
+            QuizQuestion::class => $object->quiz->competition->status == CompetitionStatus::ACTIVE,
+            default => false,
+        };
+        if ($is_active) {
+            $fail('is active cannot be deleted');
         }
     }
 }
