@@ -65,4 +65,16 @@ class QuizRepository extends BaseRepository
     {
         return $this->model->where('competition_id', $id)->get();
     }
+
+    public function delete($id)
+    {
+        $quiz = $this->findById($id);
+        $quiz->questions?->each(function ($question) {
+            $question->answers->each(function ($answer) {
+                $answer->delete();
+            });
+            $question->delete();
+        });
+        $quiz->delete();
+    }
 }

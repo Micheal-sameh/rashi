@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\DTOs\quizCreateDTO;
 use App\Http\Requests\CreateQuizRequest;
 use App\Http\Requests\UpdateQuizRequest;
+use App\Rules\CheckIsActiveRule;
 use App\Services\CompetitionService;
 use App\Services\QuizService;
+use Illuminate\Support\Facades\Validator;
 
 class QuizController extends Controller
 {
@@ -65,5 +67,20 @@ class QuizController extends Controller
         $quizzes = $this->quizService->dropdown($id);
 
         return $quizzes;
+    }
+
+    public function delete($id)
+    {
+        $validator = Validator::make(['id' => $id], [
+            'id' => [new CheckIsActiveRule],
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $this->quizService->delete($id);
+
+        return redirect()->route('quizzes.index')->with('success', 'quiz deleted successfully');
     }
 }

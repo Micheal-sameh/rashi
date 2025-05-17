@@ -30,4 +30,9 @@ class Quiz extends Model
     {
         return $this->pointHistories()->where('user_id', Auth::id());
     }
+
+    public function questions()
+    {
+        return $this->hasMany(QuizQuestion::class);
+    }
 }

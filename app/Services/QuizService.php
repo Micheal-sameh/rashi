@@ -58,4 +58,9 @@ class QuizService
     {
         return $this->quizRepository->dropdown($id);
     }
+
+    public function delete($id)
+    {
+        return $this->quizRepository->delete($id);
+    }
 }

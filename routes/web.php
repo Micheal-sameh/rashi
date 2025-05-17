@@ -58,6 +58,7 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::post('/', [QuizController::class, 'store'])->name('quizzes.store');
             Route::put('/{id}', [QuizController::class, 'update'])->name('quizzes.update');
             Route::get('/dropdown/{id}', [QuizController::class, 'dropdown'])->name('quizzes.dropdown');
+            Route::delete('/{id}', [QuizController::class, 'delete'])->name('quizzes.delete');
         });
 
         Route::prefix('questions')->group(function () {
