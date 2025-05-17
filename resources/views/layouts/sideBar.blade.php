@@ -172,9 +172,9 @@
                     {{-- @can('workDays_list') --}}
                         <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('questions.index') }}">{{__('messages.questions')}}</a></li>
                     {{-- @endcan --}}
-                    @can('reports_list')
-                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('reports.index') }}">{{__('messages.reports')}}</a></li>
-                    @endcan
+                    {{-- @can('reports_list') --}}
+                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('settings.index') }}">{{__('messages.settings')}}</a></li>
+                    {{-- @endcan --}}
                     @endauth
                     @auth
                     <li class="nav-item text-begin">

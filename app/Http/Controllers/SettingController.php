@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateSettingRequest;
 use App\Services\SettingService;
-use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
@@ -16,11 +16,10 @@ class SettingController extends Controller
         return view('settings.index', compact('settings'));
     }
 
-    public function update(Request $request)
+    public function update(UpdateSettingRequest $request)
     {
-        // dd($request->files);
 
-        $this->settingService->update($request->settings, $request->allFiles()['settings']);
+        $this->settingService->update($request->settings, $request?->allFiles()['settings'] ?? null);
 
         return redirect()->back()->with('success', 'Settings updated successfully');
     }

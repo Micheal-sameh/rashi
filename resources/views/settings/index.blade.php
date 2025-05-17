@@ -1,7 +1,7 @@
 @extends('layouts.sideBar')
 
 @section('content')
-<div class="container py-4">
+<div class="container py-4" style="width: 95%;">
     <h2 class="mb-4">{{__('messages.Application Settings')}}</h2>
 
     {{-- Success Message --}}
@@ -41,7 +41,7 @@
                 <tr>
                     <td>
                         <input type="text" name="settings[{{ $setting->id }}][name]"
-                               value="{{ $setting->name }}" class="form-control" readonly>
+                               value="{{ $setting->name }}" class="form-control" readonly disabled>
                     </td>
                     <td>
                         <input type="{{ $setting->type === 'file' ? 'file' : 'text' }}"

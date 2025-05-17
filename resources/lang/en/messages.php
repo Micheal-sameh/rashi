@@ -118,4 +118,7 @@ return [
     'select_quiz' => 'Select Quiz',
     'select_competition' => 'Select Competition',
     'create_question' => 'Create New Question',
+    'Application Settings' => 'Application Settings',
+    'value' => 'Value',
+    'settings' => 'Settings',
 ];

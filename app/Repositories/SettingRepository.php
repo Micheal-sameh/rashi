@@ -39,13 +39,22 @@ class SettingRepository extends BaseRepository
     {
         foreach ($settings as $key => $setting) {
             $mainSetting = $this->findById($key);
-            // dd($files[$key]);
-            if ($mainSetting->type == 'file') {
-                $mainSetting->addMedia($files[$key]['value'])
-                    ->toMediaCollection('app_logo');
+            if ($mainSetting->type == 'file' && $files) {
+                $newFile = $files[$key]['value'];
+
+                $existingMedia = $mainSetting->getFirstMedia('app_logo');
+                if (! $existingMedia) {
+                    if ($existingMedia) {
+                        $existingMedia->delete();
+                    }
+
+                    $mainSetting->addMedia($newFile)
+                        ->toMediaCollection('app_logo')
+                        ->withResponsiveImages();
+                }
             } else {
                 $mainSetting->update([
-                    'value' => $setting['value'],
+                    'value' => $setting['value'] ?? null,
                 ]);
             }
         }
