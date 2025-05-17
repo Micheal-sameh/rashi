@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuizQuestionController;
+use App\Http\Controllers\SettingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -68,6 +69,11 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::post('/', [QuizQuestionController::class, 'store'])->name('questions.store');
             Route::put('/{id}', [QuizQuestionController::class, 'update'])->name('questions.update');
             Route::delete('/{id}', [QuizQuestionController::class, 'delete'])->name('questions.delete');
+        });
+
+        Route::prefix('settings')->group(function () {
+            Route::get('/', [SettingController::class, 'index'])->name('settings.index');
+            Route::put('/', [SettingController::class, 'update'])->name('settings.update');
 
         });
     });

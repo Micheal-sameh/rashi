@@ -121,4 +121,7 @@ return [
     'select_competition' => 'اختر منافسة',
     'correct' => 'صحيح',
     'create_question' => 'اضف سؤال',
+    'Application Settings' => 'اعدادات التطبيق',
+    'value' => 'القيمة',
+    'settings' => 'الاعدادات',
 ];
