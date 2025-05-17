@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\DTOs\QuestionCreateDTO;
 use App\Http\Requests\CreateQuestionRequest;
 use App\Http\Requests\QuizQuestionIndexRequest;
+use App\Models\QuizQuestion;
+use App\Rules\CheckIsActiveRule;
 use App\Services\CompetitionService;
 use App\Services\QuizQuestionService;
 use App\Services\QuizService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class QuizQuestionController extends Controller
 {
@@ -83,8 +86,18 @@ class QuizQuestionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function delete($id)
     {
-        //
+        $validator = Validator::make(['id' => $id], [
+            'id' => [new CheckIsActiveRule(new QuizQuestion)],
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $this->quizQuestionService->delete($id);
+
+        return redirect()->back()->with('success', 'Question deleted successfully');
     }
 }

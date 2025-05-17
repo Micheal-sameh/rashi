@@ -65,6 +65,10 @@ class QuizQuestionService
         }
 
         return $question;
+    }
 
+    public function delete($id)
+    {
+        return $this->quizQuestionRepository->delete($id);
     }
 }

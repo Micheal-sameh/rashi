@@ -67,6 +67,7 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/{id}/edit', [QuizQuestionController::class, 'edit'])->name('questions.edit');
             Route::post('/', [QuizQuestionController::class, 'store'])->name('questions.store');
             Route::put('/{id}', [QuizQuestionController::class, 'update'])->name('questions.update');
+            Route::delete('/{id}', [QuizQuestionController::class, 'delete'])->name('questions.delete');
 
         });
     });

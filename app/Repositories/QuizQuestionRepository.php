@@ -76,4 +76,13 @@ class QuizQuestionRepository extends BaseRepository
 
         return $question;
     }
+
+    public function delete($id)
+    {
+        $question = $this->findById($id);
+        $question->answers->each(function ($answer) {
+            $answer->delete();
+        });
+        $question->delete();
+    }
 }

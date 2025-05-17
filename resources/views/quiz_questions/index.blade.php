@@ -65,6 +65,14 @@
                             <a href="{{ route('questions.edit', $question->id) }}" class="btn btn-sm btn-primary">
                                 <i class="fa fa-edit"></i>
                             </a>
+
+                            <form action="{{ route('questions.delete', $question->id) }}" method="POST" style="display: inline-block">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this competition?')"><i class="fa fa-trash"></i></button>
+
+                            </form>
+
                         </td>
                     </tr>
                 @endforeach
