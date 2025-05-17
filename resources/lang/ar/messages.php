@@ -120,4 +120,5 @@ return [
     'select_quiz' => 'اختر اختبار',
     'select_competition' => 'اختر منافسة',
     'correct' => 'صحيح',
+    'create_question' => 'اضف سؤال',
 ];

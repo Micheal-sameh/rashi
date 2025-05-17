@@ -59,6 +59,11 @@
                                         onclick="return confirm('Are you sure you want to delete this quiz?')"><i
                                             class="fa fa-trash"></i></button>
                                 </form>
+                                <a href="{{ route('questions.create', ['quiz_id' => $quiz->id]) }}"
+                                    class="btn btn-sm btn-primary" title="{{ __('messages.create_question') }}">
+                                    {{ __('messages.create_question') }}
+                                </a>
+
                                 <!-- Delete Form -->
                             </td>
 

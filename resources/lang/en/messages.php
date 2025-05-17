@@ -117,4 +117,5 @@ return [
     'points' => 'Points',
     'select_quiz' => 'Select Quiz',
     'select_competition' => 'Select Competition',
+    'create_question' => 'Create New Question',
 ];
