@@ -15,7 +15,7 @@
     }
 </style>
 
-<div class="custom-container">
+<div class="container" style="width: 95%;">
     <h2 class="mb-4">Create Quiz</h2>
 
     <form action="{{ route('quizzes.store') }}" method="POST">

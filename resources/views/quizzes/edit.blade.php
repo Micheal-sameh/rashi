@@ -1,7 +1,7 @@
 @extends('layouts.sideBar')
 
 @section('content')
-<div class="container">
+<div class="container" style="width: 95%;">
     <h2>Edit quiz</h2>
 
     @if ($errors->any())

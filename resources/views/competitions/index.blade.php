@@ -1,7 +1,7 @@
 @extends('layouts.sideBar')
 
 @section('content')
-<div class="container">
+<div class="container" style="width: 95%;">
     <h2>{{__('messages.competitions')}}</h2>
 
     <a href="{{ route('competitions.create') }}" class="btn btn-success mb-3">{{__('messages.create_competitions')}}</a>

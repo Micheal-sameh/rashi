@@ -1,7 +1,7 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container" style="width: 90%;">
+    <div class="container" style="width: 95%;">
 
         <!-- Heading Section -->
         <h2 class="mb-4">{{ __('messages.create_questions') }}</h2>

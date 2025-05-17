@@ -1,7 +1,7 @@
 @extends('layouts.sideBar')
 
 @section('content')
-<div class="container">
+<div class="container" style="width: 95%;">
     <h2>{{ __('messages.questions') }}</h2>
 
     <!-- Dependent Dropdowns -->
