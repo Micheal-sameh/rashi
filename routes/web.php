@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompetitionController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuizQuestionController;
 use App\Http\Controllers\SettingController;
@@ -74,7 +75,13 @@ Route::group(['middleware' => ['setlocale']], function () {
         Route::prefix('settings')->group(function () {
             Route::get('/', [SettingController::class, 'index'])->name('settings.index');
             Route::put('/', [SettingController::class, 'update'])->name('settings.update');
+        });
 
+        Route::prefix('groups')->group(function () {
+            Route::get('/', [GroupController::class, 'index'])->name('groups.index');
+            Route::get('/create', [GroupController::class, 'create'])->name('groups.create');
+            Route::put('/{id}', [GroupController::class, 'update'])->name('groups.update');
+            Route::post('/', [GroupController::class, 'store'])->name('groups.store');
         });
     });
 });
