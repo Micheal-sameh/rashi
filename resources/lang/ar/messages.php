@@ -126,4 +126,11 @@ return [
     'settings' => 'الاعدادات',
     'create_groups' => 'اضف مجموعة جديدة',
     'groups' => 'المجموعات',
+    'edit_name' => 'تعديل الاسم',
+    'edit_group_users' => 'تعديل المستخدمين',
+    'close' => 'اغلاق',
+    'update_users_for_group' => 'تحديث المستخدمين',
+    'search_users' => 'بحث عن مستخدمين',
+    'search_for_user' => 'بحث عن مستخدم',
+    'select_users' => 'اختر المستخدمين',
 ];

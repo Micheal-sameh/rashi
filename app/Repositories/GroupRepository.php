@@ -35,11 +35,17 @@ class GroupRepository extends BaseRepository
         return $this->execute($query);
     }
 
-    public function store($name)
+    public function store($name, $users)
     {
-        return $this->model->create([
+        $group = $this->model->create([
             'name' => $name,
         ]);
+
+        if (! empty($users)) {
+            $group->users()->sync($users);
+        }
+
+        return $group;
     }
 
     public function update($id, $name)
@@ -48,6 +54,30 @@ class GroupRepository extends BaseRepository
         $group->update([
             'name' => $name,
         ]);
+
+        return $group;
+    }
+
+    public function updateUsers($id, $users)
+    {
+        $group = $this->findById($id);
+        $group->users()->sync($users);
+
+        return $group;
+    }
+
+    public function edit($id)
+    {
+        $group = $this->findById($id);
+        $users = $group->users;
+
+        return $users;
+    }
+
+    public function show($id)
+    {
+        $group = $this->findById($id);
+        $group->load('users');
 
         return $group;
     }

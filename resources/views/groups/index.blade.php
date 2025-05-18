@@ -37,48 +37,78 @@
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>
-                            <form action="{{ route('groups.update', $group->id) }}" method="POST" class="group-form">
-                                @csrf
-                                @method('PUT')
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value="{{ old('name', $group->name) }}"
-                                    class="form-control group-name"
-                                    data-original="{{ $group->name }}">
+                            <span class="group-name-clickable" data-id="{{ $group->id }}" data-name="{{ $group->name }}">
+                                {{ $group->name }}
+                            </span>
                         </td>
                         <td>
-                                <button type="submit" class="btn btn-sm btn-primary mt-2">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                            </form>
+                            <a href="{{ route('groups.edit', $group->id) }}" class="btn btn-sm btn-primary">
+                                {{__('messages.edit_group_users')}}</i>
+                            </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="3">No groups found.</td>
+                        <td colspan="3">{{ __('messages.no_groups') }}</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    <!-- Modal for Editing Group Name -->
+    <div class="modal fade" id="editGroupModal" tabindex="-1" aria-labelledby="editGroupModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editGroupModalLabel">{{ __('messages.edit_name') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="editGroupForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="group_name" class="form-label">{{ __('messages.name') }}</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="group_name"
+                                name="name"
+                                required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('messages.close') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('messages.save') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 @endsection
 
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const forms = document.querySelectorAll('.group-form');
+        // Select all group names that can be clicked
+        const groupNames = document.querySelectorAll('.group-name-clickable');
 
-        forms.forEach(form => {
-            form.addEventListener('submit', function (e) {
-                const input = form.querySelector('.group-name');
-                const originalValue = input.dataset.original.trim();
-                const currentValue = input.value.trim();
+        groupNames.forEach(groupName => {
+            groupName.addEventListener('click', function () {
+                const groupId = groupName.getAttribute('data-id');
+                const groupNameText = groupName.getAttribute('data-name');
 
-                if (originalValue === currentValue) {
-                    e.preventDefault();
-                    alert('No changes detected.');
-                }
+                // Fill the modal with current group name
+                const modal = new bootstrap.Modal(document.getElementById('editGroupModal'));
+                const inputField = document.getElementById('group_name');
+                inputField.value = groupNameText;
+
+                // Set the form action to the group edit route
+                const form = document.getElementById('editGroupForm');
+                form.action = '/groups/' + groupId;
+
+                modal.show();
             });
         });
     });

@@ -5,16 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Group extends Model
+class UserGroup extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'user_id',
+        'group_id',
     ];
-
-    public function users()
-    {
-        return $this->belongsToMany(User::class, 'user_groups'); // Pivot table 'group_user'
-    }
 }

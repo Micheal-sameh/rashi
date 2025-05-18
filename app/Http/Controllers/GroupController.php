@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateGroupRequest;
+use App\Http\Requests\UpdateGroupUsers;
 use App\Repositories\GroupRepository;
+use App\Repositories\UserRepository;
 
 class GroupController extends Controller
 {
-    public function __construct(protected GroupRepository $groupRepository) {}
+    public function __construct(
+        protected GroupRepository $groupRepository,
+        protected UserRepository $userRepository,
+    ) {}
 
     public function index()
     {
@@ -18,12 +23,14 @@ class GroupController extends Controller
 
     public function create()
     {
-        return view('groups.create');
+        $users = $this->userRepository->dropdown();
+
+        return view('groups.create', compact('users'));
     }
 
     public function store(CreateGroupRequest $request)
     {
-        $this->groupRepository->store($request->name);
+        $this->groupRepository->store($request->name, $request->users);
 
         return redirect()->route('groups.index')->with('success', 'Group created successfully');
     }
@@ -33,5 +40,20 @@ class GroupController extends Controller
         $group = $this->groupRepository->update($id, $request->name);
 
         return redirect()->route('groups.index')->with('success', "Group $group->name updated successfully");
+    }
+
+    public function updateUsers($id, UpdateGroupUsers $request)
+    {
+        $group = $this->groupRepository->updateUsers($id, $request->users);
+
+        return redirect()->route('groups.index')->with('success', "Group $group->name updated successfully");
+    }
+
+    public function edit($id)
+    {
+        $group = $this->groupRepository->show($id);
+        $users = $this->userRepository->dropdown();
+
+        return view('groups.edit', compact('users', 'group'));
     }
 }

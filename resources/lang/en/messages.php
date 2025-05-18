@@ -123,4 +123,11 @@ return [
     'settings' => 'Settings',
     'create_groups' => 'Create New Groups',
     'groups' => 'Groups',
+    'edit_name' => 'Edit Name',
+    'edit_group_users' => 'Edit Group Users',
+    'close' => 'Close',
+    'update_users_for_group' => 'Update Users for Group',
+    'search_users' => 'Search Users',
+    'search_for_user' => 'Search for Users',
+    'select_users' => 'Select Users',
 ];

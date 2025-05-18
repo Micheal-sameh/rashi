@@ -80,7 +80,9 @@ Route::group(['middleware' => ['setlocale']], function () {
         Route::prefix('groups')->group(function () {
             Route::get('/', [GroupController::class, 'index'])->name('groups.index');
             Route::get('/create', [GroupController::class, 'create'])->name('groups.create');
+            Route::get('/{id}/edit', [GroupController::class, 'edit'])->name('groups.edit');
             Route::put('/{id}', [GroupController::class, 'update'])->name('groups.update');
+            Route::put('/{id}/update-users', [GroupController::class, 'updateUsers'])->name('groups.updateUsers');
             Route::post('/', [GroupController::class, 'store'])->name('groups.store');
         });
     });

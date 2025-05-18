@@ -85,4 +85,9 @@ class UserRepository extends BaseRepository
 
         return $user;
     }
+
+    public function dropdown()
+    {
+        return $this->model->all();
+    }
 }
