@@ -17,9 +17,9 @@ class QuizQuestionService
 
     public function index($input)
     {
-        $quizzes = $this->quizQuestionRepository->index($input);
+        $questions = $this->quizQuestionRepository->index($input);
 
-        return $quizzes;
+        return $questions;
     }
 
     public function show($id)

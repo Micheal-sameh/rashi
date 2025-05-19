@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\CompetitionStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,7 +19,9 @@ class QuizQuestionResource extends JsonResource
             'id' => $this->id,
             'question' => $this->question,
             'points' => $this->points,
-            'answers' => $this->answers,
+            'answers' => ($this->quiz->competition->status == CompetitionStatus::FINISHED)
+            ? $this->whenloaded('answers', ModelAnswerResource::collection($this->answers))
+            : $this->whenloaded('answers', AnswerResource::collection($this->answers)),
         ];
     }
 }
