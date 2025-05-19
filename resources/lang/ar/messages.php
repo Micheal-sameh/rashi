@@ -133,4 +133,5 @@ return [
     'search_users' => 'بحث عن مستخدمين',
     'search_for_user' => 'بحث عن مستخدم',
     'select_users' => 'اختر المستخدمين',
+    'select_groups' => 'اختر المجموعات',
 ];

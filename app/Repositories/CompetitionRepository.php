@@ -33,7 +33,14 @@ class CompetitionRepository extends BaseRepository
     public function index()
     {
         $query = $this->model
-            ->where('status', '!=', CompetitionStatus::CANCELLED);
+            ->where('status', '!=', CompetitionStatus::CANCELLED)
+            ->when(request()->is('api/*') && auth()->check(), function ($query) {
+                $userGroupIds = auth()->user()->groups->pluck('id') ?? [];
+
+                if ($userGroupIds->isNotEmpty()) {
+                    $query->whereHas('groups', fn ($q) => $q->whereIn('groups.id', $userGroupIds));
+                }
+            });
 
         return $this->execute($query);
     }
@@ -52,6 +59,7 @@ class CompetitionRepository extends BaseRepository
             'status' => $input->start_at > today() ? CompetitionStatus::PENDING : CompetitionStatus::ACTIVE,
         ]);
         $competition->addMedia($image)->toMediaCollection('competitions_images');
+        $competition->groups()->sync($input->groups);
 
         return $competition;
     }
@@ -68,6 +76,8 @@ class CompetitionRepository extends BaseRepository
             $competition->clearMediaCollection('competitions_images');
             $competition->addMedia($image)->toMediaCollection('competitions_images');
         }
+
+        $competition->groups()->sync($input->groups);
 
         return $competition;
     }

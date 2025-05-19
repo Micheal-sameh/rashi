@@ -81,4 +81,9 @@ class GroupRepository extends BaseRepository
 
         return $group;
     }
+
+    public function dropdown()
+    {
+        return $this->model->all();
+    }
 }

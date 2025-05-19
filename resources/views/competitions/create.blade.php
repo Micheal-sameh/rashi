@@ -37,6 +37,32 @@
             <input type="file" name="image" class="form-control" accept="image/*">
         </div>
 
+        {{-- Groups Checkbox List --}}
+        <div class="mb-3" style="max-width: 300px;">
+            <label class="form-label">{{ __('messages.select_groups') }}</label>
+            <div class="form-control" style="height: auto; max-height: 300px; overflow-y: auto; width: 100%;">
+                @foreach ($groups as $group)
+                    <div class="form-check">
+                        <input
+                            class="form-check-input "
+                            type="checkbox"
+                            name="groups[]"
+                            value="{{ $group->id }}"
+                            id="group_{{ $group->id }}"
+                            style="border: 2px solid black;"
+
+                        >
+                        <label class="form-check-label" for="group_{{ $group->id }}">
+                            {{ $group->name }}
+                        </label>
+                    </div>
+                @endforeach
+            </div>
+            @error('groups')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+
         <button type="submit" class="btn btn-primary">{{__('messages.create')}}</button>
     </form>
 </div>

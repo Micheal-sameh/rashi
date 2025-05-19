@@ -130,4 +130,5 @@ return [
     'search_users' => 'Search Users',
     'search_for_user' => 'Search for Users',
     'select_users' => 'Select Users',
+    'select_groups' => 'Select Groups',
 ];

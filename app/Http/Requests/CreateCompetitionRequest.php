@@ -13,6 +13,8 @@ class CreateCompetitionRequest extends FormRequest
             'start_at' => 'required|date|after_or_equal:today',
             'end_at' => 'required|date|after_or_equal:start_at',
             'image' => 'image|mimes:png,jpg'.($this->route('id') == null ? '|required' : ''),
+            'groups' => 'required|array|min:1',
+            'groups.*' => 'required|integer|exists:groups,id',
         ];
     }
 }

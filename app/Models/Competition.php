@@ -22,4 +22,9 @@ class Competition extends Model implements HasMedia
     protected $mediaAttributes = [
         'image',
     ];
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'competition_groups');
+    }
 }

@@ -45,7 +45,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::group(['prefix' => 'competitions'], function () {
-        Route::get('/', [CompetitionController::class, 'index']);
+        Route::get('/', [CompetitionController::class, 'index'])->name('api.competitions.index');
     });
 
     Route::group(['prefix' => 'quizzes'], function () {

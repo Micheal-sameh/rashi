@@ -55,4 +55,9 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'user_groups');
+    }
 }
