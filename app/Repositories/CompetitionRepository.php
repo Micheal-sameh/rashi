@@ -83,4 +83,16 @@ class CompetitionRepository extends BaseRepository
         return $this->model
             ->where('status', '!=', CompetitionStatus::CANCELLED)->get();
     }
+
+    public function checkCompetitions()
+    {
+        $competitions = $this->model->whereIn('status', [CompetitionStatus::PENDING, CompetitionStatus::ACTIVE])->get();
+        foreach ($competitions as $competition) {
+            if ($competition->status === CompetitionStatus::PENDING && Carbon::parse($competition->start_at)->gte(today()) && Carbon::parse($competition->end_at)->gte(today())) {
+                $competition->update(['status' => CompetitionStatus::ACTIVE]);
+            } elseif ($competition->status === CompetitionStatus::ACTIVE && Carbon::parse($competition->end_at)->lte(today())) {
+                $competition->update(['status' => CompetitionStatus::FINISHED]);
+            }
+        }
+    }
 }
