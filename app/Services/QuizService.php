@@ -15,9 +15,9 @@ class QuizService
         protected QuestionAnswerRepository $questionAnswerRepository,
     ) {}
 
-    public function index()
+    public function index($competition_id)
     {
-        $quizzes = $this->quizRepository->index();
+        $quizzes = $this->quizRepository->index($competition_id);
         $quizzes->load('competition');
 
         return $quizzes;
