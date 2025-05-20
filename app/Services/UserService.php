@@ -16,9 +16,9 @@ class UserService
         return $user;
     }
 
-    public function index()
+    public function index($input = null)
     {
-        $users = $this->userRepository->index();
+        $users = $this->userRepository->index($input);
         $users->load('roles');
 
         return $users;

@@ -55,9 +55,14 @@ class UserRepository extends BaseRepository
         return $user;
     }
 
-    public function index()
+    public function index($input)
     {
-        $query = $this->model->query();
+        // dd($input);
+        $query = $this->model->query()
+            ->when(! is_null($input['name']), fn ($q) => $q->where('name', 'like', '%'.$input['name'].'%'))
+            ->when(! is_null($input['group']), function ($query) use ($input) {
+                $query->whereHas('groups', fn ($q) => $q->where('group_id', $input['group']));
+            });
 
         return $this->execute($query);
     }

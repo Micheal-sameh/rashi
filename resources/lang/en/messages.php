@@ -134,4 +134,5 @@ return [
     'search_for_user' => 'Search for Users',
     'select_users' => 'Select Users',
     'select_groups' => 'Select Groups',
+    'filter_by_name' => 'Filter by Name',
 ];

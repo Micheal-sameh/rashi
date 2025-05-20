@@ -137,4 +137,5 @@ return [
     'search_for_user' => 'بحث عن مستخدم',
     'select_users' => 'اختر المستخدمين',
     'select_groups' => 'اختر المجموعات',
+    'filter_by_name' => 'بحث حسب الاسم',
 ];
