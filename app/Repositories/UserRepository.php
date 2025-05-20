@@ -57,12 +57,13 @@ class UserRepository extends BaseRepository
 
     public function index($input)
     {
-        // dd($input);
         $query = $this->model->query()
-            ->when(! is_null($input['name']), fn ($q) => $q->where('name', 'like', '%'.$input['name'].'%'))
-            ->when(! is_null($input['group']), function ($query) use ($input) {
-                $query->whereHas('groups', fn ($q) => $q->where('group_id', $input['group']));
-            });
+            ->when(! is_null($input), function ($query) use ($input) {
+                $query->when($input->has('name'), fn ($q) => $q->where('name', 'like', '%'.$input->name.'%')
+                )->when($input->has('group_id'), function ($query) use ($input) {
+                    $query->whereHas('groups', fn ($q) => $q->where('group_id', $input->group_id));
+                });
+            })->orderBy($input->sort_by ?? 'name', $input->direction ?? 'asc');
 
         return $this->execute($query);
     }

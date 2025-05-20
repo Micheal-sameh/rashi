@@ -72,7 +72,7 @@
         }
     </style>
 
-    <!-- JS for Modal and Filter -->
+    <!-- JS for Modal and Filter/Sorting -->
     <script>
         function openModal(src) {
             document.getElementById('imageModal').style.display = "block";
@@ -84,6 +84,8 @@
         }
 
         let debounceTimeout;
+        let currentSortBy = '';
+        let currentSortDirection = 'asc';
 
         document.getElementById('nameFilter').addEventListener('input', function() {
             clearTimeout(debounceTimeout);
@@ -92,15 +94,37 @@
 
         document.getElementById('groupFilter').addEventListener('change', applyFilters);
 
+        function applySort(column) {
+            if (currentSortBy === column) {
+                currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortBy = column;
+                currentSortDirection = 'asc';
+            }
+            applyFilters();
+        }
+
         function applyFilters() {
-            const name = document.getElementById('nameFilter').value;
+            const name = document.getElementById('nameFilter').value.trim();
             const group = document.getElementById('groupFilter').value;
 
-            const query = new URLSearchParams({
-                name: name,
-                group: group,
-                is_filter: 1
-            });
+            const query = new URLSearchParams();
+
+            if (name !== '') {
+                query.append('name', name);
+            }
+            if (group !== '') {
+                query.append('group_id', group);
+            }
+
+            // Only add sorting if a sort column is chosen
+            if (currentSortBy !== '') {
+                query.append('sort_by', currentSortBy);
+                query.append('direction', currentSortDirection);
+            }
+
+            // Always add this to indicate filtering is active
+            query.append('is_filter', 1);
 
             fetch(`{{ route('users.index') }}?${query.toString()}`)
                 .then(response => response.text())
