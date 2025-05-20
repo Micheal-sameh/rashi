@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('competitions.index');
 });
 
 Route::group(['middleware' => ['setlocale']], function () {

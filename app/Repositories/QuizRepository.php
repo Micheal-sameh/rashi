@@ -32,7 +32,7 @@ class QuizRepository extends BaseRepository
     public function index($competition_id)
     {
         $query = $this->model
-            ->where('competition_id', $competition_id)
+            ->when(isset($competition_id), fn ($q) => $q->where('competition_id', $competition_id))
             ->latest('date');
 
         return $this->execute($query);
