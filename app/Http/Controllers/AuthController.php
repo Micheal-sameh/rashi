@@ -36,4 +36,11 @@ class AuthController extends Controller
             ->withInput($request->only('membership_code', 'remember'))
             ->withErrors(['membership_code' => __('auth.failed')]);
     }
+
+    public function logout()
+    {
+        Auth::logout();
+
+        return redirect()->route('login');
+    }
 }

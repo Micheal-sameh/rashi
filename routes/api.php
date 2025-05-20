@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CompetitionController;
+use App\Http\Controllers\Api\QuizController;
+use App\Http\Controllers\Api\QuizQuestionController;
+use App\Http\Controllers\Api\UserAnswerController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +44,24 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/{id}/show', [UserController::class, 'show']);
         Route::post('/profile-pic', [UserController::class, 'profilePic']);
     });
+
+    Route::group(['prefix' => 'competitions'], function () {
+        Route::get('/', [CompetitionController::class, 'index'])->name('api.competitions.index');
+    });
+
+    Route::group(['prefix' => 'quizzes'], function () {
+        Route::get('/', [QuizController::class, 'index']);
+    });
+
+    Route::group(['prefix' => 'questions'], function () {
+        Route::get('/', [QuizQuestionController::class, 'index']);
+    });
+
+    Route::group(['prefix' => 'user-answers'], function () {
+        Route::post('/', [UserAnswerController::class, 'store']);
+    });
 });
+
+Route::get('/quizzes/dropdown/{id}', [QuizController::class, 'dropdown']);
 
 // });

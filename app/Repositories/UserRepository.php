@@ -74,4 +74,20 @@ class UserRepository extends BaseRepository
 
         return $user;
     }
+
+    public function updatePoints($data)
+    {
+        $user = auth()->user();
+        $user->update([
+            'points' => $user->points + $data['score'],
+            'score' => $user->score + $data['score'],
+        ]);
+
+        return $user;
+    }
+
+    public function dropdown()
+    {
+        return $this->model->all();
+    }
 }
