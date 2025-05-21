@@ -138,4 +138,13 @@ return [
     'select_users' => 'اختر المستخدمين',
     'select_groups' => 'اختر المجموعات',
     'filter_by_name' => 'بحث حسب الاسم',
+    'created_at' => 'انشئ في',
+    'points_history' => 'سجل النقاط',
+    'subject_type' => 'نوع الموضوع',
+    'subject_name' => 'اسم الموضوع',
+    'amount' => 'القيمة',
+    'total_points' => 'مجموع النقاط',
+    'total_score' => 'مجموع الدرجات',
+    'user_details' => 'تفاصيل المستخدم',
+    'Quiz' => 'اختبار',
 ];

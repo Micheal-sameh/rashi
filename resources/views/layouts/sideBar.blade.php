@@ -188,7 +188,7 @@
                                 href="{{ url('/') }}"> {{ __('messages.home') }} </a></li>
                         {{-- <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('users.profile') }}">{{__('messages.profile')}} </a></li> --}}
                         {{-- @can('users_list') --}}
-                        {{-- <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('users.index') }}"> {{__('messages.users')}}</a></li> --}}
+                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('users.index') }}"> {{__('messages.users')}}</a></li>
                         {{-- @endcan --}}
                         {{-- @can('competitions_list') --}}
                         <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"

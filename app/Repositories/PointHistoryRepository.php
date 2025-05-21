@@ -42,4 +42,11 @@ class PointHistoryRepository extends BaseRepository
             'subject_type' => get_class($data['subject']),
         ]);
     }
+
+    public function userHistory($id)
+    {
+        $query = $this->model->where('user_id', $id)->latest();
+
+        return $this->execute($query);
+    }
 }

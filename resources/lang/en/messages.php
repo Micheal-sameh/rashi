@@ -135,4 +135,13 @@ return [
     'select_users' => 'Select Users',
     'select_groups' => 'Select Groups',
     'filter_by_name' => 'Filter by Name',
+    'created_at' => 'Created At',
+    'points_history' => 'Points History',
+    'subject_type' => 'Subject Type',
+    'subject_name' => 'Subject Name',
+    'amount' => 'Amount',
+    'total_points' => 'Total Points',
+    'total_score' => 'Total Score',
+    'user_details' => 'User Details',
+    'Quiz' => 'Quiz',
 ];

@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompetitionController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuizQuestionController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,7 +42,7 @@ Route::group(['middleware' => ['setlocale']], function () {
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::prefix('users')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('users.index');
-            Route::get('/{id}/show', [UserController::class, 'index'])->name('users.show');
+            Route::get('/{id}/show', [UserController::class, 'show'])->name('users.show');
         });
 
         Route::prefix('competitions')->group(function () {

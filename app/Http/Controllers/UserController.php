@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DTOs\UsersFilterDTO;
 use App\Repositories\GroupRepository;
+use App\Repositories\PointHistoryRepository;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
@@ -12,6 +13,7 @@ class UserController extends Controller
     public function __construct(
         protected UserService $userService,
         protected GroupRepository $groupRepository,
+        protected PointHistoryRepository $pointHistoryRepository,
     ) {}
 
     public function index(Request $request)
@@ -29,5 +31,12 @@ class UserController extends Controller
         return view('users.index', compact('users', 'groups'));
     }
 
-    public function show() {}
+    public function show($id)
+    {
+        $user = $this->userService->show($id);
+        $points = $this->pointHistoryRepository->userHistory($id);
+        $points->load('user', 'subject');
+
+        return view('users.show', compact('user', 'points'));
+    }
 }
