@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\UsersFilterDTO;
+use App\Http\Requests\UpdateUserGroupRequest;
 use App\Repositories\GroupRepository;
 use App\Repositories\PointHistoryRepository;
 use App\Services\UserService;
@@ -36,7 +37,20 @@ class UserController extends Controller
         $user = $this->userService->show($id);
         $points = $this->pointHistoryRepository->userHistory($id);
         $points->load('user', 'subject');
+        $groups = $this->groupRepository->dropdown();
 
-        return view('users.show', compact('user', 'points'));
+        return view('users.show', compact('user', 'points', 'groups'));
+    }
+
+    public function updateGroups(UpdateUserGroupRequest $request, $id)
+    {
+        $user = $this->userService->updateGroups($request->groups, $id);
+
+        $groupNames = $user->groups->pluck('name')->join(', ') ?: __('messages.not_assigned');
+
+        return response()->json([
+            'message' => 'Groups updated successfully.',
+            'groups' => $groupNames,
+        ]);
     }
 }

@@ -96,4 +96,12 @@ class UserRepository extends BaseRepository
     {
         return $this->model->all();
     }
+
+    public function updateGroups($groups, $id)
+    {
+        $user = $this->findById($id);
+        $user->groups()->sync($groups);
+
+        return $user;
+    }
 }

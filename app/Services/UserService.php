@@ -39,4 +39,12 @@ class UserService
 
         return $user;
     }
+
+    public function updateGroups($groups, $id)
+    {
+        $user = $this->userRepository->updateGroups($groups, $id);
+        $user->load('groups');
+
+        return $user;
+    }
 }
