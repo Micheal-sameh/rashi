@@ -93,4 +93,28 @@ class CompetitionRepository extends BaseRepository
         return $this->model
             ->where('status', '!=', CompetitionStatus::CANCELLED)->get();
     }
+    
+    public function changeStatus($id)
+    {
+        $competition = $this->findById($id);
+        $nextStatus = match ($competition->status) {
+            CompetitionStatus::PENDING => CompetitionStatus::ACTIVE,
+            CompetitionStatus::ACTIVE => CompetitionStatus::FINISHED,
+            default => $competition->status,
+        };
+
+        $competition->status = $nextStatus;
+        $competition->save();
+
+        $statusClass = match ($nextStatus) {
+            CompetitionStatus::PENDING => 'btn-primary',
+            CompetitionStatus::ACTIVE => 'btn-warning',
+            CompetitionStatus::FINISHED => 'btn-purple',
+            CompetitionStatus::CANCELLED => 'btn-danger',
+            default => 'btn-secondary',
+        };
+        $status = CompetitionStatus::getStringValue($competition->status);
+
+        return compact('status', 'statusClass');
+    }
 }
