@@ -36,4 +36,9 @@ class CompetitionService
     {
         return $this->competitionRepository->cancel($id);
     }
+
+    public function changeStatus($id)
+    {
+        return $this->competitionRepository->changeStatus($id);
+    }
 }
