@@ -40,6 +40,10 @@ class CompetitionService
     public function dropdown()
     {
         return $this->competitionRepository->dropdown();
-
+    }
+    
+    public function changeStatus($id)
+    {
+        return $this->competitionRepository->changeStatus($id);
     }
 }
