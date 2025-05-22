@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\DTOs\RewardCreateDTO;
 use App\Enums\RewardStatus;
 use App\Models\Reward;
+use App\Models\RewardHistory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -45,8 +46,10 @@ class RewardRepository extends BaseRepository
             'status' => $input->status ?? RewardStatus::ACTIVE,
             'points' => $input->points,
         ]);
-
-        $reward->addMedia($image)->toMediaCollection('rewards_images');
+        RewardHistory::addRecord($reward);
+        if ($image) {
+            $reward->addMedia($image)->toMediaCollection('rewards_images');
+        }
     }
 
     public function addQuantity($quantity, $id)
@@ -55,6 +58,7 @@ class RewardRepository extends BaseRepository
         $reward->update([
             'quantity' => $reward->quantity + $quantity,
         ]);
+        RewardHistory::addRecord($reward);
 
         return $reward;
     }

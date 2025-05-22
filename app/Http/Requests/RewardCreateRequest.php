@@ -14,6 +14,7 @@ class RewardCreateRequest extends FormRequest
             'quantity' => 'required|integer|gt:0',
             'points' => 'required|integer|gt:0',
             'status' => 'required|in:'.implode(',', array_column(RewardStatus::all(), 'value')),
+            'image' => 'required|image|mimes:png,jpg,jpeg,jpg',
         ];
     }
 }
