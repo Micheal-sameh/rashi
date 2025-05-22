@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\RewardCreateDTO;
+use App\Http\Requests\AddQuantityRequest;
 use App\Http\Requests\RewardCreateRequest;
 use App\Services\RewardService;
 
@@ -30,5 +31,15 @@ class RewardController extends Controller
         $this->rewardService->store($input, $request->image);
 
         return redirect()->route('rewards.index')->with('success', 'Reward created successfully');
+    }
+
+    public function addQuantity(AddQuantityRequest $request, $id)
+    {
+        $reward = $this->rewardService->addQuantity($request->quantity, $id);
+
+        return response()->json([
+            'success' => true,
+            'reward' => $reward,
+        ]);
     }
 }

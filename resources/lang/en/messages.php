@@ -146,4 +146,6 @@ return [
     'Quiz' => 'Quiz',
     'quantity' => 'Quantity',
     'create_reward' => 'Create New Reward',
+    'rewards' => 'Rewards',
+    'add_quantity' => 'Add Quantity',
 ];

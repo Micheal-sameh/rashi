@@ -24,4 +24,9 @@ class RewardService
     {
         return $this->rewardRepository->update($rewards, $files);
     }
+
+    public function addQuantity($quantity, $id)
+    {
+        return $this->rewardRepository->addQuantity($quantity, $id);
+    }
 }

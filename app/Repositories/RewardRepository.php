@@ -47,6 +47,15 @@ class RewardRepository extends BaseRepository
         ]);
 
         $reward->addMedia($image)->toMediaCollection('rewards_images');
+    }
 
+    public function addQuantity($quantity, $id)
+    {
+        $reward = $this->findById($id);
+        $reward->update([
+            'quantity' => $reward->quantity + $quantity,
+        ]);
+
+        return $reward;
     }
 }

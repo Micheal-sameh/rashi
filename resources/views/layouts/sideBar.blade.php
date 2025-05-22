@@ -211,6 +211,10 @@
                         <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"
                                 href="{{ route('groups.index') }}">{{ __('messages.groups') }}</a></li>
                         {{-- @endcan --}}
+                        {{-- @can('reports_list') --}}
+                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"
+                                href="{{ route('rewards.index') }}">{{ __('messages.rewards') }}</a></li>
+                        {{-- @endcan --}}
                     @endauth
                     @auth
                         <li class="nav-item text-begin">

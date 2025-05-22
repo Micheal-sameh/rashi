@@ -149,4 +149,6 @@ return [
     'Quiz' => 'اختبار',
     'quantity' => 'الكمية',
     'create_reward' => 'اضف جائزة',
+    'rewards' => 'الجوائز',
+    'add_quantity' => 'اضف كمية',
 ];
