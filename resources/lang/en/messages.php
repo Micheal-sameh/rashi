@@ -144,4 +144,6 @@ return [
     'total_score' => 'Total Score',
     'user_details' => 'User Details',
     'Quiz' => 'Quiz',
+    'quantity' => 'Quantity',
+    'create_reward' => 'Create New Reward',
 ];

@@ -5,6 +5,7 @@ use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuizQuestionController;
+use App\Http\Controllers\RewardController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -88,5 +89,11 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::put('/{id}/update-users', [GroupController::class, 'updateUsers'])->name('groups.updateUsers');
             Route::post('/', [GroupController::class, 'store'])->name('groups.store');
         });
+        Route::prefix('rewards')->group(function () {
+            Route::get('/', [RewardController::class, 'index'])->name('rewards.index');
+            Route::get('/create', [RewardController::class, 'create'])->name('rewards.create');
+            Route::post('/', [RewardController::class, 'store'])->name('rewards.store');
+        });
+
     });
 });

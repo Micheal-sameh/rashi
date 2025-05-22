@@ -147,4 +147,6 @@ return [
     'total_score' => 'مجموع الدرجات',
     'user_details' => 'تفاصيل المستخدم',
     'Quiz' => 'اختبار',
+    'quantity' => 'الكمية',
+    'create_reward' => 'اضف جائزة',
 ];
