@@ -58,7 +58,7 @@ class RewardRepository extends BaseRepository
         $reward->update([
             'quantity' => $reward->quantity + $quantity,
         ]);
-        RewardHistory::addRecord($reward);
+        RewardHistory::addRecord($reward, $quantity);
 
         return $reward;
     }

@@ -18,10 +18,10 @@ class RewardHistory extends Model
         'created_by',
     ];
 
-    public static function addRecord($reward)
+    public static function addRecord($reward, $quantity = null)
     {
         RewardHistory::create([
-            'quantity' => $reward->quantity,
+            'quantity' => $quantity ?: $reward->quantity,
             'points' => $reward->points,
             'subject_id' => $reward->id,
             'subject_type' => get_class($reward),
