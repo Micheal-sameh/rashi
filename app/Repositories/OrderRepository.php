@@ -55,14 +55,14 @@ class OrderRepository extends BaseRepository
         return $order;
     }
 
-    public function addQuantity($quantity, $id)
+    public function received($id)
     {
-        $reward = $this->findById($id);
-        $reward->update([
-            'quantity' => $reward->quantity + $quantity,
+        $order = $this->findById($id);
+        $order->update([
+            'status' => OrderStatus::COMPLETED,
+            'servant_id' => Auth::id(),
         ]);
-        RewardHistory::addRecord($reward, $quantity);
 
-        return $reward;
+        return $order;
     }
 }

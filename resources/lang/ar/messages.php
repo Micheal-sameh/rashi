@@ -153,4 +153,9 @@ return [
     'add_quantity' => 'اضف كمية',
     'points_not_enough' => 'النقاط غير كافية',
     'quantity_not_enough' => 'الكمية غير كافية',
+    'orders' => 'الطلبات',
+    'reward' => 'الجائزة',
+    'user_name' => 'صاحب الجائزة',
+    'servant' => 'الخادم',
+    'received' => 'تم الاستلام',
 ];

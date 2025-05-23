@@ -30,6 +30,6 @@ class Order extends Model
 
     public function servant()
     {
-        return $this->belongsTo(Reward::class, 'servant_id');
+        return $this->belongsTo(User::class, 'servant_id');
     }
 }

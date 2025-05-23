@@ -17,7 +17,7 @@ class OrderService
     public function index()
     {
         $orders = $this->orderRepository->index();
-        $orders->load('servant', 'reward');
+        $orders->load('servant', 'reward', 'user');
 
         return $orders;
     }
@@ -28,6 +28,14 @@ class OrderService
         $order = $this->orderRepository->store($reward, $quantity);
         $this->rewardRepository->redeemPoints($reward, $quantity);
         $this->userRepository->redeemPoints($order->points);
+
+        return $order;
+    }
+
+    public function received($id)
+    {
+        $order = $this->orderRepository->received($id);
+        $order->load('servant');
 
         return $order;
     }
