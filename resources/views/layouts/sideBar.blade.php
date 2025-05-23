@@ -215,6 +215,10 @@
                         <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"
                                 href="{{ route('rewards.index') }}">{{ __('messages.rewards') }}</a></li>
                         {{-- @endcan --}}
+                        {{-- @can('reports_list') --}}
+                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"
+                                href="{{ route('orders.index') }}">{{ __('messages.orders') }}</a></li>
+                        {{-- @endcan --}}
                     @endauth
                     @auth
                         <li class="nav-item text-begin">
