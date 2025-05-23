@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
 use App\Services\OrderService;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
     public function __construct(protected OrderService $orderService) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $orders = $this->orderService->index();
+        // dd($request);
+        $orders = $this->orderService->index($request->user_id, $request->status);
 
         return view('orders.index', compact('orders'));
     }

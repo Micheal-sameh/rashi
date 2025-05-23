@@ -100,8 +100,8 @@ Route::group(['middleware' => ['setlocale']], function () {
         });
 
         Route::prefix('orders')->group(function () {
-            Route::get('/', [OrderController::class, 'index'])->name('rewards.index');
-            Route::put('/received/{id}', [OrderController::class, 'received'])->name('rewards.received');
+            Route::get('/', [OrderController::class, 'index'])->name('orders.index');
+            Route::put('/received/{id}', [OrderController::class, 'received'])->name('orders.received');
             // Route::get('/create', [RewardController::class, 'create'])->name('rewards.create');
             // Route::get('/edit/{id}', [RewardController::class, 'edit'])->name('rewards.edit');
             // Route::put('/{id}/add-quantity', [RewardController::class, 'addQuantity'])->name('rewards.addQuantity');
