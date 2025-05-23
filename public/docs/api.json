@@ -63,6 +63,39 @@
           "parameters": [
           ]
         }
+      },
+      "/users": {
+        "get": {
+        "tags": ["User"],
+          "summary": "users index page",
+          "description": "login for user.",
+          "parameters": [
+          ]
+        }
+      },
+      "/users/{id}/show": {
+        "get": {
+        "tags": ["User"],
+          "summary": "user show page",
+          "description": "user show page.",
+          "parameters": [
+          ]
+        }
+      },
+      "/users/profile-pic": {
+        "post": {
+        "tags": ["User"],
+          "summary": "update profile pic",
+          "description": "login for user.",
+          "parameters": [
+            {
+              "name": "image",
+              "required": true,
+              "type": "string",
+              "description": "image , mimes:png,jpg,jpeg"
+            }
+          ]
+        }
       }
     }
   }
