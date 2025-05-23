@@ -1,101 +1,241 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "title": "My API",
-      "description": "API documentation for my Laravel app",
-      "version": "1.0.0"
-    },
-    "host": "41.130.162.205:2100",
-    "basePath": "/api",
-    "schemes": ["http", "https"],
-    "securityDefinitions": {
-      "bearer": {
-        "type": "apiKey",
-        "name": "Authorization",
-        "in": "header",
-        "description": "Enter your Bearer token in the format `Bearer <your_token>`"
-      }
-    },
-    "security": [
-      {
-        "bearer": []
-      }
-    ],
-    "paths": {
-      "/auth/login": {
-        "post": {
-        "tags": ["Auth"],
-          "summary": "post login for user",
-          "description": "login for user.",
-          "parameters": [
-            {
-              "name": "membership_code",
-              "required": true,
-              "type": "string",
-              "description": "User membership_code"
-            },
-            {
-              "name": "name",
-              "required": true,
-              "type": "string",
-              "description": "User NAME"
-            },
-            {
-              "name": "email",
-              "required": false,
-              "type": "email",
-              "description": "User email"
-            },
-            {
-              "name": "phone",
-              "required": false,
-              "type": "string",
-              "description": "User phone"
-            }
-          ]
-        }
-      },
-      "/auth/logout": {
-        "post": {
-        "tags": ["Auth"],
-          "summary": "post logout for user",
-          "description": "logout for user.",
-          "parameters": [
-          ]
-        }
-      },
-      "/users": {
-        "get": {
-        "tags": ["User"],
-          "summary": "users index page",
-          "description": "login for user.",
-          "parameters": [
-          ]
-        }
-      },
-      "/users/{id}/show": {
-        "get": {
-        "tags": ["User"],
-          "summary": "user show page",
-          "description": "user show page.",
-          "parameters": [
-          ]
-        }
-      },
-      "/users/profile-pic": {
-        "post": {
-        "tags": ["User"],
-          "summary": "update profile pic",
-          "description": "login for user.",
-          "parameters": [
-            {
-              "name": "image",
-              "required": true,
-              "type": "string",
-              "description": "image , mimes:png,jpg,jpeg"
-            }
-          ]
-        }
-      }
+  "swagger": "2.0",
+  "info": {
+    "title": "My API",
+    "description": "API documentation for my Laravel app",
+    "version": "1.0.0"
+  },
+  "host": "41.130.162.205:2100",
+  "basePath": "/api",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "securityDefinitions": {
+    "bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Enter your Bearer token in the format `Bearer <your_token>`"
     }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "post login for user",
+        "description": "login for user.",
+        "parameters": [
+          {
+            "name": "membership_code",
+            "required": true,
+            "type": "string",
+            "description": "User membership_code"
+          },
+          {
+            "name": "name",
+            "required": true,
+            "type": "string",
+            "description": "User NAME"
+          },
+          {
+            "name": "email",
+            "required": false,
+            "type": "email",
+            "description": "User email"
+          },
+          {
+            "name": "phone",
+            "required": false,
+            "type": "string",
+            "description": "User phone"
+          }
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "post logout for user",
+        "description": "logout for user.",
+        "parameters": []
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "users index page",
+        "description": "login for user.",
+        "parameters": []
+      }
+    },
+    "/users/{id}/show": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "user show page",
+        "description": "user show page.",
+        "parameters": []
+      }
+    },
+    "/users/profile-pic": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "update profile pic",
+        "description": "login for user.",
+        "parameters": [
+          {
+            "name": "image",
+            "required": true,
+            "type": "string",
+            "description": "image , mimes:png,jpg,jpeg"
+          }
+        ]
+      }
+    },
+    "/competitions": {
+      "get": {
+        "tags": [
+          "Competition"
+        ],
+        "summary": "Competitions index",
+        "description": "Competitions index.",
+        "parameters": []
+      }
+    },
+    "/quizzes": {
+      "get": {
+        "tags": [
+          "Quiz"
+        ],
+        "summary": "quizzes index",
+        "description": "quizzes index.",
+        "parameters": [
+          {
+            "name": "competition_id",
+            "required": true,
+            "type": "integer",
+            "description": "competition you want to see quizzes of"
+          }
+        ]
+      }
+    },
+    "/questions": {
+      "get": {
+        "tags": [
+          "Questition"
+        ],
+        "summary": "questitions index",
+        "description": "Questitions index.",
+        "parameters": [
+          {
+            "name": "quiz_id",
+            "required": true,
+            "type": "integer",
+            "description": "quiz you want to see questions of"
+          }
+        ]
+      }
+    },
+    "/user-answers": {
+      "post": {
+        "tags": [
+          "User-Answer"
+        ],
+        "summary": "user answers for quiz",
+        "description": "user answers for quiz.",
+        "parameters": [
+          {
+            "name": "quiz_id",
+            "required": true,
+            "type": "integer",
+            "description": "quiz you post its answers"
+          },
+          {
+            "name": "questions",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "question_id": {
+                    "type": "integer"
+                  },
+                  "answer_id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "question_id",
+                  "answer_id"
+                ]
+              }
+            },
+            "description": "Quiz you post its answers"
+          }
+        ]
+      }
+    },
+    "/rewards": {
+      "get": {
+        "tags": [
+          "Reward"
+        ],
+        "summary": "rewards index",
+        "description": "rewards index.",
+        "parameters": [
+        ]
+      }
+    },
+    "/orders": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "orders index",
+        "description": "orders index.",
+        "parameters": [
+        ]
+      }
+    },
+    "/orders/": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "create new order",
+        "description": "create new order.",
+        "parameters": [
+          {
+            "name": "reward_id",
+            "required": true,
+            "type": "integer",
+            "description": "id of the reward that the user want to redeem"
+          },
+          {
+            "name": "quantity",
+            "required": true,
+            "type": "integer",
+            "description": "quantity the user want to redeem"
+          }
+        ]
+      }
+    },
   }
+}
