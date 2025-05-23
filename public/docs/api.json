@@ -5,7 +5,7 @@
       "description": "API documentation for my Laravel app",
       "version": "1.0.0"
     },
-    "host": "41.130.162.205:5500",
+    "host": "41.130.162.205:2100",
     "basePath": "/api",
     "schemes": ["http", "https"],
     "securityDefinitions": {
@@ -29,43 +29,30 @@
           "description": "login for user.",
           "parameters": [
             {
-              "name": "E1C1F",
-              "required": true,
-              "type": "integer",
-              "description": "User E1C1F"
-            },
-            {
-              "name": "NR",
-              "required": true,
-              "type": "integer",
-              "description": "User NR"
-            },
-            {
-              "name": "password",
+              "name": "membership_code",
               "required": true,
               "type": "string",
-              "description": "User password"
+              "description": "User membership_code"
+            },
+            {
+              "name": "name",
+              "required": true,
+              "type": "string",
+              "description": "User NAME"
+            },
+            {
+              "name": "email",
+              "required": false,
+              "type": "email",
+              "description": "User email"
+            },
+            {
+              "name": "phone",
+              "required": false,
+              "type": "string",
+              "description": "User phone"
             }
-          ],
-          "responses": {
-            "200": {
-              "description": "A list of users",
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "integer"
-                    },
-                    "name": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
+          ]
         }
       },
       "/auth/logout": {
@@ -74,26 +61,7 @@
           "summary": "post logout for user",
           "description": "logout for user.",
           "parameters": [
-          ],
-          "responses": {
-            "200": {
-              "description": "A list of users",
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "integer"
-                    },
-                    "name": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
+          ]
         }
       }
     }
