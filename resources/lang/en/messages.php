@@ -148,4 +148,6 @@ return [
     'create_reward' => 'Create New Reward',
     'rewards' => 'Rewards',
     'add_quantity' => 'Add Quantity',
+    'points_not_enough' => 'Points Not Enough',
+    'quantity_not_enough' => 'Quantity Not Enough',
 ];

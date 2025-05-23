@@ -104,4 +104,11 @@ class UserRepository extends BaseRepository
 
         return $user;
     }
+
+    public function redeemPoints($points)
+    {
+        return auth()->user()->update([
+            'points' => auth()->user()->points - $points,
+        ]);
+    }
 }

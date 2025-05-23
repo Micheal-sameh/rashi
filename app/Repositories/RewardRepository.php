@@ -62,4 +62,16 @@ class RewardRepository extends BaseRepository
 
         return $reward;
     }
+
+    public function redeemPoints($reward, $quantity)
+    {
+        $status = $reward->quantity - $quantity <= 0
+        ? RewardStatus::FINISHED
+        : $reward->status;
+
+        $reward->update([
+            'quantity' => $reward->quantity - $quantity,
+            'status' => $status,
+        ]);
+    }
 }

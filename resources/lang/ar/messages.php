@@ -151,4 +151,6 @@ return [
     'create_reward' => 'اضف جائزة',
     'rewards' => 'الجوائز',
     'add_quantity' => 'اضف كمية',
+    'points_not_enough' => 'النقاط غير كافية',
+    'quantity_not_enough' => 'الكمية غير كافية',
 ];
