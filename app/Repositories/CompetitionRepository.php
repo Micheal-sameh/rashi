@@ -32,6 +32,7 @@ class CompetitionRepository extends BaseRepository
 
     public function index()
     {
+        $this->checkCompetition();
         $query = $this->model
             ->where('status', '!=', CompetitionStatus::CANCELLED)
             ->when(request()->is('api/*') && auth()->check(), function ($query) {
@@ -93,7 +94,7 @@ class CompetitionRepository extends BaseRepository
         return $this->model
             ->where('status', '!=', CompetitionStatus::CANCELLED)->get();
     }
-    
+
     public function changeStatus($id)
     {
         $competition = $this->findById($id);
@@ -116,5 +117,21 @@ class CompetitionRepository extends BaseRepository
         $status = CompetitionStatus::getStringValue($competition->status);
 
         return compact('status', 'statusClass');
+    }
+
+    public function checkCompetition()
+    {
+        $competitions = $this->model->whereIn('status', [CompetitionStatus::PENDING, CompetitionStatus::ACTIVE])->get();
+        $competitions->each(function ($competition) {
+            if ($competition->start_at >= today() && $competition->end_at < today() && $competition->status == CompetitionStatus::PENDING) {
+                $competition->update([
+                    'status' => CompetitionStatus::ACTIVE,
+                ]);
+            } elseif ($competition->end_at < today() && $competition->status == CompetitionStatus::ACTIVE) {
+                $competition->update([
+                    'status' => CompetitionStatus::FINISHED,
+                ]);
+            }
+        });
     }
 }
