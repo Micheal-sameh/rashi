@@ -49,8 +49,7 @@ class SettingRepository extends BaseRepository
                     }
 
                     $mainSetting->addMedia($newFile)
-                        ->toMediaCollection('app_logo')
-                        ->withResponsiveImages();
+                        ->toMediaCollection('app_logo');
                 }
             } else {
                 $mainSetting->update([

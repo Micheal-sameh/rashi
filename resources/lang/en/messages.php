@@ -155,4 +155,5 @@ return [
     'user_name' => 'User',
     'servant' => 'Servant',
     'received' => 'Received',
+    'Order' => 'Order',
 ];

@@ -182,7 +182,7 @@
                 @php
                     $logo = App\Models\Setting::where('name', 'logo')->first();
                 @endphp
-                <img src="{{ $logo->getFirstMediaUrl('app_logo') }}" alt="Logo" class="img-fluid mb-3">
+                <img src="{{ $logo?->getFirstMediaUrl('app_logo') }}" alt="Logo" class="img-fluid mb-3">
                 <ul class="nav flex-column">
                     @auth
                         <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"
