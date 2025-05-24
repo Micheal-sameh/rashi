@@ -18,7 +18,7 @@ class CanSolveQuizRule implements ValidationRule
         $quizRepository = app(QuizRepository::class);
         $quiz = $quizRepository->findById($value);
 
-        if ($quiz?->isSolved) {
+        if (!$quiz?->isSolved?->isEmpty()) {
             $fail('You have already solved this quiz');
         }
     }
