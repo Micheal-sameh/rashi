@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\PointHistory;
 use App\Repositories\OrderRepository;
+use App\Repositories\PointHistoryRepository;
 use App\Repositories\RewardRepository;
 use App\Repositories\UserRepository;
 
@@ -12,6 +14,7 @@ class OrderService
         protected OrderRepository $orderRepository,
         protected RewardRepository $rewardRepository,
         protected UserRepository $userRepository,
+        protected PointHistoryRepository $pointHistoryRepository,
     ) {}
 
     public function index($user_id = null, $status = null)
@@ -28,6 +31,8 @@ class OrderService
         $order = $this->orderRepository->store($reward, $quantity);
         $this->rewardRepository->redeemPoints($reward, $quantity);
         $this->userRepository->redeemPoints($order->points);
+
+        PointHistory::addRecord($order);
 
         return $order;
     }
