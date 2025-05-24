@@ -51,7 +51,7 @@
 
                 <div class="row mt-3">
                     <div class="col-md-4">
-                        <strong>{{ __('messages.points') }}:</strong> {{ $user->points_sum ?? '0' }}
+                        <strong>{{ __('messages.points') }}:</strong> {{ $user->points ?? '0' }}
                     </div>
                     <div class="col-md-4">
                         <strong>{{ __('messages.score') }}:</strong> {{ $user->score }}
