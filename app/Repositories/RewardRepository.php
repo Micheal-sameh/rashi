@@ -74,4 +74,12 @@ class RewardRepository extends BaseRepository
             'status' => $status,
         ]);
     }
+
+    public function returnRewards($reward, $quantity)
+    {
+        $reward->update([
+            'quantity' => $reward->quantity + $quantity,
+            'status' => RewardStatus::ACTIVE,
+        ]);
+    }
 }

@@ -80,4 +80,15 @@ class OrderRepository extends BaseRepository
     {
         return $this->model->where('user_id', Auth::id())->sum('points');
     }
+
+    public function cancel($id)
+    {
+        $order = $this->findById($id);
+        $order->update([
+            'status' => OrderStatus::CANCELLED,
+            'servant_id' => Auth::id(),
+        ]);
+
+        return $order;
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\PointHistory;
+use App\Models\RewardHistory;
 use App\Repositories\OrderRepository;
 use App\Repositories\PointHistoryRepository;
 use App\Repositories\RewardRepository;
@@ -53,5 +54,19 @@ class OrderService
         $total_points = $this->orderRepository->totalPoints();
 
         return compact('orders', 'count', 'total_points');
+    }
+
+    public function cancel($id)
+    {
+        $order = $this->orderRepository->cancel($id);
+        $order->load('servant');
+        $reward = $this->rewardRepository->findById($order->reward_id);
+        $this->rewardRepository->returnRewards($reward, $order->quantity);
+        $this->userRepository->returnReward($order->points);
+
+        // RewardHistory::addRecord($reward, $order->quantity);
+        // PointHistory::addRecord($order);
+
+        return $order;
     }
 }

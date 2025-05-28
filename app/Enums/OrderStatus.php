@@ -9,6 +9,7 @@ class OrderStatus
 {
     public const PENDING = 1;
     public const COMPLETED = 2;
+    public const CANCELLED = 3;
 
     private static array $translations = [
         self::COMPLETED => [
@@ -18,6 +19,10 @@ class OrderStatus
         self::PENDING => [
             'en' => ' Pending',
             'ar' => 'قيد الانتظار',
+        ],
+        self::CANCELLED => [
+            'en' => 'Cancelled',
+            'ar' => 'ملغى',
         ],
     ];
 

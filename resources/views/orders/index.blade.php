@@ -7,7 +7,6 @@
         <!-- Search Filter Form -->
         <form method="GET" action="{{ route('orders.index') }}" class="row mb-4">
             <div class="col-md-4">
-                {{-- @dd(App\Enums\OrderStatus::all()) --}}
                 <label for="status" class="form-label">{{ __('messages.status') }}</label>
                 <select name="status" id="status" class="form-select">
                     <option value="">{{ __('messages.status') }}</option>
@@ -85,9 +84,12 @@
                             </span>
                         </td>
                         <td>
-                            @if ($order->status !== \App\Enums\OrderStatus::COMPLETED)
+                            @if ($order->status !== \App\Enums\OrderStatus::COMPLETED && $order->status !== \App\Enums\OrderStatus::CANCELLED)
                                 <button class="btn btn-success btn-sm receive-order" data-id="{{ $order->id }}">
                                     {{ __('messages.received') }}
+                                </button>
+                                <button class="btn btn-danger btn-sm cancel-order ms-1" data-id="{{ $order->id }}">
+                                    {{ __('messages.cancel') }}
                                 </button>
                             @endif
                         </td>
@@ -122,6 +124,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
+                // Handle receive button
                 document.querySelectorAll('.receive-order').forEach(button => {
                     button.addEventListener('click', function () {
                         const orderId = this.dataset.id;
@@ -140,6 +143,7 @@
                                 const row = this.closest('tr');
                                 row.querySelector('td:nth-child(4)').textContent = data.status;
                                 row.querySelector('td:nth-child(6)').textContent = data.servant_name;
+                                this.nextElementSibling?.remove(); // Remove cancel button
                                 this.remove();
                             } else {
                                 alert(data.message || 'Something went wrong');
@@ -152,6 +156,42 @@
                     });
                 });
 
+                // Handle cancel button
+                document.querySelectorAll('.cancel-order').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const orderId = this.dataset.id;
+
+                        if (!confirm('Are you sure you want to cancel this order?')) {
+                            return;
+                        }
+
+                        fetch(`/orders/cancel/${orderId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({})
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                const row = this.closest('tr');
+                                row.querySelector('td:nth-child(4)').textContent = data.status;
+                                this.previousElementSibling?.remove(); // Remove receive button
+                                this.remove(); // Remove cancel button
+                            } else {
+                                alert(data.message || 'Something went wrong');
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            alert('An error occurred');
+                        });
+                    });
+                });
+
+                // Handle modal info display
                 document.querySelectorAll('.reward-detail, .user-detail, .servant-detail').forEach(el => {
                     el.addEventListener('click', function () {
                         let content = '';
