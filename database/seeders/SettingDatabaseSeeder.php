@@ -28,7 +28,7 @@ class SettingDatabaseSeeder extends Seeder
 
         Setting::create([
             'name' => 'ios_version',
-            'value' => 'null',
+            'value' => '0.0.0',
             'type' => 'string',
         ]);
     }
