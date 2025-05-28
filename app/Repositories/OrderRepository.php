@@ -67,4 +67,17 @@ class OrderRepository extends BaseRepository
 
         return $order;
     }
+
+    public function myOrders()
+    {
+        $query = $this->model->where('user_id', Auth::id())->latest();
+
+        return $this->execute($query);
+    }
+
+    // used with my orders
+    public function totalPoints()
+    {
+        return $this->model->where('user_id', Auth::id())->sum('points');
+    }
 }

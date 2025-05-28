@@ -1,7 +1,8 @@
 @php
     $currentSortBy = request('sort_by');
     $currentSortDirection = request('sort_direction', 'asc');
-    function sortDirection($column, $currentSortBy, $currentSortDirection) {
+    function sortDirection($column, $currentSortBy, $currentSortDirection)
+    {
         return $currentSortBy === $column && $currentSortDirection === 'asc' ? 'desc' : 'asc';
     }
 @endphp
@@ -18,7 +19,7 @@
                 <th onclick="applySort('score')" style="cursor: pointer;">
                     <span class="d-flex align-items-center gap-1">
                         {{ __('messages.score') }}
-                        @if(request('sort_by') === 'score')
+                        @if (request('sort_by') === 'score')
                             <i class="fa fa-sort-{{ request('sort_direction') === 'asc' ? 'asc' : 'desc' }}"></i>
                         @else
                             <i class="fa fa-sort text-muted"></i>
@@ -29,7 +30,7 @@
                 <th onclick="applySort('points')" style="cursor: pointer;">
                     <span class="d-flex align-items-center gap-1">
                         {{ __('messages.points') }}
-                        @if(request('sort_by') === 'points')
+                        @if (request('sort_by') === 'points')
                             <i class="fa fa-sort-{{ request('sort_direction') === 'asc' ? 'asc' : 'desc' }}"></i>
                         @else
                             <i class="fa fa-sort text-muted"></i>
@@ -52,13 +53,9 @@
                     <td>{{ $user->score }}</td>
                     <td>{{ $user->points }}</td>
                     <td>
-                        @if($user->hasMedia('profile_images'))
-                            <img src="{{ $user->getFirstMediaUrl('profile_images') }}"
-                                 alt="Image"
-                                 width="60"
-                                 class="zoomable-image"
-                                 style="cursor: pointer;"
-                                 onclick="openModal(this.src)">
+                        @if ($user->hasMedia('profile_images'))
+                            <img src="{{ $user->getFirstMediaUrl('profile_images') }}" alt="Image" width="60"
+                                class="zoomable-image" style="cursor: pointer;" onclick="openModal(this.src)">
                         @else
                             N/A
                         @endif

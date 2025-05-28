@@ -23,4 +23,15 @@ class OrderController extends BaseController
 
         return $this->apiResponse(new OrderResource($order));
     }
+
+    public function myOrders()
+    {
+        $data = $this->orderService->myOrders();
+
+        return $this->respondResource(OrderResource::collection($data['orders']),
+            additional_data: [
+                'total_points' => $data['total_points'],
+                'count' => $data['count'],
+            ]);
+    }
 }
