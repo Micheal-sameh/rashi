@@ -159,4 +159,5 @@ return [
     'servant' => 'الخادم',
     'received' => 'تم الاستلام',
     'Order' => 'طلب',
+    'Returns' => 'مرتجع',
 ];

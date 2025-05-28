@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reward_histories', function (Blueprint $table) {
+        Schema::create('returns', function (Blueprint $table) {
             $table->id();
-            $table->integer('quantity');
-            $table->decimal('points', 10, 2);
-            $table->morphs('subject');
-            $table->foreignId('reward_id')->constrained();
+            $table->foreignId('order_id')->constrained();
             $table->foreignId('created_by')->constrained('users');
+            $table->integer('quantity');
+            $table->integer('points');
+            $table->foreignId('reward_id')->constrained();
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reward_histories');
+        Schema::dropIfExists('returns');
     }
 };

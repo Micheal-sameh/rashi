@@ -36,12 +36,13 @@ class PointHistory extends Model
             $subject_id = $data['subject']->id;
             $points = $data['score'];
             $score = $data['score'];
-        } elseif ($data instanceof Order) {
+        } else {
             $type = get_class($data);
             $subject_id = $data->id;
-            $points = -1 * $data->points;
+            $points = ($data instanceof Order) ? -1 * $data->points : $data->points;
             $score = 0;
         }
+
         $user = Auth::user();
         PointHistory::create([
             'user_id' => $user->id,

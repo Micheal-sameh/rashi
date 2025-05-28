@@ -100,11 +100,45 @@
                     </table>
                 </div>
 
-                @if (method_exists($points, 'links'))
-                    <div class="mt-3 ms-3">
-                        {{ $points->links() }}
-                    </div>
-                @endif
+                {{-- pagination --}}
+                <div class="d-flex justify-content-center">
+                    @if ($points->hasPages())
+                        <nav>
+                            <ul class="pagination">
+                                {{-- Previous Page Link --}}
+                                @if ($points->onFirstPage())
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&laquo;</span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $points->previousPageUrl() }}"
+                                            rel="prev">&laquo;</a>
+                                    </li>
+                                @endif
+
+                                {{-- Pagination Elements --}}
+                                @foreach ($points->getUrlRange(1, $points->lastPage()) as $page => $url)
+                                    <li class="page-item {{ $points->currentPage() === $page ? 'active' : '' }}">
+                                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                    </li>
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if ($points->hasMorePages())
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $points->nextPageUrl() }}" rel="next">&raquo;</a>
+                                    </li>
+                                @else
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&raquo;</span>
+                                    </li>
+                                @endif
+                            </ul>
+                        </nav>
+                    @endif
+                </div>
+                {{-- pagination --}}
             </div>
         </div>
     </div>

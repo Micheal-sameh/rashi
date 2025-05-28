@@ -86,7 +86,6 @@ class OrderRepository extends BaseRepository
         $order = $this->findById($id);
         $order->update([
             'status' => OrderStatus::CANCELLED,
-            'servant_id' => Auth::id(),
         ]);
 
         return $order;

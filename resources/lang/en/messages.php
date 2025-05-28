@@ -156,4 +156,5 @@ return [
     'servant' => 'Servant',
     'received' => 'Received',
     'Order' => 'Order',
+    'Returns' => 'Returns',
 ];

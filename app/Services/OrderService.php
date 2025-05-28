@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Models\PointHistory;
+use App\Models\Returns;
 use App\Models\RewardHistory;
 use App\Repositories\OrderRepository;
 use App\Repositories\PointHistoryRepository;
 use App\Repositories\RewardRepository;
 use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
@@ -58,14 +60,16 @@ class OrderService
 
     public function cancel($id)
     {
+        DB::beginTransaction();
         $order = $this->orderRepository->cancel($id);
         $order->load('servant');
+        $return = Returns::addRecord($order);
         $reward = $this->rewardRepository->findById($order->reward_id);
         $this->rewardRepository->returnRewards($reward, $order->quantity);
         $this->userRepository->returnReward($order->points);
-
-        // RewardHistory::addRecord($reward, $order->quantity);
-        // PointHistory::addRecord($order);
+        RewardHistory::addRecord($return, $return->quantity);
+        PointHistory::addRecord($return);
+        DB::commit();
 
         return $order;
     }
