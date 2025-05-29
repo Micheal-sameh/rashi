@@ -61,7 +61,7 @@ class QuizQuestionService
     {
         $question = $this->quizQuestionRepository->create($input);
         for ($i = 0; $i < 4; $i++) {
-            $this->questionAnswerRepository->store($question->id, $input->answers[$i + 1], $input->correct == $i ? 1 : 0);
+            $this->questionAnswerRepository->store($question->id, $input->answers[$i + 1], $input->correct == ($i + 1) ? 1 : 0);
         }
 
         return $question;

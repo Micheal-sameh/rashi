@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserRepository extends BaseRepository
 {
@@ -33,7 +34,7 @@ class UserRepository extends BaseRepository
     public function updateOrCreate(UserLoginDTO $input): User
     {
         if ($input->password === null) {
-            $input->password = 'Ar-Rashi';
+            $input->password = 'password';
         }
 
         $user = $this->model->updateOrCreate(
@@ -44,12 +45,13 @@ class UserRepository extends BaseRepository
             [
                 'email' => $input->email,
                 'phone' => $input->phone,
-                'password' => bcrypt($input->password),
+                'password' => Hash::make($input->password),
             ]
         );
 
-        if (! $user->hasRole('user')) {
+        if (! $user->roles->isNotEmpty()) {
             $user->assignRole('user');
+            $user->groups()->sync(1);
         }
 
         return $user;

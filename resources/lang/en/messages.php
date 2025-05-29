@@ -157,4 +157,9 @@ return [
     'received' => 'Received',
     'Order' => 'Order',
     'Returns' => 'Returns',
+    'answer' => 'Answer',
+    'correct' => 'Correct',
+    'back' => 'Back',
+    'no_questions_found' => 'No Questions Found',
+    'edit_competition' => 'Edit Competition',
 ];

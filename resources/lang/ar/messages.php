@@ -160,4 +160,7 @@ return [
     'received' => 'تم الاستلام',
     'Order' => 'طلب',
     'Returns' => 'مرتجع',
+    'back' => 'الرجوع',
+    'no_questions_found' => 'لا توجد اسئلة',
+    'edit_competition' => 'تعديل المنافسة',
 ];
