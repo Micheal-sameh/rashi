@@ -1,0 +1,75 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: rashi
+        uid: 1500
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: rashi
+    restart: unless-stopped
+    working_dir: /var/www/rashi
+    volumes:
+      - ./:/var/www/rashi
+      - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    networks:
+      - rashi
+      - external_db_network
+    depends_on:
+      - db
+
+  nginx:
+    container_name: reservation-test-nginx
+    restart: unless-stopped
+    image: nginx
+    ports:
+      - 1600:80
+    depends_on:
+      - app
+    volumes:
+      - ./:/var/www/rashi
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d
+    networks:
+      - rashi
+  db:
+    image: mariadb:10.5
+    container_name: reservation-test-db
+    restart: unless-stopped
+    command: --max_allowed_packet=67108864
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "1601:3306"
+    networks:
+      - rashi
+      - external_db_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: rashi-db
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db  # Points to the db service
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      UPLOAD_LIMIT: 256M
+    ports:
+      - "1602:80"
+    networks:
+      - rashi
+
+networks:
+  rashi:
+    driver: bridge
+  external_db_network:
+    external: false
+
+volumes:
+  mysql-data:
+    driver: local
