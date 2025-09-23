@@ -1,6 +1,6 @@
-<div class="table-responsive w-100">
-    <table class="table table-bordered table-striped w-100">
-        <thead>
+<div class="table-responsive shadow-sm rounded-4 overflow-hidden w-100">
+    <table class="table table-hover table-striped align-middle mb-0 w-100">
+        <thead class="table-light">
             <tr>
                 <th>{{ __('messages.name') }}</th>
                 <th>{{ __('messages.email') }}</th>
@@ -29,33 +29,59 @@
         <tbody>
             @forelse($users as $user)
                 <tr>
-                    <td>{{ $user->name ?? 'N/A' }}</td>
+                    <td class="fw-semibold">{{ $user->name ?? 'N/A' }}</td>
                     <td>{{ $user->email ?? 'N/A' }}</td>
-                    <td>{{ $user->membership_code ?? 'N/A' }}</td>
-                    <td>{{ $user->phone ?? 'N/A' }}</td>
-                    <td>{{ $user->score ?? 0 }}</td>
-                    <td>{{ $user->points ?? 0 }}</td>
                     <td>
-                        @if ($user->hasMedia('profile_images'))
-                            <img src="{{ $user->getFirstMediaUrl('profile_images') }}" alt="{{ $user->name }}"
-                                width="60" class="zoomable-image" onclick="openPopup(this.src)"
-                                style="cursor:pointer;">
+                        @if($user->membership_code)
+                            <span class="badge bg-secondary">{{ $user->membership_code }}</span>
                         @else
                             N/A
                         @endif
                     </td>
+                    <td>{{ $user->phone ?? 'N/A' }}</td>
+                    <td class="text-end">{{ $user->score ?? 0 }}</td>
+                    <td class="text-end">{{ $user->points ?? 0 }}</td>
                     <td>
-                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-primary"
-                            title="{{ __('messages.view') }}">
+                        @if ($user->hasMedia('profile_images'))
+                            <img src="{{ $user->getFirstMediaUrl('profile_images') }}"
+                                 alt="{{ $user->name }}" width="60" class="rounded-circle shadow-sm zoomable-image"
+                                 onclick="openPopup(this.src)" style="cursor:pointer;">
+                        @else
+                            <span class="text-muted">N/A</span>
+                        @endif
+                    </td>
+                    <td>
+                        <a href="{{ route('users.show', $user->id) }}"
+                           class="btn btn-sm btn-primary shadow-sm"
+                           title="{{ __('messages.view') }}">
                             <i class="fa fa-eye"></i>
                         </a>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" class="text-center">{{ __('messages.no_users') }}</td>
+                    <td colspan="8" class="text-center text-muted py-4">{{ __('messages.no_users') }}</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
 </div>
+
+<!-- Additional CSS -->
+<style>
+.table-hover tbody tr:hover {
+    background-color: #f1f3f5;
+    transition: background 0.2s;
+}
+
+.zoomable-image {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.zoomable-image:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.table th {
+    user-select: none;
+}
+</style>

@@ -48,9 +48,6 @@ class UserController extends Controller
 
         $groupNames = $user->groups->pluck('name')->join(', ') ?: __('messages.not_assigned');
 
-        return response()->json([
-            'message' => 'Groups updated successfully.',
-            'groups' => $groupNames,
-        ]);
+        return redirect()->back()->with('message', 'sucess updated');
     }
 }
