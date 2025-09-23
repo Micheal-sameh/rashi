@@ -1,140 +1,181 @@
 @extends('layouts.sideBar')
 
 @section('content')
-<div class="container" style="width: 95%;">
-        <h2>{{ __('messages.quizzes') }}</h2>
+    <div class="container-fluid px-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-primary">{{ __('messages.quizzes') }}</h2>
+            <a href="{{ route('quizzes.create') }}" class="btn btn-success">
+                <i class="fa fa-plus-circle me-1"></i> {{ __('messages.create_quizzes') }}
+            </a>
+        </div>
 
-        <a href="{{ route('quizzes.create') }}" class="btn btn-success mb-3">{{ __('messages.create_quizzes') }}</a>
-
+        {{-- Alerts --}}
         @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fa fa-check-circle me-2"></i> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
         @if (session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fa fa-exclamation-circle me-2"></i> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
-
         @if ($errors->any())
-            <div class="alert alert-danger">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <ul class="mb-0">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
+
         @if ($quizzes->count())
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>{{ __('messages.name') }}</th>
-                        <th>{{ __('messages.competition') }}</th>
-                        <th>{{ __('messages.date') }}</th>
-                        <th>{{ __('messages.actions') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($quizzes as $quiz)
-                        <tr>
-                            <td>{{ $quiz->name }}</td>
-                            <td>{{ $quiz->relationLoaded('competition') ? $quiz->competition->name : '' }}</td>
-                            <td>{{ Carbon\Carbon::parse($quiz->date)->format('d-m-Y') }}</td>
+            {{-- Desktop Table --}}
+            <div class="card shadow-sm border-0 rounded-4 d-none d-md-block">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>{{ __('messages.name') }}</th>
+                                <th>{{ __('messages.competition') }}</th>
+                                <th>{{ __('messages.date') }}</th>
+                                <th class="text-center">{{ __('messages.actions') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($quizzes as $quiz)
+                                <tr>
+                                    <td class="fw-semibold">{{ $quiz->name }}</td>
+                                    <td>{{ $quiz->competition->name ?? '-' }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($quiz->date)->format('d M Y') }}</td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('quizzes.edit', $quiz->id) }}"
+                                                class="btn btn-sm btn-outline-primary" title="Edit">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <form action="{{ route('quizzes.delete', $quiz->id) }}" method="POST"
+                                                class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Are you sure you want to delete this quiz?')"
+                                                    title="Delete">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
+                                            <a href="{{ route('questions.create', ['quiz_id' => $quiz->id]) }}"
+                                                class="btn btn-sm btn-outline-success"
+                                                title="{{ __('messages.create_question') }}">
+                                                <i class="fa fa-plus"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
-                            </td>
+                @if ($quizzes->hasPages())
+                    <div class="card-footer d-flex justify-content-center">
+                        {{ $quizzes->links('pagination::bootstrap-5') }}
+                    </div>
+                @endif
+            </div>
 
-                            <td>
-                                <!-- Edit Button -->
-                                <a href="{{ route('quizzes.edit', $quiz->id) }}" class="btn btn-sm btn-primary"
-                                    title="Edit quiz">
+            {{-- Mobile Cards --}}
+            <div class="d-md-none">
+                @foreach ($quizzes as $quiz)
+                    <div class="card mb-3 shadow-sm border-0 rounded-4">
+                        <div class="card-body">
+                            <h5 class="fw-bold text-primary mb-2">{{ $quiz->name }}</h5>
+                            <p class="mb-1"><strong>{{ __('messages.competition') }}:</strong>
+                                {{ $quiz->competition->name ?? '-' }}</p>
+                            <p class="mb-3"><strong>{{ __('messages.date') }}:</strong>
+                                {{ \Carbon\Carbon::parse($quiz->date)->format('d M Y') }}</p>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="{{ route('quizzes.edit', $quiz->id) }}" class="btn btn-sm btn-outline-primary">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <form action="{{ route('quizzes.delete', $quiz->id) }}" method="POST"
-                                    style="display: inline-block">
+                                <form action="{{ route('quizzes.delete', $quiz->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Are you sure you want to delete this quiz?')"><i
-                                            class="fa fa-trash"></i></button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Are you sure you want to delete this quiz?')">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
                                 </form>
                                 <a href="{{ route('questions.create', ['quiz_id' => $quiz->id]) }}"
-                                    class="btn btn-sm btn-primary" title="{{ __('messages.create_question') }}">
-                                    {{ __('messages.create_question') }}
+                                    class="btn btn-sm btn-outline-success">
+                                    <i class="fa fa-plus"></i>
                                 </a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
 
-                                <!-- Delete Form -->
-                            </td>
-
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <div class="text-center">
                 @if ($quizzes->hasPages())
-                    <div class="pagination">
-                        @foreach ($quizzes->getUrlRange(1, $quizzes->lastPage()) as $page => $url)
-                            <a href="{{ $url }}" class="page-link">{{ $page }}</a>
-                        @endforeach
+                    <div class="d-flex justify-content-center">
+                        {{ $quizzes->links('pagination::bootstrap-5') }}
                     </div>
                 @endif
             </div>
         @else
-            <p>No quizzes found.</p>
+            <div class="alert alert-info">
+                <i class="fa fa-info-circle me-2"></i> No quizzes found.
+            </div>
         @endif
     </div>
 
-    <!-- Modal HTML -->
+    {{-- Image Modal (if you need for future previewing images in quizzes) --}}
     <div id="imageModal" class="modal" onclick="closeModal()">
         <span class="close">&times;</span>
         <img class="modal-content" id="modalImage">
     </div>
 
-    <!-- Modal CSS -->
     <style>
         .modal {
             display: none;
             position: fixed;
-            z-index: 9999;
-            padding-top: 60px;
+            z-index: 1050;
             left: 0;
             top: 0;
-            width: 70%;
-            height: 70%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.9);
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
         }
 
         .modal-content {
-            margin: auto;
-            display: block;
-            max-width: 80%;
+            max-width: 90%;
             max-height: 80%;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
         }
 
         .close {
             position: absolute;
             top: 15px;
-            right: 35px;
-            color: #f1f1f1;
-            font-size: 40px;
-            font-weight: bold;
+            right: 25px;
+            font-size: 35px;
+            color: #fff;
             cursor: pointer;
         }
 
-        .close:hover,
-        .close:focus {
+        .close:hover {
             color: #bbb;
-            text-decoration: none;
-            cursor: pointer;
         }
     </style>
 
-    <!-- Modal JavaScript -->
     <script>
         function openModal(src) {
-            document.getElementById('imageModal').style.display = "block";
+            document.getElementById('imageModal').style.display = "flex";
             document.getElementById('modalImage').src = src;
         }
 

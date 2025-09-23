@@ -7,285 +7,210 @@
     <title>@yield('title', config('app.name'))</title>
     <link rel="icon" href="{{ asset('images/logo.jpg') }}" type="image/jpg">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Fonts & Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        /* Sidebar and other styles here... */
-        html,
         body {
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-            width: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f6f8fa;
         }
 
-        /* Sidebar Styles */
+        /* Sidebar */
         #sidebar {
             position: fixed;
             top: 0;
             height: 100vh;
-            width: 200px;
-            background-color: #333;
+            width: 230px;
+            background: linear-gradient(180deg, #0d6efd, #2563eb);
             color: white;
-            transition: left 0.3s ease, right 0.3s ease;
-            z-index: 1000;
-            left: 0;
+            transition: transform 0.3s ease-in-out;
+            z-index: 1050;
+            padding: 1rem 0.5rem;
         }
 
-        /* RTL adjustments for sidebar */
         [dir="rtl"] #sidebar {
-            left: auto;
-            right: 0px;
-        }
-
-        #sidebar.show {
-            left: 0;
-        }
-
-        [dir="rtl"] #sidebar.show {
             right: 0;
-        }
-
-        /* Content Area */
-        .content-wrapper {
-            display: flex;
-            width: 90%;
-        }
-
-        .content-area {
-            flex-grow: 1;
-            margin-left: 200px;
-        }
-
-        /* RTL content margin */
-        [dir="rtl"] .content-area {
-            margin-right: 200px;
-        }
-
-        /* Sidebar Toggle Button */
-        .btn-toggle-sidebar {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1001;
-            background: none;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-        }
-
-        /* RTL adjustments for toggle button */
-        [dir="rtl"] .btn-toggle-sidebar {
-            right: 20px;
             left: auto;
         }
 
-        /* Mobile View - Sidebar hidden off-screen by default */
-        @media (max-width: 767px) {
-            #sidebar {
-                left: -200px;
-            }
-
-            [dir="rtl"] #sidebar {
-                right: -200px;
-            }
-
-            #sidebar.show {
-                left: 0;
-            }
-
-            [dir="rtl"] #sidebar.show {
-                right: 0;
-            }
-
-            .content-area {
-                flex-grow: 1;
-                margin-left: 0px;
-            }
-
-            [dir="rtl"] .content-area {
-                margin-right: 0;
-            }
-
-            .btn-toggle-sidebar {
-                display: block;
-            }
-
-            /* Back Arrow Button */
-            .btn-back {
-                position: fixed;
-                top: 20px;
-                left: 60px;
-                z-index: 1002;
-                background: none;
-                border: none;
-                padding: 0;
-                cursor: pointer;
-            }
-
-            [dir="rtl"] .btn-back {
-                left: 10;
-            }
+        #sidebar .logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
         }
 
-        /* Sidebar Menu Items */
+        #sidebar .logo img {
+            max-width: 120px;
+            border-radius: 50%;
+        }
+
         #sidebar ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        #sidebar .nav-item {
-            padding: 8px;
+        #sidebar ul li a {
+            display: block;
+            padding: 10px 15px;
+            margin: 4px 10px;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.2s;
+            font-weight: 500;
         }
 
-        /* World Icon Button */
+        #sidebar ul li a:hover,
+        #sidebar ul li a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
         #sidebar .world-icon-btn {
             position: absolute;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: none;
+            background: rgba(255, 255, 255, 0.15);
             border: none;
-            padding: 10px;
-            cursor: pointer;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
             color: white;
-            font-size: 24px;
-            z-index: 1001;
+            cursor: pointer;
+            transition: background 0.2s;
         }
 
         #sidebar .world-icon-btn:hover {
-            color: #f8f9fa;
+            background: rgba(255, 255, 255, 0.3);
         }
 
-        [dir="rtl"] #sidebar .world-icon-btn {
+        /* Content */
+        .content-area {
+            margin-left: 230px;
+            padding: 2rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        [dir="rtl"] .content-area {
+            margin-left: 0;
+            margin-right: 230px;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            #sidebar {
+                transform: translateX(-100%);
+            }
+
+            [dir="rtl"] #sidebar {
+                transform: translateX(100%);
+            }
+
+            #sidebar.show {
+                transform: translateX(0);
+            }
+
+            .content-area {
+                margin: 0;
+                padding: 1rem;
+            }
+        }
+
+        /* Sidebar toggle btn */
+        .btn-toggle-sidebar {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+
+        [dir="rtl"] .btn-toggle-sidebar {
+            right: 15px;
             left: auto;
-            right: 50%;
-            transform: translateX(50%);
-        }
-
-        #sidebar img {
-            width: 150px;
-            height: auto;
-            margin-bottom: 20px;
         }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="row content-wrapper">
-            <!-- Sidebar -->
-            <div id="sidebar">
-                @php
-                    $logo = App\Models\Setting::where('name', 'logo')->first();
-                @endphp
-                <img src="{{ $logo?->getFirstMediaUrl('app_logo') }}" alt="Logo" class="img-fluid mb-3">
-                <ul class="nav flex-column">
-                    @auth
-                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"
-                                href="{{ url('/') }}"> {{ __('messages.home') }} </a></li>
-                        {{-- <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('users.profile') }}">{{__('messages.profile')}} </a></li> --}}
-                        {{-- @can('users_list') --}}
-                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;" href="{{ route('users.index') }}"> {{__('messages.users')}}</a></li>
-                        {{-- @endcan --}}
-                        {{-- @can('competitions_list') --}}
-                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"
-                                href="{{ route('competitions.index') }}">{{ __('messages.competitions') }}</a></li>
-                        {{-- @endcan --}}
-                        {{-- @can('reservations_list') --}}
-                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"
-                                href="{{ route('quizzes.index') }}">{{ __('messages.quizzes') }}</a></li>
-                        {{-- @endcan --}}
-                        {{-- @can('workDays_list') --}}
-                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"
-                                href="{{ route('questions.index') }}">{{ __('messages.questions') }}</a></li>
-                        {{-- @endcan --}}
-                        {{-- @can('reports_list') --}}
-                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"
-                                href="{{ route('settings.index') }}">{{ __('messages.settings') }}</a></li>
-                        {{-- @endcan --}}
-                        {{-- @can('reports_list') --}}
-                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"
-                                href="{{ route('groups.index') }}">{{ __('messages.groups') }}</a></li>
-                        {{-- @endcan --}}
-                        {{-- @can('reports_list') --}}
-                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"
-                                href="{{ route('rewards.index') }}">{{ __('messages.rewards') }}</a></li>
-                        {{-- @endcan --}}
-                        {{-- @can('reports_list') --}}
-                        <li class="nav-item text-begin"><a class="nav-item text-white" style="text-decoration: none;"
-                                href="{{ route('orders.index') }}">{{ __('messages.orders') }}</a></li>
-                        {{-- @endcan --}}
-                    @endauth
-                    @auth
-                        <li class="nav-item text-begin">
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="nav-item text-white"
-                                    style="background: none; border: none; padding: 0; cursor: pointer;">
-                                    {{ __('messages.logout') }}
-                                </button>
-                            </form>
-                        </li>
-                    @else
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <div class="logo">
+            @php
+                $logo = App\Models\Setting::where('name', 'logo')->first();
+            @endphp
+            <img src="{{ $logo?->getFirstMediaUrl('app_logo') }}" alt="Logo">
+        </div>
+
+        <ul>
+        @auth
+            <li><a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}"><i
+                        class="fas fa-home me-2"></i>{{ __('messages.home') }}</a></li>
+            <li><a href="{{ route('users.index') }}"><i class="fas fa-users me-2"></i>{{ __('messages.users') }}</a>
+            </li>
+            <li><a href="{{ route('competitions.index') }}"><i
+                        class="fas fa-trophy me-2"></i>{{ __('messages.competitions') }}</a></li>
+            <li><a href="{{ route('quizzes.index') }}"><i
+                        class="fas fa-question-circle me-2"></i>{{ __('messages.quizzes') }}</a></li>
+            <li><a href="{{ route('questions.index') }}"><i
+                        class="fas fa-edit me-2"></i>{{ __('messages.questions') }}</a></li>
+            <li><a href="{{ route('settings.index') }}"><i
+                        class="fas fa-cog me-2"></i>{{ __('messages.settings') }}</a></li>
+            <li><a href="{{ route('groups.index') }}"><i
+                        class="fas fa-layer-group me-2"></i>{{ __('messages.groups') }}</a></li>
+            <li><a href="{{ route('rewards.index') }}"><i
+                        class="fas fa-gift me-2"></i>{{ __('messages.rewards') }}</a></li>
+            <li><a href="{{ route('orders.index') }}"><i
+                        class="fas fa-shopping-cart me-2"></i>{{ __('messages.orders') }}</a></li>
+            <li>
+                <form action="{{ route('logout') }}" method="POST" class="m-0">
+                    @csrf
+                    <button type="submit" class="w-100 text-start btn btn-link text-white px-3">
+                        <i class="fas fa-sign-out-alt me-2"></i>{{ __('messages.logout') }}
+                    </button>
+                </form>
+            </li>
+             @else
                         <a href="{{ route('loginPage') }}"
                             class="nav-link text-white text-begin">{{ __('messages.login') }}</a>
                     @endauth
+        </ul>
 
-                </ul>
-
-                <!-- World Icon Button for language selection -->
-                <button class="world-icon-btn" id="languageSwitcher" aria-label="Change Language">
-                    <i class="fas fa-globe"></i>
-                </button>
-            </div>
-
-            <!-- Content Area -->
-            <div class="content-area p-3">
-                @yield('content')
-            </div>
-        </div>
+        <button class="world-icon-btn" id="languageSwitcher"><i class="fas fa-globe"></i></button>
     </div>
 
-    <!-- Mobile Toggle Button -->
-    <button class="btn-toggle-sidebar d-md-none" id="toggleSidebar" aria-label="Open Sidebar">
-        <i class="fas fa-bars"></i>
-    </button>
+    <!-- Sidebar Toggle Button -->
+    <button class="btn-toggle-sidebar d-md-none" id="toggleSidebar"><i class="fas fa-bars"></i></button>
 
-    <!-- Back Arrow Button for Mobile -->
-    <button class="btn-back d-md-none" id="backArrow" aria-label="Go Back">
-        <i class="fas fa-arrow-left"></i>
-    </button>
+    <!-- Main Content -->
+    <div class="content-area">
+        @yield('content')
+    </div>
 
-    <!-- JS Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Sidebar Toggle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.getElementById("toggleSidebar").addEventListener("click", function() {
-            const sidebar = document.getElementById("sidebar");
-            sidebar.classList.toggle("show");
-            this.setAttribute('aria-label', sidebar.classList.contains("show") ? 'Close Sidebar' : 'Open Sidebar');
+            document.getElementById("sidebar").classList.toggle("show");
         });
 
-        // Language Switcher Logic
+        // Language Switcher
         document.getElementById('languageSwitcher').addEventListener('click', function() {
             const currentLang = "{{ app()->getLocale() }}";
             const newLang = currentLang === 'en' ? 'ar' : 'en';
             window.location.href = `/lang/${newLang}`;
         });
-
-        // Back Arrow functionality
-        document.getElementById("backArrow").addEventListener("click", function() {
-            window.history.back();
-        });
     </script>
-
-    <!-- Additional Scripts -->
-    @stack('scripts')
 </body>
 
 </html>

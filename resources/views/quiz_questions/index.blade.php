@@ -1,104 +1,156 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container" style="width: 95%;">
-        <h2>{{ __('messages.questions') }}</h2>
+    <div class="container-fluid px-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-primary">{{ __('messages.questions') }}</h2>
+        </div>
 
-        <!-- Dependent Dropdowns -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <label for="competition">{{ __('messages.select_competition') }}</label>
-                <select id="competition" class="form-control">
-                    <option value="">{{ __('messages.select_competition') }}</option>
-                    @foreach ($competitions as $competition)
-                        <option value="{{ $competition->id }}"
-                            {{ request()->get('competition_id') == $competition->id ? 'selected' : '' }}>
-                            {{ $competition->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-6">
-                <label for="quiz">{{ __('messages.select_quiz') }}</label>
-                <select id="quiz" class="form-control">
-                    <option value="">{{ __('messages.select_quiz') }}</option>
-                </select>
+        {{-- Dependent Dropdowns --}}
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="competition" class="form-label fw-bold">
+                            <i class="fa fa-trophy text-warning me-1"></i> {{ __('messages.select_competition') }}
+                        </label>
+                        <select id="competition" class="form-select">
+                            <option value="">{{ __('messages.select_competition') }}</option>
+                            @foreach ($competitions as $competition)
+                                <option value="{{ $competition->id }}"
+                                    {{ request()->get('competition_id') == $competition->id ? 'selected' : '' }}>
+                                    {{ $competition->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="quiz" class="form-label fw-bold">
+                            <i class="fa fa-question-circle text-info me-1"></i> {{ __('messages.select_quiz') }}
+                        </label>
+                        <select id="quiz" class="form-select">
+                            <option value="">{{ __('messages.select_quiz') }}</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Create Button (Shown Only If quiz_id Is Selected) -->
-        <div id="createButtonWrapper" style="display: none;">
-            <a id="createQuestionLink" href="#" class="btn btn-success mb-3">
-                {{ __('messages.create_questions') }}
+        {{-- Create button --}}
+        <div id="createButtonWrapper" class="mb-3" style="display: none;">
+            <a id="createQuestionLink" href="#" class="btn btn-success">
+                <i class="fa fa-plus-circle me-1"></i> {{ __('messages.create_questions') }}
             </a>
         </div>
 
+        {{-- Alerts --}}
         @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="fa fa-check-circle me-2"></i> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
         @if ($questions->count())
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>{{ __('messages.question') }}</th>
-                        <th>{{ __('messages.points') }}</th>
-                        @for ($i = 1; $i <= 4; $i++)
-                            <th>{{ __('messages.answer') }} {{ $i }}</th>
-                        @endfor
-                        <th>{{ __('messages.actions') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($questions as $question)
-                        <tr>
-                            <td>{{ $question->question }}</td>
-                            <td>{{ $question->points }}</td>
-                            @foreach ($question->answers as $answer)
-                                <td style="color: {{ $answer->is_correct ? 'blue' : 'inherit' }};">
-                                    {{ $answer->answer }}
-                                </td>
+            {{-- Desktop Table --}}
+            <div class="card shadow-sm border-0 rounded-4 d-none d-md-block">
+                <div class="card-body table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>{{ __('messages.question') }}</th>
+                                <th>{{ __('messages.points') }}</th>
+                                @for ($i = 1; $i <= 4; $i++)
+                                    <th>{{ __('messages.answer') }} {{ $i }}</th>
+                                @endfor
+                                <th class="text-center">{{ __('messages.actions') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($questions as $question)
+                                <tr>
+                                    <td>{{ $question->question }}</td>
+                                    <td><span class="badge bg-primary">{{ $question->points }}</span></td>
+                                    @foreach ($question->answers as $answer)
+                                        <td>
+                                            <span class="{{ $answer->is_correct ? 'fw-bold text-success' : '' }}">
+                                                {{ $answer->answer }}
+                                            </span>
+                                        </td>
+                                    @endforeach
+                                    <td class="text-center">
+                                        <a href="{{ route('questions.edit', $question->id) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('questions.delete', $question->id) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('{{ __('messages.confirm_delete') }}')">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
                             @endforeach
-                            <td>
-                                <a href="{{ route('questions.edit', $question->id) }}" class="btn btn-sm btn-primary">
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-center mt-3">
+                        {{ $questions->appends(request()->query())->links('pagination::bootstrap-5') }}
+                    </div>
+                </div>
+            </div>
+
+            {{-- Mobile Cards --}}
+            <div class="d-block d-md-none">
+                @foreach ($questions as $question)
+                    <div class="card shadow-sm border-0 rounded-4 mb-3">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-2">{{ $question->question }}</h6>
+                            <p class="mb-2">
+                                <span class="badge bg-primary">{{ __('messages.points') }}: {{ $question->points }}</span>
+                            </p>
+                            <ul class="list-group mb-3">
+                                @foreach ($question->answers as $index => $answer)
+                                    <li
+                                        class="list-group-item d-flex justify-content-between align-items-center
+                                    {{ $answer->is_correct ? 'list-group-item-success fw-bold' : '' }}">
+                                        {{ __('messages.answer') }} {{ $index + 1 }}: {{ $answer->answer }}
+                                        @if ($answer->is_correct)
+                                            <i class="fa fa-check text-success"></i>
+                                        @endif
+                                    </li>
+                                @endforeach
+                            </ul>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="{{ route('questions.edit', $question->id) }}"
+                                    class="btn btn-sm btn-outline-primary">
                                     <i class="fa fa-edit"></i>
                                 </a>
-
                                 <form action="{{ route('questions.delete', $question->id) }}" method="POST"
-                                    style="display: inline-block">
+                                    class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Are you sure you want to delete this competition?')"><i
-                                            class="fa fa-trash"></i></button>
-
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('{{ __('messages.confirm_delete') }}')">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
                                 </form>
-
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-            @php
-                $query = request()->query(); // Get current filters (e.g., quiz_id, competition_id)
-            @endphp
-
-            <div class="pagination">
-                @foreach ($questions->getUrlRange(1, $questions->lastPage()) as $page => $url)
-                    @php
-                        $query['page'] = $page; // Add page number to the query
-                    @endphp
-                    <a href="{{ url()->current() . '?' . http_build_query($query) }}"
-                        class="page-link {{ $questions->currentPage() == $page ? 'active' : '' }}">
-                        {{ $page }}
-                    </a>
+                            </div>
+                        </div>
+                    </div>
                 @endforeach
+
+                <div class="d-flex justify-content-center mt-3">
+                    {{ $questions->appends(request()->query())->links('pagination::bootstrap-5') }}
+                </div>
             </div>
         @else
-            <p>{{ __('messages.no_questions_found') }}</p>
+            <div class="alert alert-info">
+                <i class="fa fa-info-circle me-2"></i> {{ __('messages.no_questions_found') }}
+            </div>
         @endif
     </div>
 

@@ -1,155 +1,113 @@
-@extends('layouts.sideBar')
+<!DOCTYPE html>
+<html lang="en">
 
-<title>{{ config('app.name') }}</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ config('app.name') }}</title>
 
-@section('content')
-    <div class="container d-flex justify-content-center align-items-center min-vh-100">
-        <div class="row w-100">
-            <div class="col-md-6 mx-auto">
-                <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-                    <div class="card-header text-center bg-dark text-white py-4">
-                        <h3 class="font-weight-bold">{{ __('messages.login') }}</h3>
-                    </div>
-                    @if(session('error'))
-                    <div class="alert alert-success fixed-top w-50 mx-auto fade show" id="flashMessage" style="top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
-                        {{ session('error') }}
-                    </div>
-                @endif
-                    <div class="card-body p-5">
-                        <!-- Error messages -->
-                        <div id="error-messages" class="alert alert-danger d-none">
-                            <ul id="error-list"></ul>
-                        </div>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
 
-                        <!-- Login form -->
-                        <form id="login-form" method="POST" action="{{ route('loginPage') }}">
-                            @csrf
-                            <div class="form-group mb-4">
-                                <label for="membership_code" class="form-label">{{ __('messages.membership_code') }}</label>
-                                <input type="membership_code" id="membership_code" class="form-control form-control-lg" name="membership_code" required autofocus placeholder="{{ __('messages.enter') }} {{ __('messages.membership_code') }}">
-                            </div>
+<body class="bg-light">
 
-                            <div class="form-group mb-4">
-                                <label for="password" class="form-label">{{ __('messages.password') }}</label>
-                                <input type="password" id="password" class="form-control form-control-lg" name="password" required placeholder="{{ __('messages.enter') }} {{ __('messages.password') }}">
-                            </div>
+    <div class="container d-flex align-items-center justify-content-center min-vh-100">
+        <div class="card shadow rounded-4 p-4 w-100" style="max-width: 400px;">
+            @php
+                $logo = App\Models\Setting::where('name', 'logo')->first();
+            @endphp
 
-                            <div class="form-group form-check mb-4">
-                                <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                                <label class="form-check-label" for="remember">
-                                    {{ __('messages.remember_me') }}
-                                </label>
-                            </div>
+            <!-- Logo -->
+            <div class="text-center mb-4">
+                <img src="{{ $logo?->getFirstMediaUrl('app_logo') }}" alt="Logo" class="img-fluid"
+                    style="max-height: 80px;">
+            </div>
 
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-dark w-100 py-3 rounded-3 font-weight-bold">
-                                    {{ __('messages.login') }}
-                                </button>
-                            </div>
-                        </form>
+            <!-- Global Messages -->
+            @if (session('error'))
+                <div class="alert alert-danger small">
+                    {{ session('error') }}
+                </div>
+            @endif
+            @if (session('success'))
+                <div class="alert alert-success small">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if ($errors->any())
+                <div class="alert alert-danger small">
+                    <ul class="mb-0 ps-3">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <!-- Login Form -->
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+
+                <div class="mb-3">
+                    <label for="membership_code" class="form-label">{{ __('messages.membership_code') }}</label>
+                    <input id="membership_code" type="text" name="membership_code" required autofocus
+                        class="form-control @error('membership_code') is-invalid @enderror" value="{{ old('membership_code') }}">
+
+                    @error('membership_code')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Password with toggle -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <input id="password" type="password" name="password" required
+                            class="form-control @error('password') is-invalid @enderror">
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        @error('password')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
-            </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                        <input type="checkbox" name="remember" class="form-check-input" id="remember">
+                        <label class="form-check-label" for="remember">Remember me</label>
+                    </div>
+                </div>
+
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </form>
         </div>
     </div>
-@endsection
 
-@section('styles')
-    <style>
-        /* General Styles */
-        body {
-            background-color: #f5f5f5;
-            font-family: 'Arial', sans-serif;
-            background-image: url("http://192.168.1.6:8000/images/logo.jpg");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            min-height: 100vh;
-        }
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        .container {
-            max-width: 500px;
-        }
-
-        .card {
-            border-radius: 10px;
-            border: none;
-            background-color: rgba(255, 255, 255, 0.9); /* Optional: make the card slightly transparent */
-        }
-
-        /* Button Styling */
-        .btn-dark {
-            background-color: #343a40;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-        }
-
-        .btn-dark:hover {
-            background-color: #23272b;
-        }
-
-        /* Input Styles */
-        .form-control-lg {
-            font-size: 16px;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: none;
-            margin-bottom: 15px;
-        }
-
-        /* Form Error Messages */
-        #error-messages {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        /* Text Link Styling */
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
-@endsection
-
-@section('scripts')
     <script>
-        const form = document.getElementById('login-form');
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const errors = [];
-            if (!document.getElementById('email').value) {
-                errors.push('{{ __("Email is required.") }}');
-            }
-            if (!document.getElementById('password').value) {
-                errors.push('{{ __("Password is required.") }}');
-            }
-
-            if (errors.length > 0) {
-                const errorMessagesDiv = document.getElementById('error-messages');
-                const errorList = document.getElementById('error-list');
-
-                errorList.innerHTML = '';
-                errors.forEach(error => {
-                    const li = document.createElement('li');
-                    li.textContent = error;
-                    errorList.appendChild(li);
-                });
-
-                errorMessagesDiv.classList.remove('d-none');
+        document.getElementById("togglePassword").addEventListener("click", function() {
+            let password = document.getElementById("password");
+            let icon = this.querySelector("i");
+            if (password.type === "password") {
+                password.type = "text";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
             } else {
-                form.submit();
+                password.type = "password";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
             }
         });
     </script>
-@endsection
+</body>
+
+</html>
