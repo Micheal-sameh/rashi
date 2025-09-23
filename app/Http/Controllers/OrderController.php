@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\OrderStatus;
 use App\Rules\CheckCanDeleteOrderRule;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
@@ -23,11 +22,7 @@ class OrderController extends Controller
     {
         $order = $this->orderService->received($id);
 
-        return response()->json([
-            'success' => true,
-            'status' => OrderStatus::getStringValue($order->status),
-            'servant_name' => $order->servant->name ?? 'N/A',
-        ]);
+        return redirect()->back()->with('success', 'received successfuly');
     }
 
     public function cancel($id)
@@ -42,10 +37,6 @@ class OrderController extends Controller
 
         $order = $this->orderService->cancel($id);
 
-        return response()->json([
-            'success' => true,
-            'status' => OrderStatus::getStringValue($order->status),
-            'servant_name' => $order->servant->name ?? 'N/A',
-        ]);
+        return redirect()->back()->with('success', 'deleted Successfuly');
     }
 }
