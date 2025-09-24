@@ -48,7 +48,8 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>
                                     <span class="group-name-clickable text-primary fw-semibold"
-                                        data-id="{{ $group->id }}" data-name="{{ $group->name }}" data-abbreviation="{{ $group->abbreviation }}">
+                                        data-id="{{ $group->id }}" data-name="{{ $group->name }}"
+                                        data-abbreviation="{{ $group->abbreviation }}">
                                         {{ $group->name }}
                                     </span>
                                 </td>
@@ -77,7 +78,67 @@
                 </table>
             </div>
         </div>
+        <div class="d-flex justify-content-center pt-3">
+            @if ($groups->hasPages())
+                <nav>
+                    <ul class="pagination">
+                        {{-- Previous Page Link --}}
+                        @if ($groups->onFirstPage())
+                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                        @else
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $groups->previousPageUrl() }}" rel="prev">&laquo;</a>
+                            </li>
+                        @endif
 
+                        @php
+                            $current = $groups->currentPage();
+                            $last = $groups->lastPage();
+                            $start = max($current - 2, 2);
+                            $end = min($current + 2, $last - 1);
+                        @endphp
+
+                        {{-- First page --}}
+                        <li class="page-item {{ $current === 1 ? 'active' : '' }}">
+                            <a class="page-link" href="{{ $groups->url(1) }}">1</a>
+                        </li>
+
+                        {{-- Dots before start --}}
+                        @if ($start > 2)
+                            <li class="page-item disabled"><span class="page-link">…</span></li>
+                        @endif
+
+                        {{-- Page range --}}
+                        @for ($page = $start; $page <= $end; $page++)
+                            <li class="page-item {{ $current === $page ? 'active' : '' }}">
+                                <a class="page-link" href="{{ $groups->url($page) }}">{{ $page }}</a>
+                            </li>
+                        @endfor
+
+                        {{-- Dots after end --}}
+                        @if ($end < $last - 1)
+                            <li class="page-item disabled"><span class="page-link">…</span></li>
+                        @endif
+
+                        {{-- Last page --}}
+                        @if ($last > 1)
+                            <li class="page-item {{ $current === $last ? 'active' : '' }}">
+                                <a class="page-link" href="{{ $groups->url($last) }}">{{ $last }}</a>
+                            </li>
+                        @endif
+
+                        {{-- Next Page Link --}}
+                        @if ($groups->hasMorePages())
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $groups->nextPageUrl() }}" rel="next">&raquo;</a>
+                            </li>
+                        @else
+                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                        @endif
+                    </ul>
+                </nav>
+            @endif
+        </div>
     </div>
 
     <!-- Modal for Editing Group Name -->
