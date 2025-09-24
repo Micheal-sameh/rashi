@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\DTOs\UserLoginDTO;
+use App\Models\Group;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -51,8 +52,10 @@ class UserRepository extends BaseRepository
 
         if (! $user->roles->isNotEmpty()) {
             $user->assignRole('user');
-            $user->groups()->sync(1);
+
         }
+
+        $this->assignGroups($input->group, $user);
 
         return $user;
     }
@@ -119,5 +122,16 @@ class UserRepository extends BaseRepository
         return auth()->user()->update([
             'points' => auth()->user()->points + $points,
         ]);
+    }
+
+    protected function assignGroups($group_name, $user)
+    {
+        $groupId = Group::where('name', $group_name)->value('id');
+
+        $groupsId = [1]; // always keep group 1
+        if ($groupId) {
+            $groupsId[] = $groupId;
+        }
+        $user->groups()->sync($groupsId);
     }
 }

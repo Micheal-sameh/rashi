@@ -23,6 +23,7 @@ class UserResource extends JsonResource
             'score' => $this->score,
             'point' => $this->point,
             'role' => $this->whenLoaded('roles', fn () => $this->roles->first()->name),
+            'groups' => $this->whenLoaded('groups', fn () => $this->groups->map->name),
             'profile_image' => $this->getFirstMediaUrl('profile_images') ?: null,
         ];
     }

@@ -22,7 +22,7 @@ class AuthController extends BaseController
             $input = new UserLoginDTO(...$credentials->only(
                 'membership_code',
                 'name',
-                // 'phone',
+                'group',
                 // 'password',
                 // 'email',
             ));
@@ -82,8 +82,8 @@ class AuthController extends BaseController
         $membershipPart = substr($code, 13, -$familyNumberLength);
         $membership_code = "E1C1F{$membershipPart}NR{$NR}";
         $name = explode('|', $qr_code)[1];
-        $role = explode('|', $qr_code)[2];
+        $group = explode('|', $qr_code)[2] ?? '';
 
-        return compact('membership_code', 'name', 'role');
+        return compact('membership_code', 'name', 'group');
     }
 }

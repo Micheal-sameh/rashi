@@ -162,4 +162,5 @@ return [
     'back' => 'Back',
     'no_questions_found' => 'No Questions Found',
     'edit_competition' => 'Edit Competition',
+    'abbreviation' => 'Abbreviation',
 ];

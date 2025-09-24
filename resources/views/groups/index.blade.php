@@ -38,6 +38,7 @@
                         <tr>
                             <th>#</th>
                             <th>{{ __('messages.name') }}</th>
+                            <th>{{ __('messages.abbreviation') }}</th>
                             <th class="text-center">{{ __('messages.actions') }}</th>
                         </tr>
                     </thead>
@@ -47,14 +48,23 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>
                                     <span class="group-name-clickable text-primary fw-semibold"
-                                        data-id="{{ $group->id }}" data-name="{{ $group->name }}">
+                                        data-id="{{ $group->id }}" data-name="{{ $group->name }}" data-abbreviation="{{ $group->abbreviation }}">
                                         {{ $group->name }}
                                     </span>
                                 </td>
+                                <td>
+                                    <span class="group-name-clickable text-primary fw-semibold">
+                                        {{ $group->abbreviation }}
+                                    </span>
+                                </td>
                                 <td class="text-center">
-                                    <a href="{{ route('groups.edit', $group->id) }}"
+                                    <a href="{{ route('groups.usersedit', $group->id) }}"
                                         class="btn btn-sm btn-outline-primary">
                                         <i class="fa fa-users me-1"></i> {{ __('messages.edit_group_users') }}
+                                    </a>
+                                    <a href="{{ route('groups.edit', $group->id) }}"
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="fa fa-edit me-1"></i>
                                     </a>
                                 </td>
                             </tr>

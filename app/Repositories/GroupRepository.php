@@ -48,11 +48,12 @@ class GroupRepository extends BaseRepository
         return $group;
     }
 
-    public function update($id, $name)
+    public function update($id, $name, $abbreviation)
     {
         $group = $this->findById($id);
         $group->update([
             'name' => $name,
+            'abbreviation' => $abbreviation,
         ]);
 
         return $group;

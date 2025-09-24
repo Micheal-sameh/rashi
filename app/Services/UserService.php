@@ -11,7 +11,7 @@ class UserService
     public function updateOrcreate($input)
     {
         $user = $this->userRepository->updateOrcreate($input);
-        $user->load('roles');
+        $user->load('roles', 'groups');
 
         return $user;
     }

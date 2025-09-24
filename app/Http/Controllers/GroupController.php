@@ -37,7 +37,7 @@ class GroupController extends Controller
 
     public function update($id, CreateGroupRequest $request)
     {
-        $group = $this->groupRepository->update($id, $request->name);
+        $group = $this->groupRepository->update($id, $request->name, $request->abbreviation);
 
         return redirect()->route('groups.index')->with('success', "Group $group->name updated successfully");
     }
@@ -47,6 +47,14 @@ class GroupController extends Controller
         $group = $this->groupRepository->updateUsers($id, $request->users);
 
         return redirect()->route('groups.index')->with('success', "Group $group->name updated successfully");
+    }
+
+    public function usersedit($id)
+    {
+        $group = $this->groupRepository->show($id);
+        $users = $this->userRepository->dropdown();
+
+        return view('groups.usersEdit', compact('users', 'group'));
     }
 
     public function edit($id)

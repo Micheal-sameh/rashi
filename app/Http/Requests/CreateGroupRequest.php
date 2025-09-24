@@ -10,6 +10,7 @@ class CreateGroupRequest extends FormRequest
     {
         return [
             'name' => "required|string|unique:groups,name,{$this->route('id')}",
+            'abbreviation' => "required|string|unique:groups,abbreviation,{$this->route('id')}",
             'users' => 'array',
             'users.*' => 'integer|exists:users,id',
         ];
