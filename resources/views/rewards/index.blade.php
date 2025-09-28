@@ -19,52 +19,101 @@
         @if ($rewards->isEmpty())
             <div class="alert alert-info shadow-sm">{{ __('messages.no_rewards_found') }}</div>
         @else
-            <div class="table-responsive shadow-sm rounded-4 overflow-hidden">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>#</th>
-                            <th>{{ __('messages.name') }}</th>
-                            <th>{{ __('messages.quantity') }}</th>
-                            <th>{{ __('messages.status') }}</th>
-                            <th>{{ __('messages.points') }}</th>
-                            <th>{{ __('messages.image') }}</th>
-                            <th>{{ __('messages.actions') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($rewards as $index => $reward)
-                            <tr id="reward-row-{{ $reward->id }}" class="align-middle">
-                                <td>{{ $index + 1 }}</td>
-                                <td class="fw-semibold">{{ $reward->name }}</td>
-                                <td id="quantity-{{ $reward->id }}">{{ $reward->quantity }}</td>
-                                <td>
-                                    <span class="badge {{ $reward->status == 1 ? 'bg-success' : 'bg-secondary' }}">
-                                        {{ \App\Enums\RewardStatus::getStringValue($reward->status) }}
-                                    </span>
-                                </td>
-                                <td>{{ $reward->points }}</td>
-                                <td>
-                                    @if ($reward->hasMedia('rewards_images'))
-                                        <img src="{{ $reward->getFirstMediaUrl('rewards_images') }}" alt="Reward Image"
-                                            width="60" class="rounded shadow-sm" style="cursor: pointer;"
-                                            data-bs-toggle="tooltip" title="{{ __('messages.click_to_zoom') }}"
-                                            data-bs-target="#imageModal{{ $reward->id }}"
-                                            onclick="new bootstrap.Modal(document.getElementById('imageModal{{ $reward->id }}')).show()">
-                                    @else
-                                        <span class="text-muted">{{ __('messages.no_image') }}</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary shadow-sm"
-                                        onclick="addQuantity({{ $reward->id }})">
-                                        <i class="fa fa-plus me-1"></i>{{ __('messages.add_quantity') }}
-                                    </button>
-                                </td>
+            <!-- Desktop Table View -->
+            <div class="d-none d-lg-block">
+                <div class="table-responsive shadow-sm rounded-4 overflow-hidden">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>{{ __('messages.name') }}</th>
+                                <th>{{ __('messages.quantity') }}</th>
+                                <th>{{ __('messages.status') }}</th>
+                                <th>{{ __('messages.points') }}</th>
+                                <th>{{ __('messages.image') }}</th>
+                                <th>{{ __('messages.actions') }}</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($rewards as $index => $reward)
+                                <tr id="reward-row-{{ $reward->id }}" class="align-middle">
+                                    <td>{{ $index + 1 }}</td>
+                                    <td class="fw-semibold">{{ $reward->name }}</td>
+                                    <td id="quantity-{{ $reward->id }}">{{ $reward->quantity }}</td>
+                                    <td>
+                                        <span class="badge {{ $reward->status == 1 ? 'bg-success' : 'bg-secondary' }}">
+                                            {{ \App\Enums\RewardStatus::getStringValue($reward->status) }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $reward->points }}</td>
+                                    <td>
+                                        @if ($reward->hasMedia('rewards_images'))
+                                            <img src="{{ $reward->getFirstMediaUrl('rewards_images') }}" alt="Reward Image"
+                                                width="60" class="rounded shadow-sm" style="cursor: pointer;"
+                                                data-bs-toggle="tooltip" title="{{ __('messages.click_to_zoom') }}"
+                                                data-bs-target="#imageModal{{ $reward->id }}"
+                                                onclick="new bootstrap.Modal(document.getElementById('imageModal{{ $reward->id }}')).show()">
+                                        @else
+                                            <span class="text-muted">{{ __('messages.no_image') }}</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary shadow-sm"
+                                            onclick="addQuantity({{ $reward->id }})">
+                                            <i class="fa fa-plus me-1"></i>{{ __('messages.add_quantity') }}
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="d-lg-none">
+                <div class="row g-3">
+                    @foreach ($rewards as $index => $reward)
+                        <div class="col-12">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-body d-flex align-items-center p-3">
+                                    <div class="me-3">
+                                        @if ($reward->hasMedia('rewards_images'))
+                                            <img src="{{ $reward->getFirstMediaUrl('rewards_images') }}" alt="Reward Image"
+                                                width="80" height="80" class="rounded shadow-sm" style="cursor: pointer; object-fit: cover;"
+                                                data-bs-toggle="tooltip" title="{{ __('messages.click_to_zoom') }}"
+                                                data-bs-target="#imageModal{{ $reward->id }}"
+                                                onclick="new bootstrap.Modal(document.getElementById('imageModal{{ $reward->id }}')).show()">
+                                        @else
+                                            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                                <i class="fa fa-gift text-muted"></i>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start mb-1">
+                                            <h6 class="card-title fw-bold mb-0">{{ $reward->name }}</h6>
+                                            <small class="text-muted">#{{ $index + 1 }}</small>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <small class="text-muted"><i class="fa fa-box me-1"></i>{{ __('messages.quantity') }}: <span id="quantity-{{ $reward->id }}">{{ $reward->quantity }}</span></small>
+                                            <small class="text-muted"><i class="fa fa-star me-1"></i>{{ __('messages.points') }}: {{ $reward->points }}</small>
+                                        </div>
+                                        <div class="mb-2">
+                                            <span class="badge {{ $reward->status == 1 ? 'bg-success' : 'bg-secondary' }}">
+                                                {{ \App\Enums\RewardStatus::getStringValue($reward->status) }}
+                                            </span>
+                                        </div>
+                                        <button class="btn btn-sm btn-primary"
+                                            onclick="addQuantity({{ $reward->id }})">
+                                            <i class="fa fa-plus me-1"></i>{{ __('messages.add_quantity') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
 
             <div class="d-flex justify-content-center mt-3">
