@@ -34,28 +34,10 @@
         "description": "login for user.",
         "parameters": [
           {
-            "name": "membership_code",
+            "name": "qr_code",
             "required": true,
             "type": "string",
-            "description": "User membership_code"
-          },
-          {
-            "name": "name",
-            "required": true,
-            "type": "string",
-            "description": "User NAME"
-          },
-          {
-            "name": "email",
-            "required": false,
-            "type": "email",
-            "description": "User email"
-          },
-          {
-            "name": "phone",
-            "required": false,
-            "type": "string",
-            "description": "User phone"
+            "description": "the string result from scanning the qr code"
           }
         ]
       }
