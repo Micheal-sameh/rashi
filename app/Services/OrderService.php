@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\PointHistory;
 use App\Models\Returns;
-use App\Models\RewardHistory;
 use App\Repositories\OrderRepository;
 use App\Repositories\PointHistoryRepository;
 use App\Repositories\RewardRepository;
@@ -18,6 +16,7 @@ class OrderService
         protected RewardRepository $rewardRepository,
         protected UserRepository $userRepository,
         protected PointHistoryRepository $pointHistoryRepository,
+        protected HistoryService $historyService,
     ) {}
 
     public function index($user_id = null, $status = null)
@@ -31,13 +30,27 @@ class OrderService
     public function store($reward_id, $quantity)
     {
         $reward = $this->rewardRepository->findById($reward_id);
-        $order = $this->orderRepository->store($reward, $quantity);
-        $this->rewardRepository->redeemPoints($reward, $quantity);
-        $this->userRepository->redeemPoints($order->points);
 
-        PointHistory::addRecord($order);
+        if ($reward->quantity < $quantity) {
+            throw new \Exception('Insufficient reward quantity');
+        }
 
-        return $order;
+        DB::beginTransaction();
+        try {
+            $order = $this->orderRepository->store($reward, $quantity);
+            $this->rewardRepository->redeemPoints($reward, $quantity);
+            $this->userRepository->redeemPoints($order->points);
+
+            $this->historyService->addPointHistory($order);
+            $this->historyService->addRewardHistory($order);
+
+            DB::commit();
+
+            return $order;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public function received($id)
@@ -67,8 +80,8 @@ class OrderService
         $reward = $this->rewardRepository->findById($order->reward_id);
         $this->rewardRepository->returnRewards($reward, $order->quantity);
         $this->userRepository->returnReward($order->points);
-        RewardHistory::addRecord($return, $return->quantity);
-        PointHistory::addRecord($return);
+        $this->historyService->addRewardHistory($return, $return->quantity);
+        $this->historyService->addPointHistory($return);
         DB::commit();
 
         return $order;

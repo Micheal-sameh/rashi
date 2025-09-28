@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Enums\OrderStatus;
 use App\Models\Order;
-use App\Models\RewardHistory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -35,8 +34,8 @@ class OrderRepository extends BaseRepository
     {
         $user = Auth::user();
         $query = $this->model
-            ->when(! $user->can('view_all_orders'), fn ($q) => $q->where('user_id', $user->id))
-            ->when(isset($user_id), fn ($q) => $q->where('user_id', $user_id))
+            ->when(! $user->can('view_all_orders'), fn ($q) => $q->byUser($user->id))
+            ->when(isset($user_id), fn ($q) => $q->byUser($user_id))
             ->when(isset($status), fn ($q) => $q->where('status', $status))
             ->latest();
 
@@ -52,7 +51,6 @@ class OrderRepository extends BaseRepository
             'status' => OrderStatus::PENDING,
             'user_id' => Auth::id(),
         ]);
-        RewardHistory::addRecord($order);
 
         return $order;
     }
@@ -83,10 +81,13 @@ class OrderRepository extends BaseRepository
 
     public function cancel($id)
     {
+        return $this->updateStatus($id, OrderStatus::CANCELLED);
+    }
+
+    public function updateStatus($id, $status)
+    {
         $order = $this->findById($id);
-        $order->update([
-            'status' => OrderStatus::CANCELLED,
-        ]);
+        $order->update(['status' => $status]);
 
         return $order;
     }

@@ -19,9 +19,13 @@ class OrderController extends BaseController
 
     public function create(OrderCreateRequest $request)
     {
-        $order = $this->orderService->store($request->reward_id, $request->quantity);
+        try {
+            $order = $this->orderService->store($request->reward_id, $request->quantity);
 
-        return $this->apiResponse(new OrderResource($order));
+            return $this->apiResponse(new OrderResource($order));
+        } catch (\Exception $e) {
+            return $this->respondInternalError($e->getMessage());
+        }
     }
 
     public function myOrders()
