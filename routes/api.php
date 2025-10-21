@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BonusPenaltyController;
 use App\Http\Controllers\Api\CompetitionController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\QuizController;
@@ -72,6 +73,12 @@ Route::group(['middleware' => ['auth:sanctum', 'check.competition', 'cache.auth.
         Route::get('/', [OrderController::class, 'index']);
         Route::get('/my-orders', [OrderController::class, 'myOrders']);
         Route::post('/', [OrderController::class, 'create']);
+    });
+
+    Route::group(['prefix' => 'bonus-penalties'], function () {
+        Route::get('/', [BonusPenaltyController::class, 'index']);
+        Route::post('/', [BonusPenaltyController::class, 'store']);
+        Route::get('/{id}', [BonusPenaltyController::class, 'show']);
     });
 });
 

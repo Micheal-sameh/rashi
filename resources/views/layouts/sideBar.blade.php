@@ -190,6 +190,10 @@
                             class="{{ request()->routeIs('groups.*') ? 'active' : '' }}">
                             <i class="fas fa-layer-group"></i>{{ __('messages.groups') }}</a></li>
 
+                    <li><a href="{{ route('bonus-penalties.index') }}"
+                            class="{{ request()->routeIs('bonus-penalties.*') ? 'active' : '' }}">
+                            <i class="fas fa-layer-group"></i>{{ __('messages.bonus-penalties') }}</a></li>
+
                     <li><a href="{{ route('rewards.index') }}"
                             class="{{ request()->routeIs('rewards.*') ? 'active' : '' }}">
                             <i class="fas fa-gift"></i>{{ __('messages.rewards') }}</a></li>

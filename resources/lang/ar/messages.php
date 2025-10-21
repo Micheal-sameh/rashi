@@ -165,4 +165,5 @@ return [
     'edit_competition' => 'تعديل المنافسة',
     'danger_zone' => 'خطر',
     'logout_all_mobiles' => 'تسجيل خروج كل الموبايلات',
+    'bonus-penalties' => 'بونص',
 ];

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BonusPenaltyController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\OrderController;
@@ -109,6 +110,13 @@ Route::group(['middleware' => ['setlocale']], function () {
             // Route::get('/edit/{id}', [RewardController::class, 'edit'])->name('rewards.edit');
             // Route::put('/{id}/add-quantity', [RewardController::class, 'addQuantity'])->name('rewards.addQuantity');
             // Route::post('/', [RewardController::class, 'store'])->name('rewards.store');
+        });
+
+        Route::prefix('bonus-penalties')->group(function () {
+            Route::get('/', [BonusPenaltyController::class, 'index'])->name('bonus-penalties.index');
+            Route::get('/create', [BonusPenaltyController::class, 'create'])->name('bonus-penalties.create');
+            Route::post('/', [BonusPenaltyController::class, 'store'])->name('bonus-penalties.store');
+            Route::get('/{id}', [BonusPenaltyController::class, 'show'])->name('bonus-penalties.show');
         });
 
     });

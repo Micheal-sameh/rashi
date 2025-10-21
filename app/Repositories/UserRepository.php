@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\DTOs\UserLoginDTO;
+use App\Enums\BonusPenaltyType;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -154,5 +155,15 @@ class UserRepository extends BaseRepository
             $groupsId[] = $groupId;
         }
         $user->groups()->sync($groupsId);
+    }
+
+    public function bonusAndPenalty($bonus)
+    {
+        $user = $this->findById($bonus->user_id);
+        $points = $bonus->type == BonusPenaltyType::BONUS ? $bonus->points : -$bonus->points;
+        $user->update([
+            'points' => $user->points + $points,
+        ]);
+
     }
 }
