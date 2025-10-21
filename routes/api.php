@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\QuizQuestionController;
 use App\Http\Controllers\Api\RewardController;
+use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\UserAnswerController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
@@ -75,5 +76,6 @@ Route::group(['middleware' => ['auth:sanctum', 'check.competition', 'cache.auth.
 });
 
 Route::get('/quizzes/dropdown/{id}', [QuizController::class, 'dropdown']);
+Route::get('/versions', [SettingController::class, 'getVersions']);
 
 // });
