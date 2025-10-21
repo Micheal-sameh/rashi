@@ -21,7 +21,7 @@ class UserResource extends JsonResource
             'membership_code' => $this->membership_code,
             'phone' => $this->phone,
             'score' => $this->score,
-            'point' => $this->point,
+            'points' => $this->points,
             'role' => $this->whenLoaded('roles', fn () => $this->roles->first()->name),
             'groups' => $this->whenLoaded('groups', fn () => $this->groups->map->name),
             'profile_image' => $this->getFirstMediaUrl('profile_images') ?: null,

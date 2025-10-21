@@ -126,9 +126,9 @@ class UserRepository extends BaseRepository
 
     protected function assignGroups($group_name, $user)
     {
-        $groupId = Group::where('name', $group_name)->value('id');
+        $groupId = Group::where('abbreviation', $group_name)->value('id');
 
-        $groupsId = [1]; // always keep group 1
+        $groupsId = [1];
         if ($groupId) {
             $groupsId[] = $groupId;
         }

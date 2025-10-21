@@ -31,7 +31,7 @@ class UserAnswerService
         $data['correct_answers'] = $correctAnswers;
         $data['score'] = $score;
         $data['total_questions'] = count($input);
-        $data['subject'] = $quizQuestion->quiz;
+        $data['subject'] = $quizQuestion?->quiz ?? null;
 
         return $data;
     }

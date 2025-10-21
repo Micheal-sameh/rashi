@@ -30,7 +30,7 @@ class GroupController extends Controller
 
     public function store(CreateGroupRequest $request)
     {
-        $this->groupRepository->store($request->name, $request->users);
+        $this->groupRepository->store($request->name, $request->abbreviation, $request->users);
 
         return redirect()->route('groups.index')->with('success', 'Group created successfully');
     }

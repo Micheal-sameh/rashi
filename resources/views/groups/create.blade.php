@@ -25,6 +25,17 @@
                         @enderror
                     </div>
 
+                    {{-- Group Abbreviation --}}
+                    <div class="mb-4">
+                        <label for="abbreviation" class="form-label fw-semibold">{{ __('messages.abbreviation') }}</label>
+                        <input type="text" name="abbreviation" id="abbreviation"
+                            class="form-control form-control-lg @error('abbreviation') is-invalid @enderror"
+                            value="{{ old('abbreviation') }}" placeholder="{{ __('messages.enter') }} {{ __('messages.abbreviation') }}">
+                        @error('abbreviation')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     {{-- Select Users --}}
                     <div class="mb-4">
                         <label class="form-label fw-semibold">{{ __('messages.select_users') }}</label>

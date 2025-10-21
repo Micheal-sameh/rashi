@@ -163,4 +163,6 @@ return [
     'back' => 'الرجوع',
     'no_questions_found' => 'لا توجد اسئلة',
     'edit_competition' => 'تعديل المنافسة',
+    'danger_zone' => 'خطر',
+    'logout_all_mobiles' => 'تسجيل خروج كل الموبايلات',
 ];

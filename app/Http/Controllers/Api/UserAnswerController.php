@@ -20,8 +20,11 @@ class UserAnswerController extends BaseController
     public function store(UserAnswerCreateRequest $request)
     {
         $data = $this->userAnswerService->store($request->questions);
-        PointHistory::addRecord(collect($data));
-        $this->userRepository->updatePoints($data);
+        if ($data['correct_answers'] > 0) {
+            info($data);
+            PointHistory::addRecord(collect($data));
+            $this->userRepository->updatePoints($data);
+        }
 
         return $this->apiResponse(new UserAnswerResource($data));
     }

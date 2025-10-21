@@ -163,4 +163,6 @@ return [
     'no_questions_found' => 'No Questions Found',
     'edit_competition' => 'Edit Competition',
     'abbreviation' => 'Abbreviation',
+    'danger_zone' => 'Danger Zone',
+    'logout_all_mobiles' => 'Logout All Mobiles',
 ];

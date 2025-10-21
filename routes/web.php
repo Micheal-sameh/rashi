@@ -81,6 +81,7 @@ Route::group(['middleware' => ['setlocale']], function () {
         Route::prefix('settings')->group(function () {
             Route::get('/', [SettingController::class, 'index'])->name('settings.index');
             Route::put('/', [SettingController::class, 'update'])->name('settings.update');
+            Route::post('/delete-all-tokens', [SettingController::class, 'deleteAllTokens'])->name('settings.deleteAllTokens');
         });
 
         Route::prefix('groups')->group(function () {

@@ -17,7 +17,7 @@ class RewardResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'price' => $this->points,
+            'price' => (int) $this->points,
             'in_stock' => $this->quantity > 0 ? true : false,
             'image' => $this->getfirstmediaurl('rewards_images'),
         ];

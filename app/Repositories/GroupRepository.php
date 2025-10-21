@@ -35,10 +35,11 @@ class GroupRepository extends BaseRepository
         return $this->execute($query);
     }
 
-    public function store($name, $users)
+    public function store($name, $abbreviation, $users)
     {
         $group = $this->model->create([
             'name' => $name,
+            'abbreviation' => $abbreviation,
         ]);
 
         if (! empty($users)) {
