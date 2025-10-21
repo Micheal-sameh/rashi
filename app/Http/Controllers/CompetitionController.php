@@ -93,6 +93,12 @@ class CompetitionController extends Controller
 
         $users = $this->competitionService->getUsersForCompetition($competition);
 
-        return view('competitions.user-answers', compact('competition', 'users', 'userId'));
+        // Calculate user stats for each quiz
+        $quizStats = [];
+        foreach ($competition->quizzes as $quiz) {
+            $quizStats[$quiz->id] = $this->competitionService->getUserStatsForQuiz($quiz);
+        }
+
+        return view('competitions.user-answers', compact('competition', 'users', 'userId', 'quizStats'));
     }
 }

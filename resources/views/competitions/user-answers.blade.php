@@ -34,6 +34,32 @@
                     </div>
                     <div class="card-body">
                         @if ($quiz->questions->count())
+                            @if(isset($quizStats[$quiz->id]) && count($quizStats[$quiz->id]))
+                                <div class="mb-4">
+                                    <h6 class="fw-bold">User Summary</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>{{ __('messages.user') }}</th>
+                                                    <th>Total Correct Answers</th>
+                                                    <th>Total Points</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($quizStats[$quiz->id] as $stat)
+                                                    <tr>
+                                                        <td>{{ $stat['name'] }}</td>
+                                                        <td>{{ $stat['total_correct'] }} / {{ $stat['total_questions'] }}</td>
+                                                        <td>{{ $stat['total_points'] }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            @endif
+
                             @foreach ($quiz->questions as $question)
                                 <div class="mb-4">
                                     <h6 class="fw-bold">{{ $question->question }} ({{ $question->points }} points)</h6>
