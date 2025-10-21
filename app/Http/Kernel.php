@@ -75,6 +75,8 @@ class Kernel extends HttpKernel
         'role' => RoleMiddleware::class,
         'permission' => PermissionMiddleware::class,
         'role_or_permission' => RoleOrPermissionMiddleware::class,
+        'check.competition' => \App\Http\Middleware\CheckCompetitionStatus::class,
+        'cache.auth.user' => \App\Http\Middleware\CacheAuthUser::class,
 
     ];
 }

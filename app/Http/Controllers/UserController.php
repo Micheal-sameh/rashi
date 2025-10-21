@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DTOs\UsersFilterDTO;
 use App\Http\Requests\UpdateUserGroupRequest;
+use App\Http\Resources\UserResource;
 use App\Repositories\GroupRepository;
 use App\Repositories\PointHistoryRepository;
 use App\Services\UserService;
@@ -22,9 +23,9 @@ class UserController extends Controller
         $input = new UsersFilterDTO(...$request->only(
             'name', 'group_id', 'sort_by', 'direction'
         ));
-        $users = $this->userService->index($input);
+        // $users = $this->userService->index($input);
         $groups = $this->groupRepository->dropdown();
-
+        $users = UserResource::collection($this->userService->index($input));
         if ($request->is_filter) {
             return view('users.user-table', compact('users'))->render();
         }

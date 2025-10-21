@@ -5,6 +5,7 @@ namespace App\Rules;
 use App\Repositories\RewardRepository;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Facades\Cache;
 
 class CanBuyRewardRule implements ValidationRule
 {
@@ -15,8 +16,9 @@ class CanBuyRewardRule implements ValidationRule
         $rewardRepository = app(RewardRepository::class);
         $reward = $rewardRepository->findById($this->reward_id);
 
+        $user = Cache::get('auth_user_'.auth()->id()) ?? auth()->user();
         $total_price = $reward->points * $value;
-        if (auth()->user()->points < $total_price) {
+        if ($user->points < $total_price) {
             $fail(__('messages.points_not_enough'));
         }
 

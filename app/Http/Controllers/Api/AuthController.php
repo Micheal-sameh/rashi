@@ -7,6 +7,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class AuthController extends BaseController
 {
@@ -42,7 +43,7 @@ class AuthController extends BaseController
 
     public function logout()
     {
-        $user = auth()->user();
+        $user = Cache::get('auth_user_'.auth()->id()) ?? auth()->user();
         $token = $user->currentAccessToken();
         $token->update([
             'expired_at' => now(),

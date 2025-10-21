@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 
 class CompetitionRepository extends BaseRepository
 {
@@ -32,11 +33,11 @@ class CompetitionRepository extends BaseRepository
 
     public function index()
     {
-        $this->checkCompetition();
         $query = $this->model
             ->where('status', '!=', CompetitionStatus::CANCELLED)
             ->when(request()->is('api/*') && auth()->check(), function ($query) {
-                $userGroupIds = auth()->user()->groups->pluck('id') ?? [];
+                $user = Cache::get('auth_user_'.auth()->id()) ?? auth()->user();
+                $userGroupIds = $user->groups->pluck('id') ?? [];
 
                 if ($userGroupIds->isNotEmpty()) {
                     $query->whereHas('groups', fn ($q) => $q->whereIn('groups.id', $userGroupIds));

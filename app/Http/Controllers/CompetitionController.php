@@ -44,7 +44,7 @@ class CompetitionController extends Controller
 
     public function edit($id)
     {
-        $competition = $this->competitionService->show($id);
+        $competition = $this->competitionService->show($id)->load('groups', 'media');
         $groups = $this->groupRepository->dropdown();
 
         return view('competitions.edit', compact('competition', 'groups'));

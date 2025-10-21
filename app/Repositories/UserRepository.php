@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 
 class UserRepository extends BaseRepository
@@ -62,13 +63,18 @@ class UserRepository extends BaseRepository
 
     public function index($input)
     {
-        $query = $this->model->query()->with(['roles', 'media'])
-            ->when(! is_null($input), function ($query) use ($input) {
-                $query->when($input->has('name'), fn ($q) => $q->where('name', 'like', '%'.$input->name.'%')
-                )->when($input->has('group_id'), function ($query) use ($input) {
-                    $query->whereHas('groups', fn ($q) => $q->where('group_id', $input->group_id));
-                });
-            })->orderBy($input->sort_by ?? 'name', $input->direction ?? 'asc');
+        $query = $this->model->query()->with([
+            'roles:id,name',
+            'media:id,model_id,model_type,file_name,collection_name',
+        ])->when($input, function ($query) use ($input) {
+            $query
+                ->when(isset($input->name), fn ($q) => $q->where('name', 'like', '%'.$input->name.'%')
+                )
+                ->when(isset($input->group_id), fn ($q) => $q->whereHas('groups', fn ($g) => $g->where('group_id', $input->group_id)
+                )
+                );
+        })
+            ->orderBy($input->sort_by ?? 'name', $input->direction ?? 'asc');
 
         return $this->execute($query);
     }
@@ -88,11 +94,14 @@ class UserRepository extends BaseRepository
 
     public function updatePoints($data)
     {
-        $user = auth()->user();
+        $user = Cache::get('auth_user_'.auth()->id()) ?? auth()->user();
         $user->update([
             'points' => $user->points + $data['score'],
             'score' => $user->score + $data['score'],
         ]);
+
+        // Clear cache after update
+        Cache::forget('auth_user_'.$user->id);
 
         return $user;
     }
@@ -112,16 +121,28 @@ class UserRepository extends BaseRepository
 
     public function redeemPoints($points)
     {
-        return auth()->user()->update([
-            'points' => auth()->user()->points - $points,
+        $user = Cache::get('auth_user_'.auth()->id()) ?? auth()->user();
+        $result = $user->update([
+            'points' => $user->points - $points,
         ]);
+
+        // Clear cache after update
+        Cache::forget('auth_user_'.$user->id);
+
+        return $result;
     }
 
     public function returnReward($points)
     {
-        return auth()->user()->update([
-            'points' => auth()->user()->points + $points,
+        $user = Cache::get('auth_user_'.auth()->id()) ?? auth()->user();
+        $result = $user->update([
+            'points' => $user->points + $points,
         ]);
+
+        // Clear cache after update
+        Cache::forget('auth_user_'.$user->id);
+
+        return $result;
     }
 
     protected function assignGroups($group_name, $user)

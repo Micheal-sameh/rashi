@@ -40,7 +40,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'check.competition', 'cache.auth.user']], function () {
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', [UserController::class, 'index']);
         Route::get('/{id}/show', [UserController::class, 'show']);
