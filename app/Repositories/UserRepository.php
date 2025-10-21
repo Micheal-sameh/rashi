@@ -62,7 +62,7 @@ class UserRepository extends BaseRepository
 
     public function index($input)
     {
-        $query = $this->model->query()
+        $query = $this->model->query()->with(['roles', 'media'])
             ->when(! is_null($input), function ($query) use ($input) {
                 $query->when($input->has('name'), fn ($q) => $q->where('name', 'like', '%'.$input->name.'%')
                 )->when($input->has('group_id'), function ($query) use ($input) {

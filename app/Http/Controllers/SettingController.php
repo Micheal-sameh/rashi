@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateSettingRequest;
 use App\Services\SettingService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -23,6 +24,7 @@ class SettingController extends Controller
     {
 
         $this->settingService->update($request->settings, $request?->allFiles()['settings'] ?? null);
+        Cache::forget('app_logo_url');
 
         return redirect()->back()->with('success', 'Settings updated successfully');
     }

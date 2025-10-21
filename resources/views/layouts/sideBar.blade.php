@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 @php
-    $logo = App\Models\Setting::where('name', 'logo')->first();
-    $faviconUrl = $logo?->getFirstMediaUrl('app_logo');
+    $faviconUrl = Cache::remember('app_logo_url', 3600, function () {
+        $logo = App\Models\Setting::where('name', 'logo')->first();
+        return $logo?->getFirstMediaUrl('app_logo');
+    });
 @endphp
 
 <head>
