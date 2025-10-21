@@ -28,7 +28,7 @@ class UserAnswer extends Model
 
     public function answer()
     {
-        return $this->belongsTo(QuestionAnswer::class);
+        return $this->belongsTo(QuestionAnswer::class, 'question_answer_id', 'id');
     }
 
     public function getBalanceSheetAmount()

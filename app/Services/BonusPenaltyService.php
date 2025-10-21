@@ -17,7 +17,6 @@ class BonusPenaltyService
     public function index($user_id = null)
     {
         $bonusPenalties = $this->bonusPenaltyRepository->index($user_id);
-        $bonusPenalties->load(['user', 'creator']);
 
         return $bonusPenalties;
     }

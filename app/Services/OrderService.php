@@ -23,7 +23,6 @@ class OrderService
     public function index($user_id = null, $status = null)
     {
         $orders = $this->orderRepository->index($user_id, $status);
-        $orders->load('servant', 'reward', 'user');
 
         return $orders;
     }

@@ -33,7 +33,7 @@ class CompetitionRepository extends BaseRepository
 
     public function index()
     {
-        $query = $this->model
+        $query = $this->model->query()->with(['media'])
             ->where('status', '!=', CompetitionStatus::CANCELLED)
             ->when(request()->is('api/*') && auth()->check(), function ($query) {
                 $user = Cache::get('auth_user_'.auth()->id()) ?? auth()->user();
@@ -134,5 +134,16 @@ class CompetitionRepository extends BaseRepository
                 ]);
             }
         });
+    }
+
+    public function getUsersForCompetition($competition)
+    {
+        return $competition->quizzes()
+            ->join('quiz_questions', 'quizzes.id', '=', 'quiz_questions.quiz_id')
+            ->join('user_answers', 'quiz_questions.id', '=', 'user_answers.quiz_question_id')
+            ->join('users', 'user_answers.user_id', '=', 'users.id')
+            ->select('users.id', 'users.name')
+            ->distinct()
+            ->get();
     }
 }

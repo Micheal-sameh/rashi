@@ -30,7 +30,7 @@ class BonusPenaltyRepository extends BaseRepository
 
     public function index($user_id = null)
     {
-        $query = $this->model->with(['user', 'creator'])
+        $query = $this->model->with(['user.media', 'creator'])
             ->when(isset($user_id), fn ($q) => $q->where('user_id', $user_id))
             ->latest();
 

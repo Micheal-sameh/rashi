@@ -33,7 +33,7 @@ class RewardRepository extends BaseRepository
 
     public function index()
     {
-        $query = $this->model->query();
+        $query = $this->model->query()->with(['media']);
 
         return $this->execute($query);
     }

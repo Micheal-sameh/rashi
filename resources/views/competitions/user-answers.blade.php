@@ -4,9 +4,19 @@
     <div class="container-fluid px-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold text-primary">{{ __('messages.competitions') }}: {{ $competition->name }}</h2>
-            <a href="{{ route('competitions.index') }}" class="btn btn-secondary">
-                <i class="fa fa-arrow-left me-1"></i> {{ __('messages.back') }}
-            </a>
+            <div>
+                <form method="GET" action="{{ route('competitions.userAnswers', $competition->id) }}" class="d-inline">
+                    <select name="user_id" class="form-select d-inline w-auto me-2" onchange="this.form.submit()">
+                        <option value="">All Users</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}" {{ $userId == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                        @endforeach
+                    </select>
+                </form>
+                <a href="{{ route('competitions.index') }}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left me-1"></i> {{ __('messages.back') }}
+                </a>
+            </div>
         </div>
 
         @if (session('success'))
@@ -34,6 +44,7 @@
                                                     <tr>
                                                         <th>{{ __('messages.user') }}</th>
                                                         <th>{{ __('messages.answer') }}</th>
+                                                        <th>Correct</th>
                                                         <th>{{ __('messages.points') }}</th>
                                                     </tr>
                                                 </thead>
@@ -42,6 +53,13 @@
                                                         <tr>
                                                             <td>{{ $userAnswer->user->name }}</td>
                                                             <td>{{ $userAnswer->answer->answer }}</td>
+                                                            <td>
+                                                                @if($userAnswer->answer->is_correct)
+                                                                    <i class="fa fa-check text-success"></i> Yes
+                                                                @else
+                                                                    <i class="fa fa-times text-danger"></i> No
+                                                                @endif
+                                                            </td>
                                                             <td>{{ $userAnswer->points }}</td>
                                                         </tr>
                                                     @endforeach

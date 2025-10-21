@@ -41,9 +41,14 @@ class CompetitionService
     {
         return $this->competitionRepository->dropdown();
     }
-    
+
     public function changeStatus($id)
     {
         return $this->competitionRepository->changeStatus($id);
+    }
+
+    public function getUsersForCompetition($competition)
+    {
+        return $this->competitionRepository->getUsersForCompetition($competition);
     }
 }

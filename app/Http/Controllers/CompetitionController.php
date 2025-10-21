@@ -80,11 +80,19 @@ class CompetitionController extends Controller
 
     public function userAnswers($id)
     {
+        $userId = request('user_id');
         $competition = $this->competitionService->show($id)->load([
             'quizzes.questions.answers',
-            'quizzes.questions.userAnswers.user',
+            'quizzes.questions.userAnswers' => function ($query) use ($userId) {
+                if ($userId) {
+                    $query->where('user_id', $userId);
+                }
+                $query->with(['user', 'answer']);
+            },
         ]);
 
-        return view('competitions.user-answers', compact('competition'));
+        $users = $this->competitionService->getUsersForCompetition($competition);
+
+        return view('competitions.user-answers', compact('competition', 'users', 'userId'));
     }
 }

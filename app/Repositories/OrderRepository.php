@@ -34,7 +34,8 @@ class OrderRepository extends BaseRepository
     public function index($user_id, $status)
     {
         $user = Auth::user();
-        $query = $this->model
+        $query = $this->model->query()
+            ->with(['reward.media', 'user.media', 'servant:id,name'])
             ->when(! $user->can('view_all_orders'), fn ($q) => $q->where('user_id', $user->id))
             ->when(isset($user_id), fn ($q) => $q->where('user_id', $user_id))
             ->when(isset($status), fn ($q) => $q->where('status', $status))
