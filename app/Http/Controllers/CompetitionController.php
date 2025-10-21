@@ -77,4 +77,14 @@ class CompetitionController extends Controller
             'status_class' => $data['statusClass'],
         ]);
     }
+
+    public function userAnswers($id)
+    {
+        $competition = $this->competitionService->show($id)->load([
+            'quizzes.questions.answers',
+            'quizzes.questions.userAnswers.user',
+        ]);
+
+        return view('competitions.user-answers', compact('competition'));
+    }
 }

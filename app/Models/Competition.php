@@ -27,4 +27,9 @@ class Competition extends Model implements HasMedia
     {
         return $this->belongsToMany(Group::class, 'competition_groups');
     }
+
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class);
+    }
 }

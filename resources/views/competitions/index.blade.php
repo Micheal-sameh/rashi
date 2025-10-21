@@ -71,6 +71,10 @@
                                                 class="btn btn-sm btn-outline-primary" title="Edit">
                                                 <i class="fa fa-edit"></i>
                                             </a>
+                                            <a href="{{ route('competitions.userAnswers', $competition->id) }}"
+                                                class="btn btn-sm btn-outline-info" title="User Answers">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
                                             <form action="{{ route('competitions.cancel', $competition->id) }}"
                                                 method="POST" class="d-inline">
                                                 @csrf
@@ -138,6 +142,10 @@
                                 <a href="{{ route('competitions.edit', $competition->id) }}"
                                     class="btn btn-sm btn-outline-primary">
                                     <i class="fa fa-edit"></i>
+                                </a>
+                                <a href="{{ route('competitions.userAnswers', $competition->id) }}"
+                                    class="btn btn-sm btn-outline-info">
+                                    <i class="fa fa-eye"></i>
                                 </a>
                                 <form action="{{ route('competitions.cancel', $competition->id) }}" method="POST"
                                     class="d-inline">
