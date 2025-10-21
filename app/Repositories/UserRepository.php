@@ -65,7 +65,7 @@ class UserRepository extends BaseRepository
     {
         $query = $this->model->query()->with([
             'roles:id,name',
-            'media:id,model_id,model_type,file_name,collection_name',
+            'media:id,model_id,model_type,file_name,collection_name,disk',
         ])->when($input, function ($query) use ($input) {
             $query
                 ->when(isset($input->name), fn ($q) => $q->where('name', 'like', '%'.$input->name.'%')
