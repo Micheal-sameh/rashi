@@ -20,7 +20,7 @@ class CacheAuthUser
         if ($user) {
             $cacheKey = 'auth_user_'.$user->id;
             if (! Cache::has($cacheKey)) {
-                Cache::put($cacheKey, $user->load(['userGroups.group']), now()->addMinutes(10));
+                Cache::put($cacheKey, $user->load(['groups']), now()->addMinutes(10));
             }
         }
 
