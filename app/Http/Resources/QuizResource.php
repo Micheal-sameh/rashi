@@ -20,6 +20,7 @@ class QuizResource extends JsonResource
             'name' => $this->name,
             'date' => Carbon::parse($this->date)->format('d-m-Y'),
             'competition' => $this->whenLoaded('competition', fn () => $this->competition->name),
+            'have_solved' => ! $this->isSolved->isEmpty(),
         ];
     }
 }
