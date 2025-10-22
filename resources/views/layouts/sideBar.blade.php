@@ -44,6 +44,7 @@
             overflow-y: auto;
             z-index: 1040;
             transition: transform .3s ease;
+            will-change: transform;
         }
 
         [dir="rtl"] .sidebar {
@@ -59,6 +60,7 @@
         .sidebar .brand img {
             width: 120px;
             border-radius: 8px;
+            loading: lazy;
         }
 
         .sidebar nav ul {
@@ -114,6 +116,7 @@
             min-height: 100vh;
             transition: margin .3s ease;
             background: #fff;
+            will-change: margin;
         }
 
         [dir="rtl"] .content-wrapper {
@@ -144,6 +147,8 @@
             }
         }
     </style>
+
+
 </head>
 
 <body>
@@ -162,43 +167,43 @@
         @auth
             <nav>
                 <ul>
-                    <li><a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
+                    <li><a href="{{ route('users.index') }}" class="{{ $activeRoutes['users'] ? 'active' : '' }}">
                             <i class="fas fa-users"></i>{{ __('messages.users') }}</a></li>
 
                     <li><a href="{{ route('users.leaderboard') }}"
-                            class="{{ request()->routeIs('users.leaderboard') ? 'active' : '' }}">
+                            class="{{ $activeRoutes['leaderboard'] ? 'active' : '' }}">
                             <i class="fas fa-trophy"></i>{{ __('messages.leaderboard') }}</a></li>
 
                     <li><a href="{{ route('competitions.index') }}"
-                            class="{{ request()->routeIs('competitions.*') ? 'active' : '' }}">
+                            class="{{ $activeRoutes['competitions'] ? 'active' : '' }}">
                             <i class="fas fa-flag"></i>{{ __('messages.competitions') }}</a></li>
 
                     <li><a href="{{ route('quizzes.index') }}"
-                            class="{{ request()->routeIs('quizzes.*') ? 'active' : '' }}">
+                            class="{{ $activeRoutes['quizzes'] ? 'active' : '' }}">
                             <i class="fas fa-question-circle"></i>{{ __('messages.quizzes') }}</a></li>
 
                     <li><a href="{{ route('questions.index') }}"
-                            class="{{ request()->routeIs('questions.*') ? 'active' : '' }}">
+                            class="{{ $activeRoutes['questions'] ? 'active' : '' }}">
                             <i class="fas fa-edit"></i>{{ __('messages.questions') }}</a></li>
 
                     <li><a href="{{ route('settings.index') }}"
-                            class="{{ request()->routeIs('settings.*') ? 'active' : '' }}">
+                            class="{{ $activeRoutes['settings'] ? 'active' : '' }}">
                             <i class="fas fa-cog"></i>{{ __('messages.settings') }}</a></li>
 
                     <li><a href="{{ route('groups.index') }}"
-                            class="{{ request()->routeIs('groups.*') ? 'active' : '' }}">
+                            class="{{ $activeRoutes['groups'] ? 'active' : '' }}">
                             <i class="fas fa-layer-group"></i>{{ __('messages.groups') }}</a></li>
 
                     <li><a href="{{ route('bonus-penalties.index') }}"
-                            class="{{ request()->routeIs('bonus-penalties.*') ? 'active' : '' }}">
+                            class="{{ $activeRoutes['bonus-penalties'] ? 'active' : '' }}">
                             <i class="fas fa-balance-scale"></i>{{ __('messages.bonus-penalties') }}</a></li>
 
                     <li><a href="{{ route('rewards.index') }}"
-                            class="{{ request()->routeIs('rewards.*') ? 'active' : '' }}">
+                            class="{{ $activeRoutes['rewards'] ? 'active' : '' }}">
                             <i class="fas fa-gift"></i>{{ __('messages.rewards') }}</a></li>
 
                     <li><a href="{{ route('orders.index') }}"
-                            class="{{ request()->routeIs('orders.*') ? 'active' : '' }}">
+                            class="{{ $activeRoutes['orders'] ? 'active' : '' }}">
                             <i class="fas fa-shopping-cart"></i>{{ __('messages.orders') }}</a></li>
 
                     <li class="mt-3 border-top border-light pt-2">
