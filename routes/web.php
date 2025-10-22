@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BonusPenaltyController;
 use App\Http\Controllers\CompetitionController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\QuizController;
@@ -40,6 +41,12 @@ Route::group(['middleware' => ['setlocale']], function () {
         Route::get('/login', [AuthController::class, 'loginPage'])->name('loginPage');
         Route::post('/login', [AuthController::class, 'login'])->name('login');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+        // Password Reset Routes
+        Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+        Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+        Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+        Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
     });
 
     Route::middleware(['auth', 'role:admin'])->group(function () {
