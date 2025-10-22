@@ -166,4 +166,7 @@ return [
     'danger_zone' => 'خطر',
     'logout_all_mobiles' => 'تسجيل خروج كل الموبايلات',
     'bonus-penalties' => 'بونص',
+    'leaderboard' => 'الاوائل',
+    'rank' => 'المركز',
+    'logout' => 'تسجبل الخروج',
 ];

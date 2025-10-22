@@ -170,7 +170,7 @@ class UserRepository extends BaseRepository
     public function leaderboard()
     {
         return $this->model->query()->with('media')
-            ->select('id', 'name', 'score')
+            ->select('id', 'name', 'score', 'points')
             ->orderBy('score', 'desc')
             ->limit(10)
             ->get();

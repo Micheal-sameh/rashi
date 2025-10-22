@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->isLocale('ar') ? 'rtl' : 'ltr' }}">
 @php
     $faviconUrl = Cache::remember('app_logo_url', 3600, function () {
-        $logo = App\Models\Setting::where('name', 'logo')->first();
-        return $logo?->getFirstMediaUrl('app_logo');
+        $logo = \App\Models\Setting::where('name', 'logo')->first();
+        return $logo?->getFirstMediaUrl('app_logo') ?? asset('default-logo.png');
     });
 @endphp
 
@@ -14,8 +14,8 @@
     <title>@yield('title', config('app.name'))</title>
 
     <link rel="icon" href="{{ $faviconUrl }}" type="image/png">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
     <style>
         :root {
@@ -32,22 +32,23 @@
             overflow-x: hidden;
         }
 
+        /* Sidebar */
         .sidebar {
             position: fixed;
             top: 0;
-            left: 0;
+            inset-inline-start: 0;
             width: var(--sidebar-width);
             height: 100vh;
-            background-color: var(--sidebar-bg);
+            background: var(--sidebar-bg);
             color: var(--sidebar-text);
             overflow-y: auto;
             z-index: 1040;
-            transition: transform 0.3s ease;
+            transition: transform .3s ease;
         }
 
         [dir="rtl"] .sidebar {
-            left: auto;
-            right: 0;
+            inset-inline-start: auto;
+            inset-inline-end: 0;
         }
 
         .sidebar .brand {
@@ -57,7 +58,6 @@
 
         .sidebar .brand img {
             width: 120px;
-            height: auto;
             border-radius: 8px;
         }
 
@@ -73,12 +73,12 @@
             padding: 12px 20px;
             color: var(--sidebar-text);
             text-decoration: none;
-            transition: background-color 0.2s;
+            transition: background-color .2s;
         }
 
         .sidebar nav a:hover,
         .sidebar nav a.active {
-            background-color: var(--sidebar-hover);
+            background: var(--sidebar-hover);
         }
 
         .sidebar nav i {
@@ -91,8 +91,7 @@
             display: none;
             position: fixed;
             top: 0;
-            left: 0;
-            right: 0;
+            inset-inline: 0;
             height: var(--mobile-header-height);
             background: var(--sidebar-bg);
             color: white;
@@ -102,29 +101,24 @@
             z-index: 1050;
         }
 
-        [dir="rtl"] .mobile-header {
-            right: 0;
-            left: auto;
-        }
-
         .btn-menu {
             background: transparent;
             border: none;
-            color: white;
+            color: inherit;
             font-size: 1.3rem;
         }
 
-        /* Content */
+        /* Main Content */
         .content-wrapper {
-            margin-left: var(--sidebar-width);
+            margin-inline-start: var(--sidebar-width);
             min-height: 100vh;
-            transition: margin 0.3s ease;
-            background-color: #fff;
+            transition: margin .3s ease;
+            background: #fff;
         }
 
         [dir="rtl"] .content-wrapper {
-            margin-left: 0;
-            margin-right: var(--sidebar-width);
+            margin-inline-start: 0;
+            margin-inline-end: var(--sidebar-width);
         }
 
         @media (max-width: 991px) {
@@ -155,24 +149,29 @@
 <body>
     <!-- Mobile Header -->
     <header class="mobile-header">
-        <button class="btn-menu" id="toggleSidebar"><i class="fas fa-bars"></i></button>
-        <button class="btn-menu" id="backButton"><i class="fas fa-arrow-left"></i></button>
+        <button id="toggleSidebar" class="btn-menu"><i class="fas fa-bars"></i></button>
+        <button id="backButton" class="btn-menu"><i class="fas fa-arrow-left"></i></button>
     </header>
 
     <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
+    <aside id="sidebar" class="sidebar">
         <div class="brand">
             <img src="{{ $faviconUrl }}" alt="App Logo">
         </div>
-        <nav>
-            <ul>
-                @auth
+
+        @auth
+            <nav>
+                <ul>
                     <li><a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
                             <i class="fas fa-users"></i>{{ __('messages.users') }}</a></li>
 
+                    <li><a href="{{ route('users.leaderboard') }}"
+                            class="{{ request()->routeIs('users.leaderboard') ? 'active' : '' }}">
+                            <i class="fas fa-trophy"></i>{{ __('messages.leaderboard') }}</a></li>
+
                     <li><a href="{{ route('competitions.index') }}"
                             class="{{ request()->routeIs('competitions.*') ? 'active' : '' }}">
-                            <i class="fas fa-trophy"></i>{{ __('messages.competitions') }}</a></li>
+                            <i class="fas fa-flag"></i>{{ __('messages.competitions') }}</a></li>
 
                     <li><a href="{{ route('quizzes.index') }}"
                             class="{{ request()->routeIs('quizzes.*') ? 'active' : '' }}">
@@ -192,7 +191,7 @@
 
                     <li><a href="{{ route('bonus-penalties.index') }}"
                             class="{{ request()->routeIs('bonus-penalties.*') ? 'active' : '' }}">
-                            <i class="fas fa-layer-group"></i>{{ __('messages.bonus-penalties') }}</a></li>
+                            <i class="fas fa-balance-scale"></i>{{ __('messages.bonus-penalties') }}</a></li>
 
                     <li><a href="{{ route('rewards.index') }}"
                             class="{{ request()->routeIs('rewards.*') ? 'active' : '' }}">
@@ -203,20 +202,18 @@
                             <i class="fas fa-shopping-cart"></i>{{ __('messages.orders') }}</a></li>
 
                     <li class="mt-3 border-top border-light pt-2">
-                        <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
+                        <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button type="submit"
-                                class="w-100 d-flex align-items-center border-0 bg-transparent text-start text-white py-2 px-3"
-                                style="font-size: 15px;">
+                                class="w-100 d-flex align-items-center border-0 bg-transparent text-white py-2 px-3">
                                 <i class="fas fa-sign-out-alt me-2"></i>
-                                <span>{{ __('trans.logout') }}</span>
+                                {{ __('messages.logout') }}
                             </button>
                         </form>
                     </li>
-
-                @endauth
-            </ul>
-        </nav>
+                </ul>
+            </nav>
+        @endauth
     </aside>
 
     <!-- Main Content -->
@@ -258,11 +255,11 @@
             const toggle = document.getElementById('toggleSidebar');
             const back = document.getElementById('backButton');
 
-            toggle.addEventListener('click', () => sidebar.classList.toggle('show'));
-            back.addEventListener('click', () => window.history.back());
+            toggle?.addEventListener('click', () => sidebar.classList.toggle('show'));
+            back?.addEventListener('click', () => window.history.back());
 
             document.addEventListener('click', e => {
-                if (!sidebar.contains(e.target) && !toggle.contains(e.target) && window.innerWidth < 992) {
+                if (window.innerWidth < 992 && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
                     sidebar.classList.remove('show');
                 }
             });

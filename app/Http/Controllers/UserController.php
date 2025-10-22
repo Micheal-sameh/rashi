@@ -51,4 +51,11 @@ class UserController extends Controller
 
         return redirect()->back()->with('message', 'sucess updated');
     }
+
+    public function leaderboard()
+    {
+        $users = $this->userService->leaderboard();
+
+        return view('users.leaderboard', compact('users'));
+    }
 }

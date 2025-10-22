@@ -172,4 +172,7 @@ return [
     'all_users' => 'All Users',
     'creator' => 'Creator',
     'reason' => 'Reason',
+    'leaderboard' => 'Leaderboard',
+    'rank' => 'Rank',
+    'logout' => 'Logout',
 ];
