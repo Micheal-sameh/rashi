@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Notification;
-use App\Models\UserNotification;
 
 class NotificationRepository extends BaseRepository
 {
@@ -22,11 +21,6 @@ class NotificationRepository extends BaseRepository
         return $this->model->create($data);
     }
 
-    public function createUserNotification(array $data): UserNotification
-    {
-        return UserNotification::create($data);
-    }
-
     public function createNotificationForUser(int $userId, string $title, string $message, string $type, string $subjectType, int $subjectId, array $data = []): Notification
     {
         $notification = $this->createNotification([
@@ -38,7 +32,7 @@ class NotificationRepository extends BaseRepository
             'data' => $data,
         ]);
 
-        $this->createUserNotification([
+        app(UserNotificationRepository::class)->createUserNotification([
             'user_id' => $userId,
             'notification_id' => $notification->id,
         ]);
@@ -63,7 +57,7 @@ class NotificationRepository extends BaseRepository
         ]);
 
         foreach ($userIds as $userId) {
-            $this->createUserNotification([
+            app(UserNotificationRepository::class)->createUserNotification([
                 'user_id' => $userId,
                 'notification_id' => $notification->id,
             ]);

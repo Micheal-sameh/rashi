@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BonusPenaltyController;
 use App\Http\Controllers\Api\CompetitionController;
 use App\Http\Controllers\Api\FcmTokenController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\QuizQuestionController;
@@ -86,6 +87,12 @@ Route::group(['middleware' => ['auth:sanctum', 'check.competition', 'cache.auth.
     Route::group(['prefix' => 'fcm-tokens'], function () {
         Route::post('/', [FcmTokenController::class, 'store']);
         Route::delete('/', [FcmTokenController::class, 'destroy']);
+    });
+
+    Route::group(['prefix' => 'notifications'], function () {
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::put('/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::put('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
     });
 });
 
