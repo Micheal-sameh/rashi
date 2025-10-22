@@ -14,6 +14,7 @@
         @endif
 
         @if ($users->count())
+            <!-- Desktop Table View -->
             <div class="card shadow-sm border-0 rounded-4 d-none d-md-block">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
@@ -35,9 +36,9 @@
                                     <td><span class="badge bg-success">{{ $user->points }}</span></td>
                                     <td>
                                         @if ($user->image)
-                                            <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}" class="zoomable-image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onclick="openPopup('{{ asset('storage/' . $user->image) }}')">
+                                            <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}" class="zoomable-image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onclick="openModal('{{ asset('storage/' . $user->image) }}')">
                                         @else
-                                            <img src="{{ asset('images/default-avatar.png') }}" alt="Default Avatar" class="zoomable-image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onclick="openPopup('{{ asset('images/default-avatar.png') }}')">
+                                            <img src="{{ asset('images/default-avatar.png') }}" alt="Default Avatar" class="zoomable-image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onclick="openModal('{{ asset('images/default-avatar.png') }}')">
                                         @endif
                                     </td>
                                 </tr>
@@ -45,6 +46,33 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="d-md-none">
+                @foreach ($users as $index => $user)
+                    <div class="card shadow-sm border-0 rounded-4 mb-3">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="me-3">
+                                <span class="badge bg-primary fs-6 fw-bold">{{ $index + 1 }}</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="card-title mb-1 fw-bold">{{ $user->name }}</h6>
+                                <div class="d-flex gap-2">
+                                    <span class="badge bg-warning text-dark">{{ __('messages.score') }}: {{ $user->score }}</span>
+                                    <span class="badge bg-success">{{ __('messages.points') }}: {{ $user->points }}</span>
+                                </div>
+                            </div>
+                            <div>
+                                @if ($user->image)
+                                    <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}" class="zoomable-image rounded-circle" style="width: 60px; height: 60px; object-fit: cover;" onclick="openModal('{{ asset('storage/' . $user->image) }}')">
+                                @else
+                                    <img src="{{ asset('images/default-avatar.png') }}" alt="Default Avatar" class="zoomable-image rounded-circle" style="width: 60px; height: 60px; object-fit: cover;" onclick="openModal('{{ asset('images/default-avatar.png') }}')">
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
             </div>
         @else
             <div class="alert alert-info">
