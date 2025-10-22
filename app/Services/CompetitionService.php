@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\CompetitionRepository;
+use Illuminate\Support\Facades\DB;
 
 class CompetitionService
 {
@@ -44,7 +45,11 @@ class CompetitionService
 
     public function changeStatus($id)
     {
-        return $this->competitionRepository->changeStatus($id);
+        DB::beginTransaction();
+        $data = $this->competitionRepository->changeStatus($id);
+        DB::commit();
+
+        return $data;
     }
 
     public function getUsersForCompetition($competition)

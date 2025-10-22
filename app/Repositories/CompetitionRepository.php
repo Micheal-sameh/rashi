@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Enums\CompetitionStatus;
+use App\Events\CompetitionStatusUpdated;
 use App\Models\Competition;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -99,6 +100,7 @@ class CompetitionRepository extends BaseRepository
     public function changeStatus($id)
     {
         $competition = $this->findById($id);
+        $oldStatus = $competition->status;
         $nextStatus = match ($competition->status) {
             CompetitionStatus::PENDING => CompetitionStatus::ACTIVE,
             CompetitionStatus::ACTIVE => CompetitionStatus::FINISHED,
@@ -107,6 +109,9 @@ class CompetitionRepository extends BaseRepository
 
         $competition->status = $nextStatus;
         $competition->save();
+
+        // Fire event for status update
+        event(new CompetitionStatusUpdated($competition, $oldStatus, $nextStatus));
 
         $statusClass = match ($nextStatus) {
             CompetitionStatus::PENDING => 'btn-primary',
@@ -122,18 +127,24 @@ class CompetitionRepository extends BaseRepository
 
     public function checkCompetition()
     {
-        $competitions = $this->model->whereIn('status', [CompetitionStatus::PENDING, CompetitionStatus::ACTIVE])->get();
-        $competitions->each(function ($competition) {
-            if ($competition->start_at >= today() && $competition->end_at < today() && $competition->status == CompetitionStatus::PENDING) {
-                $competition->update([
-                    'status' => CompetitionStatus::ACTIVE,
-                ]);
-            } elseif ($competition->end_at < today() && $competition->status == CompetitionStatus::ACTIVE) {
-                $competition->update([
-                    'status' => CompetitionStatus::FINISHED,
-                ]);
-            }
-        });
+        $today = now()->startOfDay();
+
+        $toActivate = $this->model
+            ->where('status', CompetitionStatus::PENDING)
+            ->whereDate('start_at', '<=', $today)
+            ->whereDate('end_at', '>=', $today)
+            ->get();
+
+        foreach ($toActivate as $competition) {
+            $oldStatus = $competition->status;
+            $competition->update(['status' => CompetitionStatus::ACTIVE]);
+            event(new CompetitionStatusUpdated($competition, $oldStatus, $competition->status));
+        }
+
+        $this->model
+            ->where('status', CompetitionStatus::ACTIVE)
+            ->whereDate('end_at', '<', $today)
+            ->update(['status' => CompetitionStatus::FINISHED]);
     }
 
     public function getUsersForCompetition($competition)
