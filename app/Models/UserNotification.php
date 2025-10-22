@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class UserNotification extends Model
 {
@@ -13,18 +12,12 @@ class UserNotification extends Model
 
     protected $fillable = [
         'user_id',
-        'title',
-        'message',
-        'type',
-        'subject_type',
-        'subject_id',
-        'data',
+        'notification_id',
         'is_read',
         'read_at',
     ];
 
     protected $casts = [
-        'data' => 'array',
         'is_read' => 'boolean',
         'read_at' => 'datetime',
     ];
@@ -34,9 +27,9 @@ class UserNotification extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function subject(): MorphTo
+    public function notification(): BelongsTo
     {
-        return $this->morphTo();
+        return $this->belongsTo(Notification::class);
     }
 
     public function scopeUnread($query)

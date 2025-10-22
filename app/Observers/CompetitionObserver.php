@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Enums\CompetitionStatus;
 use App\Models\Competition;
+use App\Models\Notification;
 use App\Models\User;
 use App\Models\UserNotification;
 
@@ -56,28 +57,32 @@ class CompetitionObserver
      */
     private function sendCompetitionActivatedNotification(Competition $competition): void
     {
+        // Create the notification first
+        $notification = Notification::create([
+            'title' => 'Competition Activated',
+            'message' => "The competition '{$competition->name}' is now active and available for participation.",
+            'type' => 'success',
+            'subject_type' => Competition::class,
+            'subject_id' => $competition->id,
+            'data' => [
+                'competition_id' => $competition->id,
+                'competition_name' => $competition->name,
+                'start_at' => $competition->start_at,
+                'end_at' => $competition->end_at,
+            ],
+        ]);
+
         // Get all users who are part of groups associated with this competition
         $users = User::whereHas('groups', function ($query) use ($competition) {
             $query->whereHas('competitions', function ($subQuery) use ($competition) {
                 $subQuery->where('competitions.id', $competition->id);
             });
         })->get();
-        dd($competition, $users);
 
         foreach ($users as $user) {
             UserNotification::create([
                 'user_id' => $user->id,
-                'title' => 'Competition Activated',
-                'message' => "The competition '{$competition->name}' is now active and available for participation.",
-                'type' => 'success',
-                'subject_type' => Competition::class,
-                'subject_id' => $competition->id,
-                'data' => [
-                    'competition_id' => $competition->id,
-                    'competition_name' => $competition->name,
-                    'start_at' => $competition->start_at,
-                    'end_at' => $competition->end_at,
-                ],
+                'notification_id' => $notification->id,
             ]);
         }
     }

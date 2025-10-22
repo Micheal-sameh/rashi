@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\BonusPenaltyCreated;
 use App\Models\PointHistory;
 use App\Repositories\BonusPenaltyRepository;
 use App\Repositories\UserRepository;
@@ -29,6 +30,10 @@ class BonusPenaltyService
         PointHistory::addRecord($bonusPenalty);
         // Update user points
         $this->userRepository->bonusAndPenalty($bonusPenalty);
+
+        // Fire event to send notification
+        event(new BonusPenaltyCreated($bonusPenalty));
+
         DB::commit();
 
         return $bonusPenalty;

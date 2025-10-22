@@ -21,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\CompetitionStatusUpdated::class => [
             \App\Listeners\SendCompetitionNotification::class,
         ],
+        \App\Events\BonusPenaltyCreated::class => [
+            \App\Listeners\SendBonusPenaltyNotification::class,
+        ],
     ];
 
     /**
