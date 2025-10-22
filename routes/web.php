@@ -5,6 +5,7 @@ use App\Http\Controllers\BonusPenaltyController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuizQuestionController;
@@ -126,6 +127,12 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/create', [BonusPenaltyController::class, 'create'])->name('bonus-penalties.create');
             Route::post('/', [BonusPenaltyController::class, 'store'])->name('bonus-penalties.store');
             Route::get('/{id}', [BonusPenaltyController::class, 'show'])->name('bonus-penalties.show');
+        });
+
+        Route::prefix('notifications')->group(function () {
+            Route::get('/', [NotificationController::class, 'index'])->name('notifications.index');
+            Route::get('/create', [NotificationController::class, 'create'])->name('notifications.create');
+            Route::post('/', [NotificationController::class, 'store'])->name('notifications.store');
         });
 
     });

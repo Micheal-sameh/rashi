@@ -45,4 +45,30 @@ class NotificationRepository extends BaseRepository
 
         return $notification;
     }
+
+    public function index()
+    {
+        return $this->model->latest()->get();
+    }
+
+    public function createNotificationForUsers(array $userIds, string $message, string $type = 'info'): Notification
+    {
+        $notification = $this->createNotification([
+            'title' => 'info',
+            'message' => $message,
+            'type' => $type,
+            'subject_type' => null,
+            'subject_id' => null,
+            'data' => [],
+        ]);
+
+        foreach ($userIds as $userId) {
+            $this->createUserNotification([
+                'user_id' => $userId,
+                'notification_id' => $notification->id,
+            ]);
+        }
+
+        return $notification;
+    }
 }
