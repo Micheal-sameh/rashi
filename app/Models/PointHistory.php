@@ -31,6 +31,7 @@ class PointHistory extends Model
 
     public static function addRecord($data)
     {
+        $user = null;
         if ($data['subject'] instanceof Quiz) {
             $type = get_class($data['subject']);
             $subject_id = $data['subject']->id;
@@ -41,6 +42,7 @@ class PointHistory extends Model
             $subject_id = $data->id;
             $points = ($data->type == 1) ? $data->points : -1 * $data->points; // bonus positive, penalty negative
             $score = 0;
+            $user = $data->user;
         } else {
             $type = get_class($data);
             $subject_id = $data->id;
@@ -48,7 +50,7 @@ class PointHistory extends Model
             $score = 0;
         }
 
-        $user = Auth::user();
+        $user = $user ?? Auth::user();
         PointHistory::create([
             'user_id' => $user->id,
             'amount' => abs($points),
