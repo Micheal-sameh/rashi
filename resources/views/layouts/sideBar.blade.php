@@ -36,7 +36,7 @@
         .sidebar {
             position: fixed;
             top: 0;
-            inset-inline-start: 0;
+            left: 0;
             width: var(--sidebar-width);
             height: 100vh;
             background: var(--sidebar-bg);
@@ -48,8 +48,8 @@
         }
 
         [dir="rtl"] .sidebar {
-            inset-inline-start: auto;
-            inset-inline-end: 0;
+            left: auto;
+            right: 0;
         }
 
         .sidebar .brand {
@@ -85,7 +85,12 @@
 
         .sidebar nav i {
             width: 20px;
-            margin-inline-end: 10px;
+            margin-right: 10px;
+        }
+
+        [dir="rtl"] .sidebar nav i {
+            margin-right: 0;
+            margin-left: 10px;
         }
 
         /* Mobile Header */
@@ -112,7 +117,7 @@
 
         /* Main Content */
         .content-wrapper {
-            margin-inline-start: var(--sidebar-width);
+            margin-left: var(--sidebar-width);
             min-height: 100vh;
             transition: margin .3s ease;
             background: #fff;
@@ -120,8 +125,33 @@
         }
 
         [dir="rtl"] .content-wrapper {
-            margin-inline-start: 0;
-            margin-inline-end: var(--sidebar-width);
+            margin-left: 0;
+            margin-right: var(--sidebar-width);
+        }
+
+        /* Horizontal scrolling for tables on mobile */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            overflow-y: hidden;
+        }
+
+        .table-responsive table {
+            min-width: 600px;
+            white-space: nowrap;
+            table-layout: fixed;
+        }
+
+        .table-responsive th,
+        .table-responsive td {
+            white-space: nowrap;
+            padding: 0.5rem;
+            min-width: 80px;
+        }
+
+        .table-responsive th:last-child,
+        .table-responsive td:last-child {
+            min-width: 120px;
         }
 
         @media (max-width: 991px) {
@@ -142,8 +172,56 @@
             }
 
             .content-wrapper {
-                margin: 0;
+                margin-left: 0;
                 padding-top: calc(var(--mobile-header-height) + 10px);
+            }
+
+            [dir="rtl"] .content-wrapper {
+                margin-right: 0;
+            }
+
+            /* Enhanced mobile table scrolling */
+            .table-responsive {
+                margin: 0 -15px;
+                padding: 0 15px;
+                border-radius: 0;
+                position: relative;
+            }
+
+            .table-responsive::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 20px;
+                background: linear-gradient(to left, rgba(255,255,255,0.9), transparent);
+                pointer-events: none;
+                z-index: 1;
+            }
+
+            .table-responsive::-webkit-scrollbar {
+                height: 8px;
+            }
+
+            .table-responsive::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 4px;
+            }
+
+            .table-responsive::-webkit-scrollbar-thumb {
+                background: #007bff;
+                border-radius: 4px;
+                border: 2px solid #f1f1f1;
+            }
+
+            .table-responsive::-webkit-scrollbar-thumb:hover {
+                background: #0056b3;
+            }
+
+            /* Ensure table scrolls properly */
+            .table-responsive table {
+                margin-bottom: 0;
             }
         }
     </style>
