@@ -80,7 +80,8 @@
                                                 @csrf
                                                 @method('put')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                    onclick="return confirm('Are you sure you want to delete this competition?')"
+                                                    data-bs-toggle="delete-modal"
+                                                    data-message="{{ __('messages.confirm_delete_competition', ['name' => $competition->name]) }}"
                                                     title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -152,7 +153,8 @@
                                     @csrf
                                     @method('put')
                                     <button type="submit" class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('Are you sure you want to delete this competition?')">
+                                        data-bs-toggle="delete-modal"
+                                        data-message="{{ __('messages.confirm_delete_competition', ['name' => $competition->name]) }}">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </form>

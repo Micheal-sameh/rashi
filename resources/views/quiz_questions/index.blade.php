@@ -88,7 +88,8 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                onclick="return confirm('{{ __('messages.confirm_delete') }}')">
+                                                data-bs-toggle="delete-modal"
+                                                data-message="{{ __('messages.confirm_delete_question') }}">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </form>
@@ -134,7 +135,8 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('{{ __('messages.confirm_delete') }}')">
+                                        data-bs-toggle="delete-modal"
+                                        data-message="{{ __('messages.confirm_delete_question') }}">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </form>

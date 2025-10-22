@@ -254,6 +254,31 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" style="z-index: 1070;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="deleteModalLabel">
+                        <i class="fa fa-exclamation-triangle me-2"></i> {{ __('messages.confirm_delete') }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteModalMessage">{{ __('messages.confirm_delete_message') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">{{ __('messages.delete') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Backdrop -->
+    <div class="modal-backdrop fade" id="deleteModalBackdrop" style="z-index: 1060; display: none;"></div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const sidebar = document.getElementById('sidebar');
@@ -267,6 +292,39 @@
                 if (window.innerWidth < 992 && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
                     sidebar.classList.remove('show');
                 }
+            });
+
+            // Delete confirmation modal
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+            const deleteModalBackdrop = document.getElementById('deleteModalBackdrop');
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            let deleteForm = null;
+
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('[data-bs-toggle="delete-modal"]')) {
+                    e.preventDefault();
+                    const btn = e.target.closest('[data-bs-toggle="delete-modal"]');
+                    const message = btn.getAttribute('data-message') || '{{ __('messages.confirm_delete_message') }}';
+                    document.getElementById('deleteModalMessage').textContent = message;
+                    deleteForm = btn.closest('form');
+                    deleteModalBackdrop.style.display = 'block';
+                    deleteModal.show();
+                }
+            });
+
+            confirmDeleteBtn.addEventListener('click', function() {
+                if (deleteForm) {
+                    deleteForm.submit();
+                }
+                deleteModal.hide();
+                deleteModalBackdrop.style.display = 'none';
+            });
+
+            document.getElementById('deleteModal').addEventListener('hidden.bs.modal', function() {
+                deleteModalBackdrop.style.display = 'none';
             });
         });
     </script>

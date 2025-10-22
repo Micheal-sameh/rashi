@@ -63,7 +63,8 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                    onclick="return confirm('Are you sure you want to delete this quiz?')"
+                                                    data-bs-toggle="delete-modal"
+                                                    data-message="{{ __('messages.confirm_delete_quiz', ['name' => $quiz->name]) }}"
                                                     title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -106,7 +107,8 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('Are you sure you want to delete this quiz?')">
+                                        data-bs-toggle="delete-modal"
+                                        data-message="{{ __('messages.confirm_delete_quiz', ['name' => $quiz->name]) }}">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </form>

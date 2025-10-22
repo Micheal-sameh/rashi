@@ -175,4 +175,13 @@ return [
     'leaderboard' => 'Leaderboard',
     'rank' => 'Rank',
     'logout' => 'Logout',
+    'confirm_delete' => 'Confirm Delete',
+    'confirm_delete_message' => 'Are you sure you want to delete this item? This action cannot be undone.',
+    'confirm_delete_quiz' => 'Are you sure you want to delete the quiz ":name"? This action cannot be undone.',
+    'confirm_delete_competition' => 'Are you sure you want to delete the competition ":name"? This action cannot be undone.',
+    'confirm_delete_question' => 'Are you sure you want to delete this question? This action cannot be undone.',
+    'confirm_delete_all_tokens' => 'Confirm Delete All Tokens',
+    'delete_all_tokens_warning' => 'This will log out all users from their mobile devices. This action cannot be undone.',
+    'delete_all_api_tokens' => 'Delete All Tokens',
+    'enter_password_to_confirm' => 'Enter your password to confirm',
 ];
