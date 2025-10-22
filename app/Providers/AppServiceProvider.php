@@ -33,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
                 'bonus-penalties' => $currentRoute && $currentRoute->named('bonus-penalties.*'),
                 'rewards' => $currentRoute && $currentRoute->named('rewards.*'),
                 'orders' => $currentRoute && $currentRoute->named('orders.*'),
+                'notifications' => $currentRoute && $currentRoute->named('notifications.*'),
             ]);
         });
     }

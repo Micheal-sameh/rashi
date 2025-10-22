@@ -178,4 +178,5 @@ return [
     'delete_all_tokens_warning' => 'سيؤدي هذا إلى تسجيل خروج جميع المستخدمين من أجهزتهم المحمولة. هذا الإجراء لا يمكن التراجع عنه.',
     'delete_all_api_tokens' => 'حذف جميع الرموز',
     'enter_password_to_confirm' => 'أدخل كلمة المرور للتأكيد',
+    'notifications' => 'اشعارات',
 ];

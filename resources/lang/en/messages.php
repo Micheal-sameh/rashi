@@ -184,4 +184,5 @@ return [
     'delete_all_tokens_warning' => 'This will log out all users from their mobile devices. This action cannot be undone.',
     'delete_all_api_tokens' => 'Delete All Tokens',
     'enter_password_to_confirm' => 'Enter your password to confirm',
+    'notifications' => 'Notifications',
 ];

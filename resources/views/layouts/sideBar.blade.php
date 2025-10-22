@@ -284,6 +284,10 @@
                             class="{{ $activeRoutes['orders'] ? 'active' : '' }}">
                             <i class="fas fa-shopping-cart"></i>{{ __('messages.orders') }}</a></li>
 
+                    <li><a href="{{ route('notifications.index') }}"
+                            class="{{ $activeRoutes['notifications'] ? 'active' : '' }}">
+                            <i class="fas fa-bell"></i>{{ __('messages.notifications') }}</a></li>
+
                     <li class="mt-3 border-top border-light pt-2">
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
