@@ -166,4 +166,13 @@ class UserRepository extends BaseRepository
         ]);
 
     }
+
+    public function leaderboard()
+    {
+        return $this->model->query()->with('media')
+            ->select('id', 'name', 'score')
+            ->orderBy('score', 'desc')
+            ->limit(10)
+            ->get();
+    }
 }

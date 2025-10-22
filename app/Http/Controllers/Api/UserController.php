@@ -31,4 +31,11 @@ class UserController extends BaseController
         return $this->apiResponse(new UserResource($user));
 
     }
+
+    public function leaderboard()
+    {
+        $users = $this->userService->leaderboard();
+
+        return $this->respondResource(UserResource::collection($users));
+    }
 }

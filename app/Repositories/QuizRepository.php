@@ -33,7 +33,8 @@ class QuizRepository extends BaseRepository
     {
         $query = $this->model
             ->when(isset($competition_id), fn ($q) => $q->where('competition_id', $competition_id))
-            ->latest('date');
+            ->orderByRaw('DATE(date) = CURDATE() DESC') // put today's first
+            ->orderByDesc('date');
 
         return $this->execute($query);
     }

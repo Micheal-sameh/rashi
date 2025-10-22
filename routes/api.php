@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth:sanctum', 'check.competition', 'cache.auth.
         Route::get('/', [UserController::class, 'index']);
         Route::get('/{id}/show', [UserController::class, 'show']);
         Route::post('/profile-pic', [UserController::class, 'profilePic']);
+        Route::get('/leaderboard', [UserController::class, 'leaderboard']);
     });
 
     Route::group(['prefix' => 'competitions'], function () {

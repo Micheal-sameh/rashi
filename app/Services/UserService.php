@@ -46,4 +46,11 @@ class UserService
 
         return $user;
     }
+
+    public function leaderboard()
+    {
+        $users = $this->userRepository->leaderboard();
+
+        return $users;
+    }
 }
