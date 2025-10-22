@@ -22,7 +22,6 @@ class SettingController extends Controller
 
     public function update(UpdateSettingRequest $request)
     {
-
         $this->settingService->update($request->settings, $request?->allFiles()['settings'] ?? null);
         Cache::forget('app_logo_url');
 

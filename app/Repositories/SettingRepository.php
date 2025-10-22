@@ -41,16 +41,13 @@ class SettingRepository extends BaseRepository
             $mainSetting = $this->findById($key);
             if ($mainSetting->type == 'file' && $files) {
                 $newFile = $files[$key]['value'];
-
                 $existingMedia = $mainSetting->getFirstMedia('app_logo');
-                if (! $existingMedia) {
-                    if ($existingMedia) {
-                        $existingMedia->delete();
-                    }
+                if ($existingMedia) {
 
-                    $mainSetting->addMedia($newFile)
-                        ->toMediaCollection('app_logo');
+                    $existingMedia->delete();
                 }
+                $mainSetting->addMedia($newFile)
+                    ->toMediaCollection('app_logo');
             } else {
                 $mainSetting->update([
                     'value' => $setting['value'] ?? null,
