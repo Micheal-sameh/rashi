@@ -218,6 +218,175 @@
           }
         ]
       }
+    },
+    "/user": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get authenticated user",
+        "description": "Get the currently authenticated user.",
+        "parameters": []
+      }
+    },
+    "/users/leaderboard": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get users leaderboard",
+        "description": "Get the leaderboard of users.",
+        "parameters": []
+      }
+    },
+    "/orders/my-orders": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get user's orders",
+        "description": "Get the authenticated user's orders.",
+        "parameters": []
+      }
+    },
+    "/bonus-penalties": {
+      "get": {
+        "tags": [
+          "BonusPenalty"
+        ],
+        "summary": "Get bonus penalties",
+        "description": "Get list of bonus penalties, optionally filtered by user_id.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "type": "integer",
+            "description": "Filter by user ID"
+          }
+        ]
+      }
+    },
+    "/bonus-penalties/{id}": {
+      "get": {
+        "tags": [
+          "BonusPenalty"
+        ],
+        "summary": "Get bonus penalty by ID",
+        "description": "Get a specific bonus penalty.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Bonus penalty ID"
+          }
+        ]
+      }
+    },
+    "/fcm-tokens": {
+      "post": {
+        "tags": [
+          "FCM Token"
+        ],
+        "summary": "Store FCM token",
+        "description": "Store or update FCM token for the user.",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "type": "string",
+            "description": "FCM token"
+          },
+          {
+            "name": "device_type",
+            "required": true,
+            "type": "string",
+            "description": "Device type"
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "FCM Token"
+        ],
+        "summary": "Delete FCM token",
+        "description": "Delete FCM token for the user.",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "type": "string",
+            "description": "FCM token to delete"
+          }
+        ]
+      }
+    },
+    "/notifications": {
+      "get": {
+        "tags": [
+          "Notification"
+        ],
+        "summary": "Get user notifications",
+        "description": "Get notifications for the authenticated user.",
+        "parameters": []
+      }
+    },
+    "/notifications/{id}/read": {
+      "put": {
+        "tags": [
+          "Notification"
+        ],
+        "summary": "Mark notification as read",
+        "description": "Mark a specific notification as read.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Notification ID"
+          }
+        ]
+      }
+    },
+    "/notifications/mark-all-read": {
+      "put": {
+        "tags": [
+          "Notification"
+        ],
+        "summary": "Mark all notifications as read",
+        "description": "Mark all notifications as read for the user.",
+        "parameters": []
+      }
+    },
+    "/quizzes/dropdown/{id}": {
+      "get": {
+        "tags": [
+          "Quiz"
+        ],
+        "summary": "Get quizzes dropdown",
+        "description": "Get quizzes for a competition in dropdown format.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Competition ID"
+          }
+        ]
+      }
+    },
+    "/versions": {
+      "get": {
+        "tags": [
+          "Setting"
+        ],
+        "summary": "Get app versions",
+        "description": "Get iOS and Android app versions.",
+        "parameters": []
+      }
     }
   }
 }
