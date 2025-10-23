@@ -30,16 +30,63 @@
         "tags": [
           "Auth"
         ],
-        "summary": "post login for user",
-        "description": "login for user.",
+        "summary": "User Login",
+        "description": "Authenticate user using QR code and return token and user data.",
         "parameters": [
           {
             "name": "qr_code",
+            "in": "formData",
             "required": true,
             "type": "string",
-            "description": "the string result from scanning the qr code"
+            "description": "The string result from scanning the QR code"
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "login successfuly"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "1|abc123..."
+                    },
+                    "user": {
+                      "$ref": "#/definitions/UserResource"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "This code is expired"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/auth/logout": {
@@ -47,9 +94,40 @@
         "tags": [
           "Auth"
         ],
-        "summary": "post logout for user",
-        "description": "logout for user.",
-        "parameters": []
+        "summary": "User Logout",
+        "description": "Logout the authenticated user and optionally delete FCM token.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "fcm_token",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "FCM token to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout successful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "logout successfuly"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/users": {
@@ -57,9 +135,38 @@
         "tags": [
           "User"
         ],
-        "summary": "users index page",
-        "description": "login for user.",
-        "parameters": []
+        "summary": "Get Users",
+        "description": "Get list of users.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Users retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/UserResource"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/users/{id}/show": {
@@ -67,9 +174,59 @@
         "tags": [
           "User"
         ],
-        "summary": "user show page",
-        "description": "user show page.",
-        "parameters": []
+        "summary": "Get User by ID",
+        "description": "Get a specific user by ID.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "User ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "$ref": "#/definitions/UserResource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "User not found"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/users/profile-pic": {
@@ -77,16 +234,59 @@
         "tags": [
           "User"
         ],
-        "summary": "update profile pic",
-        "description": "login for user.",
+        "summary": "Update Profile Picture",
+        "description": "Update the authenticated user's profile picture.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "image",
+            "in": "formData",
             "required": true,
-            "type": "string",
-            "description": "image , mimes:png,jpg,jpeg"
+            "type": "file",
+            "description": "Image file, mimes: png, jpg, jpeg, max: 2048KB"
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile picture updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "$ref": "#/definitions/UserResource"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 422
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Validation failed"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/competitions": {
@@ -94,9 +294,38 @@
         "tags": [
           "Competition"
         ],
-        "summary": "Competitions index",
-        "description": "Competitions index.",
-        "parameters": []
+        "summary": "Get Competitions",
+        "description": "Get list of competitions.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Competitions retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/CompetitionResource"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/quizzes": {
@@ -104,74 +333,223 @@
         "tags": [
           "Quiz"
         ],
-        "summary": "quizzes index",
-        "description": "quizzes index.",
+        "summary": "Get Quizzes",
+        "description": "Get quizzes for a specific competition.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "competition_id",
+            "in": "query",
             "required": true,
             "type": "integer",
-            "description": "competition you want to see quizzes of"
+            "description": "Competition ID to filter quizzes"
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Quizzes retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/QuizResource"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 422
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Validation failed"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/questions": {
       "get": {
         "tags": [
-          "Questition"
+          "Question"
         ],
-        "summary": "questitions index",
-        "description": "Questitions index.",
+        "summary": "Get Quiz Questions",
+        "description": "Get questions for a specific quiz.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "quiz_id",
+            "in": "query",
             "required": true,
             "type": "integer",
-            "description": "quiz you want to see questions of"
+            "description": "Quiz ID to get questions for"
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Questions retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/QuizQuestionResource"
+                  }
+                },
+                "additional_data": {
+                  "type": "object",
+                  "properties": {
+                    "quiz_have_solved": {
+                      "type": "boolean",
+                      "example": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 422
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Validation failed"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/user-answers": {
       "post": {
         "tags": [
-          "User-Answer"
+          "User Answer"
         ],
-        "summary": "user answers for quiz",
-        "description": "user answers for quiz.",
+        "summary": "Submit Quiz Answers",
+        "description": "Submit answers for a quiz.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "quiz_id",
-            "required": true,
-            "type": "integer",
-            "description": "quiz you post its answers"
-          },
-          {
-            "name": "questions",
+            "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "question_id": {
-                    "type": "integer"
-                  },
-                  "answer_id": {
-                    "type": "integer"
-                  }
+              "type": "object",
+              "required": ["quiz_id", "questions"],
+              "properties": {
+                "quiz_id": {
+                  "type": "integer",
+                  "description": "Quiz ID",
+                  "example": 1
                 },
-                "required": [
-                  "question_id",
-                  "answer_id"
-                ]
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["question_id", "answer_id"],
+                    "properties": {
+                      "question_id": {
+                        "type": "integer",
+                        "description": "Question ID",
+                        "example": 1
+                      },
+                      "answer_id": {
+                        "type": "integer",
+                        "description": "Answer ID",
+                        "example": 1
+                      }
+                    }
+                  },
+                  "description": "Array of question and answer pairs"
+                }
               }
-            },
-            "description": "Quiz you post its answers"
+            }
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Answers submitted successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "$ref": "#/definitions/UserAnswerResource"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 422
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Validation failed"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/rewards": {
@@ -179,10 +557,38 @@
         "tags": [
           "Reward"
         ],
-        "summary": "rewards index",
-        "description": "rewards index.",
-        "parameters": [
-        ]
+        "summary": "Get Rewards",
+        "description": "Get list of available rewards.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Rewards retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/RewardResource"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/orders": {
@@ -190,33 +596,112 @@
         "tags": [
           "Order"
         ],
-        "summary": "orders index",
-        "description": "orders index.",
-        "parameters": [
-        ]
+        "summary": "Get Orders",
+        "description": "Get list of orders.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Orders retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/OrderResource"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
-    "/orders/": {
+    "/orders ": {
       "post": {
         "tags": [
           "Order"
         ],
-        "summary": "create new order",
-        "description": "create new order.",
+        "summary": "Create Order",
+        "description": "Create a new order for a reward.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "reward_id",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "integer",
-            "description": "id of the reward that the user want to redeem"
-          },
-          {
-            "name": "quantity",
-            "required": true,
-            "type": "integer",
-            "description": "quantity the user want to redeem"
+            "schema": {
+              "type": "object",
+              "required": ["reward_id", "quantity"],
+              "properties": {
+                "reward_id": {
+                  "type": "integer",
+                  "description": "ID of the reward to redeem",
+                  "example": 1
+                },
+                "quantity": {
+                  "type": "integer",
+                  "description": "Quantity to redeem",
+                  "example": 1
+                }
+              }
+            }
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Order created successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "$ref": "#/definitions/OrderResource"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 422
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Validation failed"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/user": {
@@ -224,9 +709,35 @@
         "tags": [
           "Auth"
         ],
-        "summary": "Get authenticated user",
+        "summary": "Get Authenticated User",
         "description": "Get the currently authenticated user.",
-        "parameters": []
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "$ref": "#/definitions/UserResource"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/users/leaderboard": {
@@ -234,9 +745,38 @@
         "tags": [
           "User"
         ],
-        "summary": "Get users leaderboard",
+        "summary": "Get Users Leaderboard",
         "description": "Get the leaderboard of users.",
-        "parameters": []
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Leaderboard retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/UserResource"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/orders/my-orders": {
@@ -244,18 +784,65 @@
         "tags": [
           "Order"
         ],
-        "summary": "Get user's orders",
+        "summary": "Get My Orders",
         "description": "Get the authenticated user's orders.",
-        "parameters": []
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Orders retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/OrderResource"
+                  }
+                },
+                "additional_data": {
+                  "type": "object",
+                  "properties": {
+                    "total_points": {
+                      "type": "integer",
+                      "example": 100
+                    },
+                    "count": {
+                      "type": "integer",
+                      "example": 5
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/bonus-penalties": {
       "get": {
         "tags": [
-          "BonusPenalty"
+          "Bonus Penalty"
         ],
-        "summary": "Get bonus penalties",
+        "summary": "Get Bonus Penalties",
         "description": "Get list of bonus penalties, optionally filtered by user_id.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "user_id",
@@ -263,16 +850,127 @@
             "type": "integer",
             "description": "Filter by user ID"
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Bonus penalties retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/BonusPenaltyResource"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Bonus Penalty"
+        ],
+        "summary": "Create Bonus Penalty",
+        "description": "Create a new bonus or penalty for a user.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["user_id", "type", "points", "reason"],
+              "properties": {
+                "user_id": {
+                  "type": "integer",
+                  "description": "User ID",
+                  "example": 1
+                },
+                "type": {
+                  "type": "integer",
+                  "description": "Type: 1 for bonus, 2 for penalty",
+                  "example": 1
+                },
+                "points": {
+                  "type": "integer",
+                  "description": "Points to add or subtract",
+                  "example": 10
+                },
+                "reason": {
+                  "type": "string",
+                  "description": "Reason for bonus/penalty",
+                  "example": "Good performance"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bonus penalty created successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "$ref": "#/definitions/BonusPenaltyResource"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 422
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Validation failed"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/bonus-penalties/{id}": {
       "get": {
         "tags": [
-          "BonusPenalty"
+          "Bonus Penalty"
         ],
-        "summary": "Get bonus penalty by ID",
+        "summary": "Get Bonus Penalty by ID",
         "description": "Get a specific bonus penalty.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -281,7 +979,44 @@
             "type": "integer",
             "description": "Bonus penalty ID"
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Bonus penalty retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "$ref": "#/definitions/BonusPenaltyResource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bonus penalty not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not found"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/fcm-tokens": {
@@ -289,37 +1024,135 @@
         "tags": [
           "FCM Token"
         ],
-        "summary": "Store FCM token",
+        "summary": "Store FCM Token",
         "description": "Store or update FCM token for the user.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "token",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "string",
-            "description": "FCM token"
-          },
-          {
-            "name": "device_type",
-            "required": true,
-            "type": "string",
-            "description": "Device type"
+            "schema": {
+              "type": "object",
+              "required": ["token"],
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "description": "FCM token",
+                  "example": "abc123..."
+                },
+                "device_type": {
+                  "type": "string",
+                  "description": "Device type",
+                  "enum": ["ios", "android", "web"],
+                  "example": "android"
+                }
+              }
+            }
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "FCM token stored successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 422
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Validation failed"
+                }
+              }
+            }
+          }
+        }
       },
       "delete": {
         "tags": [
           "FCM Token"
         ],
-        "summary": "Delete FCM token",
+        "summary": "Delete FCM Token",
         "description": "Delete FCM token for the user.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
-            "name": "token",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "string",
-            "description": "FCM token to delete"
+            "schema": {
+              "type": "object",
+              "required": ["token"],
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "description": "FCM token to delete",
+                  "example": "abc123..."
+                }
+              }
+            }
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "FCM token deleted successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 422
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Validation failed"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/notifications": {
@@ -327,9 +1160,38 @@
         "tags": [
           "Notification"
         ],
-        "summary": "Get user notifications",
+        "summary": "Get User Notifications",
         "description": "Get notifications for the authenticated user.",
-        "parameters": []
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Notifications retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/UserNotificationResource"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/notifications/{id}/read": {
@@ -337,8 +1199,13 @@
         "tags": [
           "Notification"
         ],
-        "summary": "Mark notification as read",
+        "summary": "Mark Notification as Read",
         "description": "Mark a specific notification as read.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -347,7 +1214,41 @@
             "type": "integer",
             "description": "Notification ID"
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification marked as read",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Notification marked as read"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Notification not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Notification not found"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/notifications/mark-all-read": {
@@ -355,9 +1256,32 @@
         "tags": [
           "Notification"
         ],
-        "summary": "Mark all notifications as read",
+        "summary": "Mark All Notifications as Read",
         "description": "Mark all notifications as read for the user.",
-        "parameters": []
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "All notifications marked as read",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "All notifications marked as read"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/quizzes/dropdown/{id}": {
@@ -365,8 +1289,13 @@
         "tags": [
           "Quiz"
         ],
-        "summary": "Get quizzes dropdown",
+        "summary": "Get Quizzes Dropdown",
         "description": "Get quizzes for a competition in dropdown format.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -375,7 +1304,47 @@
             "type": "integer",
             "description": "Competition ID"
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Quizzes retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/QuizResource"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 422
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Validation failed"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/versions": {
@@ -383,9 +1352,45 @@
         "tags": [
           "Setting"
         ],
-        "summary": "Get app versions",
+        "summary": "Get App Versions",
         "description": "Get iOS and Android app versions.",
-        "parameters": []
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Versions retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "ios_version": {
+                      "type": "string",
+                      "example": "1.0.0"
+                    },
+                    "android_version": {
+                      "type": "string",
+                      "example": "1.0.0"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
