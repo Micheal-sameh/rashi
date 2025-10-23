@@ -3,11 +3,17 @@
 namespace App\Repositories;
 
 use App\Models\Notification;
+use App\Services\FcmTokenService;
+use App\Services\FirebaseService;
+use Illuminate\Support\Facades\Log;
 
 class NotificationRepository extends BaseRepository
 {
-    public function __construct(Notification $model)
-    {
+    public function __construct(
+        Notification $model,
+        protected FirebaseService $firebaseService,
+        protected FcmTokenService $fcmTokenService
+    ) {
         parent::__construct($model);
     }
 
@@ -37,6 +43,9 @@ class NotificationRepository extends BaseRepository
             'notification_id' => $notification->id,
         ]);
 
+        // Send Firebase push notification
+        $this->sendFirebaseNotification($userId, $title, $message, $data);
+
         return $notification;
     }
 
@@ -63,6 +72,30 @@ class NotificationRepository extends BaseRepository
             ]);
         }
 
+        // Fire event to send Firebase push notifications to all users
+        event(new \App\Events\FirebaseNotificationSent($userIds, 'info', $message, []));
+
         return $notification;
+    }
+
+    /**
+     * Send Firebase push notification to a single user
+     */
+    protected function sendFirebaseNotification(int $userId, string $title, string $body, array $data = []): void
+    {
+        try {
+            $tokens = $this->fcmTokenService->getTokensByUserId($userId);
+
+            if ($tokens->isNotEmpty()) {
+                $tokenArray = $tokens->pluck('token')->toArray();
+                $this->firebaseService->sendToDevices($tokenArray, $title, $body, $data);
+            }
+        } catch (\Exception $e) {
+            // Log error but don't fail the notification creation
+            Log::error('Failed to send Firebase notification', [
+                'user_id' => $userId,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }

@@ -24,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\BonusPenaltyCreated::class => [
             \App\Listeners\SendBonusPenaltyNotification::class,
         ],
+        \App\Events\FirebaseNotificationSent::class => [
+            \App\Listeners\SendFirebaseNotification::class,
+        ],
     ];
 
     /**

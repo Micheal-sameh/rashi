@@ -18,7 +18,12 @@ class UserNotificationRepository extends BaseRepository
 
     public function createUserNotification(array $data)
     {
-        return $this->model->create($data);
+        $userNotification = $this->model->create($data);
+
+        // Fire event to send Firebase notification
+        event(new \App\Events\FirebaseNotificationSent([$data['user_id']], 'New Notification', $userNotification->notification->message ?? 'You have a new notification', []));
+
+        return $userNotification;
     }
 
     public function getUserNotifications(int $limit = 10)
