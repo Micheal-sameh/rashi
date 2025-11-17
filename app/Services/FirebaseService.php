@@ -13,7 +13,7 @@ class FirebaseService
 
     public function __construct()
     {
-        $factory = (new Factory)->withServiceAccount(storage_path('ar-rashi-c6365-firebase-adminsdk-fbsvc-c42ce3e835.json'));
+        $factory = (new Factory)->withServiceAccount(base_path(env('FIREBASE_CREDENTIALS')));
         $this->messaging = $factory->createMessaging();
     }
 

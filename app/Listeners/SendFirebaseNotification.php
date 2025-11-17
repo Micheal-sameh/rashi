@@ -38,8 +38,9 @@ class SendFirebaseNotification implements ShouldQueue
 
             foreach ($userIds as $userId) {
                 $tokens = $this->fcmTokenService->getTokensByUserId($userId);
-                if ($tokens->isNotEmpty()) {
-                    $allTokens = array_merge($allTokens, $tokens->pluck('token')->toArray());
+                if (! empty($tokens)) {
+                    // dd($tokens);
+                    $allTokens = array_merge($allTokens, $tokens);
                 }
             }
 

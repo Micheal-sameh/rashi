@@ -86,8 +86,8 @@ class NotificationRepository extends BaseRepository
         try {
             $tokens = $this->fcmTokenService->getTokensByUserId($userId);
 
-            if ($tokens->isNotEmpty()) {
-                $tokenArray = $tokens->pluck('token')->toArray();
+            if (! empty($tokens)) {
+                $tokenArray = $tokens;
                 $this->firebaseService->sendToDevices($tokenArray, $title, $body, $data);
             }
         } catch (\Exception $e) {
