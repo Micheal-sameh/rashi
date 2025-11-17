@@ -31,9 +31,12 @@ class QuizQuestionRepository extends BaseRepository
     public function index($input)
     {
         $query = $this->model
+            ->with(['userAnswer'])
             ->when(isset($input['quiz_id']), fn ($q) => $q->where('quiz_id', $input['quiz_id']))
-            ->whereHas('quiz', function ($query) use ($input) {
-                $query->whereHas('competition', fn ($q) => $q->where('id', $input['competition_id']));
+            ->when(isset($input['competition_id']), function ($query) use ($input) {
+                $query->whereHas('quiz', function ($query) use ($input) {
+                    $query->whereHas('competition', fn ($q) => $q->where('id', $input['competition_id']));
+                });
             });
 
         return $this->execute($query);

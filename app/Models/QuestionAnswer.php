@@ -14,4 +14,9 @@ class QuestionAnswer extends Model
         'answer',
         'is_correct',
     ];
+
+    public function isUserAnswer(): bool
+    {
+        return UserAnswer::where('question_answer_id', $this->id)->where('user_id', auth()->id())->exists();
+    }
 }

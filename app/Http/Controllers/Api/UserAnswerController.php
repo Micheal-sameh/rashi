@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\UserAnswerCreateRequest;
-use App\Http\Resources\UserAnswerResource;
 use App\Models\PointHistory;
 use App\Repositories\PointHistoryRepository;
 use App\Repositories\UserRepository;
@@ -19,13 +18,13 @@ class UserAnswerController extends BaseController
 
     public function store(UserAnswerCreateRequest $request)
     {
-        $data = $this->userAnswerService->store($request->questions);
-        if ($data['correct_answers'] > 0) {
-            info($data);
-            PointHistory::addRecord(collect($data));
-            $this->userRepository->updatePoints($data);
-        }
+        $data = $this->userAnswerService->store($request->validated());
 
-        return $this->apiResponse(new UserAnswerResource($data));
+        // if ($data['correct_answers'] > 0) {
+        PointHistory::addRecord(collect($data));
+        $this->userRepository->updatePoints($data);
+        // }
+
+        return $this->apiResponse();
     }
 }

@@ -25,7 +25,7 @@ class FcmTokenRepository extends BaseRepository
     {
         return $this->model->updateOrCreate(
             ['user_id' => $data['user_id'], 'iemi' => $data['iemi']],
-            ['token' => $data['token'], 'device_type' => $data['device_type']]
+            $data
         );
     }
 
