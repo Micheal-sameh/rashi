@@ -39,7 +39,7 @@ class NotificationController extends Controller
             $userIds = $group->users->pluck('id')->toArray();
         }
 
-        $this->notificationRepository->createNotificationForUsers($userIds, $request->message);
+        $this->notificationRepository->createNotificationForUsers($userIds, 'manual send '.$request->message);
 
         return redirect()->route('notifications.index')->with('success', 'Notification sent successfully');
     }
