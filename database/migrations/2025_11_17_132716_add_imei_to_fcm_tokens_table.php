@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('fcm_tokens', function (Blueprint $table) {
-            $table->string('iemi')->after('device_type');
+            $table->string('imei')->after('device_type');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('fcm_tokens', function (Blueprint $table) {
-            $table->dropColumn('iemi');
+            $table->dropColumn('imei');
         });
     }
 };

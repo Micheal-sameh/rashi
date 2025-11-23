@@ -13,7 +13,7 @@ class FcmToken extends Model
         'user_id',
         'token',
         'device_type',
-        'iemi',
+        'imei',
     ];
 
     public function user()
