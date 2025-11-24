@@ -51,7 +51,7 @@ class NotificationRepository extends BaseRepository
 
     public function index()
     {
-        return $this->model->latest()->paginate();
+        return $this->model->latest()->paginate(20);
     }
 
     public function createNotificationForUsers(array $userIds, string $message, string $type = 'info'): Notification

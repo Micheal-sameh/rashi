@@ -99,13 +99,70 @@
                 </div>
             </div>
 
-            @if ($notifications->hasPages())
-                <div class="card-footer bg-light border-top-0">
-                    <div class="d-flex justify-content-center">
-                        {{ $notifications->links() }}
-                    </div>
-                </div>
-            @endif
+            <div class="d-flex justify-content-center pt-2">
+                @if ($notifications->hasPages())
+                    <nav>
+                        <ul class="pagination">
+                            {{-- Previous Page Link --}}
+                            @if ($notifications->onFirstPage())
+                                <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                            @else
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $notifications->previousPageUrl() }}"
+                                        rel="prev">&laquo;</a>
+                                </li>
+                            @endif
+
+                            @php
+                                $current = $notifications->currentPage();
+                                $last = $notifications->lastPage();
+                                $start = max($current - 2, 2);
+                                $end = min($current + 2, $last - 1);
+                            @endphp
+
+                            {{-- First page --}}
+                            <li class="page-item {{ $current === 1 ? 'active' : '' }}">
+                                <a class="page-link" href="{{ $notifications->url(1) }}">1</a>
+                            </li>
+
+                            {{-- Dots before start --}}
+                            @if ($start > 2)
+                                <li class="page-item disabled"><span class="page-link">…</span></li>
+                            @endif
+
+                            {{-- Page range --}}
+                            @for ($page = $start; $page <= $end; $page++)
+                                <li class="page-item {{ $current === $page ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $notifications->url($page) }}">{{ $page }}</a>
+                                </li>
+                            @endfor
+
+                            {{-- Dots after end --}}
+                            @if ($end < $last - 1)
+                                <li class="page-item disabled"><span class="page-link">…</span></li>
+                            @endif
+
+                            {{-- Last page --}}
+                            @if ($last > 1)
+                                <li class="page-item {{ $current === $last ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $notifications->url($last) }}">{{ $last }}</a>
+                                </li>
+                            @endif
+
+                            {{-- Next Page Link --}}
+                            @if ($notifications->hasMorePages())
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $notifications->nextPageUrl() }}"
+                                        rel="next">&raquo;</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                            @endif
+                        </ul>
+                    </nav>
+                @endif
+            </div>
+
         </div>
     </div>
 @endsection
