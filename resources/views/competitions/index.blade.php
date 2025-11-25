@@ -75,6 +75,15 @@
                                                 class="btn btn-sm btn-outline-info" title="User Answers">
                                                 <i class="fa fa-eye"></i>
                                             </a>
+                                            <form action="{{ route('competitions.setActive', $competition->id) }}"
+                                                method="POST" class="d-inline">
+                                                @csrf
+                                                @method('put')
+                                                <button type="submit" class="btn btn-sm btn-outline-success"
+                                                    title="Set Active">
+                                                    <i class="fa fa-play"></i>
+                                                </button>
+                                            </form>
                                             <form action="{{ route('competitions.cancel', $competition->id) }}"
                                                 method="POST" class="d-inline">
                                                 @csrf
@@ -148,6 +157,14 @@
                                     class="btn btn-sm btn-outline-info">
                                     <i class="fa fa-eye"></i>
                                 </a>
+                                <form action="{{ route('competitions.setActive', $competition->id) }}" method="POST"
+                                    class="d-inline">
+                                    @csrf
+                                    @method('put')
+                                    <button type="submit" class="btn btn-sm btn-outline-success" title="Set Active">
+                                        <i class="fa fa-play"></i>
+                                    </button>
+                                </form>
                                 <form action="{{ route('competitions.cancel', $competition->id) }}" method="POST"
                                     class="d-inline">
                                     @csrf

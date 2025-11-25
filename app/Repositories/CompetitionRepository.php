@@ -125,6 +125,11 @@ class CompetitionRepository extends BaseRepository
         return compact('status', 'statusClass');
     }
 
+    public function setStatus($id, $status)
+    {
+        return $this->findById($id)->update(['status' => $status]);
+    }
+
     public function checkCompetition()
     {
         $today = now()->startOfDay();

@@ -52,6 +52,13 @@ class CompetitionService
         return $data;
     }
 
+    public function setStatus($id, $status)
+    {
+        DB::beginTransaction();
+        $this->competitionRepository->setStatus($id, $status);
+        DB::commit();
+    }
+
     public function getUsersForCompetition($competition)
     {
         return $this->competitionRepository->getUsersForCompetition($competition);

@@ -78,6 +78,13 @@ class CompetitionController extends Controller
         ]);
     }
 
+    public function setActive($id)
+    {
+        $this->competitionService->setStatus($id, \App\Enums\CompetitionStatus::ACTIVE);
+
+        return redirect()->route('competitions.index')->with('success', 'Competition set to active successfully');
+    }
+
     public function userAnswers($id)
     {
         $userId = request('user_id');
