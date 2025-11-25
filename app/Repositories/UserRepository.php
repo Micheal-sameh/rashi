@@ -166,11 +166,13 @@ class UserRepository extends BaseRepository
 
     public function leaderboard($groupId)
     {
+        $groupIds = auth()->user()->groups->pluck('id')->toArray();
+
         return $this->model->query()->with('media')
             ->select('id', 'name', 'score', 'points')
-            ->when(! isset($groupId), function ($query) {
-                $query->whereHas('groups', function ($q) {
-                    $q->where('group_id', '!=', 1);
+            ->when(! isset($groupId), function ($query) use ($groupIds) {
+                $query->whereHas('groups', function ($q) use ($groupIds) {
+                    $q->where('group_id', '!=', 1)->whereIn('group_id', $groupIds);
                 });
             })->when(isset($groupId), function ($query) use ($groupId) {
                 $query->whereHas('groups', function ($q) use ($groupId) {
