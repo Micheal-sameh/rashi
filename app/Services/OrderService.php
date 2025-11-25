@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Events\OrderCancelled;
+use App\Events\OrderCreated;
+use App\Events\OrderReceived;
 use App\Models\PointHistory;
 use App\Models\Returns;
 use App\Models\RewardHistory;
@@ -36,6 +39,8 @@ class OrderService
 
         PointHistory::addRecord($order);
 
+        event(new OrderCreated($order));
+
         return $order;
     }
 
@@ -43,6 +48,8 @@ class OrderService
     {
         $order = $this->orderRepository->received($id);
         $order->load('servant');
+
+        event(new OrderReceived($order));
 
         return $order;
     }
@@ -69,6 +76,8 @@ class OrderService
         RewardHistory::addRecord($return, $return->quantity);
         PointHistory::addRecord($return);
         DB::commit();
+
+        event(new OrderCancelled($order));
 
         return $order;
     }

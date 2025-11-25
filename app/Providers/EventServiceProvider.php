@@ -27,6 +27,15 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\FirebaseNotificationSent::class => [
             \App\Listeners\SendFirebaseNotification::class,
         ],
+        \App\Events\OrderCreated::class => [
+            \App\Listeners\SendOrderNotification::class,
+        ],
+        \App\Events\OrderReceived::class => [
+            \App\Listeners\SendOrderNotification::class,
+        ],
+        \App\Events\OrderCancelled::class => [
+            \App\Listeners\SendOrderNotification::class,
+        ],
     ];
 
     /**
