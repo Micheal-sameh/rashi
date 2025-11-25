@@ -133,15 +133,12 @@ class UserRepository extends BaseRepository
         return $result;
     }
 
-    public function returnReward($points)
+    public function returnReward($points, $user_id)
     {
-        $user = Cache::get('auth_user_'.auth()->id()) ?? auth()->user();
+        $user = $this->findById($user_id);
         $result = $user->update([
             'points' => $user->points + $points,
         ]);
-
-        // Clear cache after update
-        Cache::forget('auth_user_'.$user->id);
 
         return $result;
     }
