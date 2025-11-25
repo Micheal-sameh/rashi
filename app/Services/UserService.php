@@ -47,9 +47,9 @@ class UserService
         return $user;
     }
 
-    public function leaderboard()
+    public function leaderboard($groupId = null)
     {
-        $users = $this->userRepository->leaderboard();
+        $users = $this->userRepository->leaderboard($groupId);
 
         return $users;
     }

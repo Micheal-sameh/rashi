@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\CreateProfilePicRequest;
+use App\Http\Requests\LeaderBoardRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
 
@@ -39,9 +40,9 @@ class UserController extends BaseController
 
     }
 
-    public function leaderboard()
+    public function leaderboard(LeaderBoardRequest $request)
     {
-        $users = $this->userService->leaderboard();
+        $users = $this->userService->leaderboard($request->group_id);
 
         return $this->respondResource(UserResource::collection($users));
     }

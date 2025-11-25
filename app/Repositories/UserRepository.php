@@ -164,10 +164,41 @@ class UserRepository extends BaseRepository
 
     }
 
-    public function leaderboard()
+    public function leaderboard($groupId)
     {
         return $this->model->query()->with('media')
             ->select('id', 'name', 'score', 'points')
+            ->when(! isset($groupId), function ($query) {
+                $query->whereHas('groups', function ($q) {
+                    $q->where('group_id', '!=', 1);
+                });
+            })->when(isset($groupId), function ($query) use ($groupId) {
+                $query->whereHas('groups', function ($q) use ($groupId) {
+                    $q->where('group_id', $groupId);
+                });
+            })
+            ->orderBy('score', 'desc')
+            ->limit(10)
+            ->get();
+    }
+
+    public function leaderboardByGroup($user)
+    {
+        $groupIds = $user->groups->pluck('id')->filter(function ($groupId) {
+            $group = \App\Models\Group::find($groupId);
+
+            return $group && $group->abbreviation !== 'general';
+        });
+
+        if ($groupIds->isEmpty()) {
+            return collect(); // Return empty collection if no valid groups
+        }
+
+        return $this->model->query()->with('media')
+            ->select('id', 'name', 'score', 'points')
+            ->whereHas('groups', function ($query) use ($groupIds) {
+                $query->whereIn('groups.id', $groupIds);
+            })
             ->orderBy('score', 'desc')
             ->limit(10)
             ->get();
