@@ -50,6 +50,7 @@
                         <th>{{ __('messages.status') }}</th>
                         <th>{{ __('messages.user_name') }}</th>
                         <th>{{ __('messages.servant') }}</th>
+                        <th>{{ __('messages.ordered_at') }}</th>
                         <th>{{ __('messages.actions') }}</th>
                     </tr>
                 </thead>
@@ -90,6 +91,7 @@
                                     {{ $order->relationloaded('servant') ? $order->servant?->name : '' }}
                                 </span>
                             </td>
+                            <td>{{ $order->created_at->format('d-m-Y') }}</td>
                             <td>
                                 @if ($order->status !== \App\Enums\OrderStatus::COMPLETED && $order->status !== \App\Enums\OrderStatus::CANCELLED)
                                     <!-- Receive Form -->
@@ -118,7 +120,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted">{{ __('No rewards found.') }}</td>
+                            <td colspan="8" class="text-center text-muted">{{ __('No rewards found.') }}</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -151,6 +153,12 @@
                                 {{ $order->points }}
                             </div>
                             <div class="col-6">
+                                <strong>{{ __('messages.ordered_at') }}:</strong><br>
+                                {{ $order->created_at->format('d-m-Y') }}
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12">
                                 <strong>{{ __('messages.status') }}:</strong><br>
                                 <span
                                     class="badge {{ $order->status == \App\Enums\OrderStatus::COMPLETED ? 'bg-success' : ($order->status == \App\Enums\OrderStatus::CANCELLED ? 'bg-danger' : 'bg-warning text-dark') }}">
@@ -213,6 +221,68 @@
             @endforelse
         </div>
     </div>
+            <div class="d-flex justify-content-center pt-3">
+            @if ($orders->hasPages())
+                <nav>
+                    <ul class="pagination">
+                        {{-- Previous Page Link --}}
+                        @if ($orders->onFirstPage())
+                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                        @else
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $orders->previousPageUrl() }}" rel="prev">&laquo;</a>
+                            </li>
+                        @endif
+
+                        @php
+                            $current = $orders->currentPage();
+                            $last = $orders->lastPage();
+                            $start = max($current - 2, 2);
+                            $end = min($current + 2, $last - 1);
+                        @endphp
+
+                        {{-- First page --}}
+                        <li class="page-item {{ $current === 1 ? 'active' : '' }}">
+                            <a class="page-link" href="{{ $orders->url(1) }}">1</a>
+                        </li>
+
+                        {{-- Dots before start --}}
+                        @if ($start > 2)
+                            <li class="page-item disabled"><span class="page-link">…</span></li>
+                        @endif
+
+                        {{-- Page range --}}
+                        @for ($page = $start; $page <= $end; $page++)
+                            <li class="page-item {{ $current === $page ? 'active' : '' }}">
+                                <a class="page-link" href="{{ $orders->url($page) }}">{{ $page }}</a>
+                            </li>
+                        @endfor
+
+                        {{-- Dots after end --}}
+                        @if ($end < $last - 1)
+                            <li class="page-item disabled"><span class="page-link">…</span></li>
+                        @endif
+
+                        {{-- Last page --}}
+                        @if ($last > 1)
+                            <li class="page-item {{ $current === $last ? 'active' : '' }}">
+                                <a class="page-link" href="{{ $orders->url($last) }}">{{ $last }}</a>
+                            </li>
+                        @endif
+
+                        {{-- Next Page Link --}}
+                        @if ($orders->hasMorePages())
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $orders->nextPageUrl() }}" rel="next">&raquo;</a>
+                            </li>
+                        @else
+                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                        @endif
+                    </ul>
+                </nav>
+            @endif
+        </div>
+
 
     <!-- Info Modal -->
     <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">

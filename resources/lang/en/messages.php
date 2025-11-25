@@ -185,4 +185,5 @@ return [
     'delete_all_api_tokens' => 'Delete All Tokens',
     'enter_password_to_confirm' => 'Enter your password to confirm',
     'notifications' => 'Notifications',
+    'ordered_at' => 'Ordered At',
 ];

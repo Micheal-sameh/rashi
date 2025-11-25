@@ -179,4 +179,5 @@ return [
     'delete_all_api_tokens' => 'حذف جميع الرموز',
     'enter_password_to_confirm' => 'أدخل كلمة المرور للتأكيد',
     'notifications' => 'اشعارات',
+    'ordered_at' => 'تم الطلب في',
 ];
