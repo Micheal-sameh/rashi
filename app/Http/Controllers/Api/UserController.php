@@ -24,6 +24,13 @@ class UserController extends BaseController
         return $this->apiResponse(new UserResource($user));
     }
 
+    public function me()
+    {
+        $user = $this->userService->show(auth()->id());
+
+        return $this->apiResponse(new UserResource($user));
+    }
+
     public function profilePic(CreateProfilePicRequest $request)
     {
         $user = $this->userService->profilePic($request->image);
