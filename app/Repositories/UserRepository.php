@@ -181,26 +181,4 @@ class UserRepository extends BaseRepository
             ->limit(10)
             ->get();
     }
-
-    public function leaderboardByGroup($user)
-    {
-        $groupIds = $user->groups->pluck('id')->filter(function ($groupId) {
-            $group = \App\Models\Group::find($groupId);
-
-            return $group && $group->abbreviation !== 'general';
-        });
-
-        if ($groupIds->isEmpty()) {
-            return collect(); // Return empty collection if no valid groups
-        }
-
-        return $this->model->query()->with('media')
-            ->select('id', 'name', 'score', 'points')
-            ->whereHas('groups', function ($query) use ($groupIds) {
-                $query->whereIn('groups.id', $groupIds);
-            })
-            ->orderBy('score', 'desc')
-            ->limit(10)
-            ->get();
-    }
 }
