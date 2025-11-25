@@ -127,7 +127,16 @@ class CompetitionRepository extends BaseRepository
 
     public function setStatus($id, $status)
     {
-        return $this->findById($id)->update(['status' => $status]);
+        $competition = $this->findById($id);
+        $oldStatus = $competition->status;
+        $competition->update(['status' => $status]);
+
+        // Fire event for status update if set to active
+        if ($status == CompetitionStatus::ACTIVE) {
+            event(new CompetitionStatusUpdated($competition, $oldStatus, $status));
+        }
+
+        return $competition;
     }
 
     public function checkCompetition()
