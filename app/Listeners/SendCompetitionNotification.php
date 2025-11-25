@@ -7,12 +7,17 @@ use App\Events\CompetitionStatusUpdated;
 use App\Models\Competition;
 use App\Models\Notification;
 use App\Models\UserNotification;
+use App\Services\FirebaseService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
 class SendCompetitionNotification implements ShouldQueue
 {
     use InteractsWithQueue;
+
+    public function __construct(
+        protected FirebaseService $firebaseService
+    ) {}
 
     public function handle(CompetitionStatusUpdated $event)
     {
@@ -44,6 +49,15 @@ class SendCompetitionNotification implements ShouldQueue
                     'user_id' => $user->id,
                     'notification_id' => $notification->id,
                 ]);
+
+                // Send FCM notification
+                $title = 'Competition Activated';
+                $body = "The competition '{$competition->name}' has been activated and is now live!";
+                if ($user->fcmTokens->isNotEmpty()) {
+                    foreach ($user->fcmTokens as $token) {
+                        $this->firebaseService->sendToDevice($token->token, $title, $body);
+                    }
+                }
             }
         }
     }
