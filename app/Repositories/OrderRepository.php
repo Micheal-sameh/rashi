@@ -39,6 +39,7 @@ class OrderRepository extends BaseRepository
             ->when(! $user->can('view_all_orders'), fn ($q) => $q->where('user_id', $user->id))
             ->when(isset($user_id), fn ($q) => $q->where('user_id', $user_id))
             ->when(isset($status), fn ($q) => $q->where('status', $status))
+            ->orderBy('status')
             ->latest();
 
         return $this->execute($query);

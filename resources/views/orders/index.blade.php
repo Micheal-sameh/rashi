@@ -1,7 +1,7 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container py-4" style="max-width: 1200px;">
+    <div class="container py-4"">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="fw-bold text-primary">{{ __('messages.orders') }}</h1>
         </div>
@@ -39,8 +39,8 @@
             </div>
         </form>
 
-        <!-- Orders Table -->
-        <div class="table-responsive shadow-sm rounded-4 overflow-hidden">
+        <!-- Orders Table (Desktop) -->
+        <div class="table-responsive shadow-sm rounded-4 overflow-hidden d-none d-md-block">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
@@ -123,6 +123,94 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        <!-- Orders Cards (Mobile) -->
+        <div class="d-block d-md-none">
+            @forelse($orders as $order)
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>{{ __('messages.reward') }}:</strong><br>
+                                <span class="text-primary reward-detail" style="cursor:pointer;"
+                                    data-name="{{ $order->reward->name ?? '' }}"
+                                    data-points="{{ $order->reward->points ?? '' }}"
+                                    data-image="{{ $order->reward?->getFirstMediaUrl('rewards_images') ?: asset('images/default.png') }}">
+                                    {{ $order->relationloaded('reward') ? $order->reward->name : '' }}
+                                </span>
+                            </div>
+                            <div class="col-6">
+                                <strong>{{ __('messages.quantity') }}:</strong><br>
+                                {{ $order->quantity }}
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-6">
+                                <strong>{{ __('messages.points') }}:</strong><br>
+                                {{ $order->points }}
+                            </div>
+                            <div class="col-6">
+                                <strong>{{ __('messages.status') }}:</strong><br>
+                                <span
+                                    class="badge {{ $order->status == \App\Enums\OrderStatus::COMPLETED ? 'bg-success' : ($order->status == \App\Enums\OrderStatus::CANCELLED ? 'bg-danger' : 'bg-warning text-dark') }}">
+                                    {{ App\Enums\OrderStatus::getStringValue($order->status) }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-6">
+                                <strong>{{ __('messages.user_name') }}:</strong><br>
+                                <span class="text-primary user-detail" style="cursor:pointer;"
+                                    data-name="{{ $order->user->name ?? '' }}"
+                                    data-membership_code="{{ $order->user->membership_code ?? '' }}"
+                                    data-phone="{{ $order->user->phone ?? '' }}"
+                                    data-image="{{ $order->user?->getFirstMediaUrl('profile_images') ?: asset('images/default.png') }}">
+                                    {{ $order->relationloaded('user') ? $order->user->name : '' }}
+                                </span>
+                            </div>
+                            <div class="col-6">
+                                <strong>{{ __('messages.servant') }}:</strong><br>
+                                <span class="text-primary servant-detail" style="cursor:pointer;"
+                                    data-name="{{ $order->servant?->name ?? '' }}"
+                                    data-membership_code="{{ $order->servant?->membership_code ?? '' }}"
+                                    data-phone="{{ $order->servant?->phone ?? '' }}"
+                                    data-image="{{ $order->servant?->getFirstMediaUrl('profile_images') ?: asset('images/default.png') }}">
+                                    {{ $order->relationloaded('servant') ? $order->servant?->name : '' }}
+                                </span>
+                            </div>
+                        </div>
+                        @if ($order->status !== \App\Enums\OrderStatus::COMPLETED && $order->status !== \App\Enums\OrderStatus::CANCELLED)
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <!-- Receive Form -->
+                                    <form action="{{ route('orders.received', $order->id) }}" method="POST"
+                                        class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" class="btn btn-success btn-sm shadow-sm">
+                                            <i class="fa fa-check me-1"></i>{{ __('messages.received') }}
+                                        </button>
+                                    </form>
+
+                                    <!-- Cancel Form -->
+                                    <form action="{{ route('orders.cancel', $order->id) }}" method="POST"
+                                        class="d-inline ms-1">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" class="btn btn-danger btn-sm shadow-sm"
+                                            onclick="return confirm('{{ __('Are you sure?') }}')">
+                                            <i class="fa fa-times me-1"></i>{{ __('messages.cancel') }}
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @empty
+                <div class="text-center text-muted">{{ __('No rewards found.') }}</div>
+            @endforelse
         </div>
     </div>
 
