@@ -11,7 +11,7 @@ class UserService
     public function updateOrcreate($input)
     {
         $user = $this->userRepository->updateOrcreate($input);
-        $user->load('roles', 'groups');
+        $user->load('roles', 'groups', 'media');
 
         return $user;
     }
@@ -26,7 +26,7 @@ class UserService
     public function show($id)
     {
         $user = $this->userRepository->show($id);
-        $user->load('roles');
+        $user->load('roles', 'groups', 'media');
 
         return $user;
     }
@@ -34,7 +34,7 @@ class UserService
     public function profilePic($image)
     {
         $user = $this->userRepository->profilePic($image);
-        $user->load('roles');
+        $user->load('roles', 'groups', 'media');
 
         return $user;
     }
@@ -42,7 +42,7 @@ class UserService
     public function updateGroups($groups, $id)
     {
         $user = $this->userRepository->updateGroups($groups, $id);
-        $user->load('groups');
+        $user->load('roles', 'groups', 'media');
 
         return $user;
     }
