@@ -181,6 +181,7 @@ class CompetitionRepository extends BaseRepository
             ->join('users', 'user_answers.user_id', '=', 'users.id')
             ->select('users.id', 'users.name')
             ->distinct()
+            ->orderBy('users.name')
             ->get();
     }
 }
