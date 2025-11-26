@@ -109,7 +109,7 @@ class UserRepository extends BaseRepository
 
     public function dropdown()
     {
-        return $this->model->all();
+        return $this->model->orderBy('name')->pluck('name', 'id');
     }
 
     public function updateGroups($groups, $id)
