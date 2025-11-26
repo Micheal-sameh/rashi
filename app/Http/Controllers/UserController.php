@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\UsersFilterDTO;
+use App\Http\Requests\LeaderBoardRequest;
 use App\Http\Requests\UpdateUserGroupRequest;
 use App\Http\Resources\UserResource;
 use App\Repositories\GroupRepository;
@@ -52,10 +53,11 @@ class UserController extends Controller
         return redirect()->back()->with('message', 'sucess updated');
     }
 
-    public function leaderboard()
+    public function leaderboard(LeaderBoardRequest $request)
     {
-        $users = $this->userService->leaderboard();
+        $users = $this->userService->leaderboard($request->group_id);
+        $groups = $this->groupRepository->dropdown();
 
-        return view('users.leaderboard', compact('users'));
+        return view('users.leaderboard', compact('users', 'groups'));
     }
 }

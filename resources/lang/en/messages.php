@@ -126,6 +126,8 @@ return [
     'settings' => 'Settings',
     'create_groups' => 'Create New Groups',
     'groups' => 'Groups',
+    'group' => 'Group',
+    'all_groups' => 'All Groups',
     'edit_name' => 'Edit Name',
     'edit_group_users' => 'Edit Group Users',
     'close' => 'Close',

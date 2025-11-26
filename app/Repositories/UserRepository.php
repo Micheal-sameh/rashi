@@ -164,21 +164,50 @@ class UserRepository extends BaseRepository
 
     }
 
-    public function leaderboard($groupId)
+    public function leaderboard($groupId = null)
     {
-        $groupIds = auth()->user()->groups->pluck('id')->toArray();
+        $userGroupIds = auth()->user()->groups->pluck('id')->toArray();
+        $isApi = request()->is('api/*');
 
-        return $this->model->query()->with('media')
+        return $this->model->query()
+            ->with('media')
             ->select('id', 'name', 'score', 'points')
-            ->when(! isset($groupId), function ($query) use ($groupIds) {
-                $query->whereHas('groups', function ($q) use ($groupIds) {
-                    $q->where('group_id', '!=', 1)->whereIn('group_id', $groupIds);
-                });
-            })->when(isset($groupId), function ($query) use ($groupId) {
-                $query->whereHas('groups', function ($q) use ($groupId) {
-                    $q->where('group_id', $groupId);
-                });
+
+            // API mode
+            ->when($isApi, function ($query) use ($groupId, $userGroupIds) {
+                $query
+                    // API + specific group
+                    ->when(isset($groupId), function ($q) use ($groupId) {
+                        $q->whereHas('groups', function ($g) use ($groupId) {
+                            $g->where('group_id', $groupId);
+                        });
+                    })
+                    // API + no group → user groups except 1
+                    ->when(! isset($groupId), function ($q) use ($userGroupIds) {
+                        $q->whereHas('groups', function ($g) use ($userGroupIds) {
+                            $g->where('group_id', '!=', 1)
+                                ->whereIn('group_id', $userGroupIds);
+                        });
+                    });
             })
+
+            // Web mode
+            ->when(! $isApi, function ($query) use ($groupId) {
+                $query
+                    // Web + specific group
+                    ->when(isset($groupId), function ($q) use ($groupId) {
+                        $q->whereHas('groups', function ($g) use ($groupId) {
+                            $g->where('group_id', $groupId);
+                        });
+                    })
+                    // Web + no group → exclude group 1
+                    ->when(! isset($groupId), function ($q) {
+                        $q->whereHas('groups', function ($g) {
+                            $g->where('group_id', '=', 1);
+                        });
+                    });
+            })
+
             ->orderBy('score', 'desc')
             ->limit(10)
             ->get();

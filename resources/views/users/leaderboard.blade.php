@@ -6,6 +6,28 @@
             <h2 class="fw-bold text-primary">{{ __('messages.leaderboard') }}</h2>
         </div>
 
+        <!-- Filter Form -->
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ route('users.leaderboard') }}" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="group_id" class="form-label">{{ __('messages.group') }}</label>
+                        <select name="group_id" id="group_id" class="form-select">
+                            <option value="">{{ __('messages.all_groups') }}</option>
+                            @foreach($groups as $group)
+                                <option value="{{ $group->id }}" {{ request('group_id') == $group->id ? 'selected' : '' }}>
+                                    {{ $group->name }} ({{ $group->abbreviation }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">{{ __('messages.filter') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="fa fa-check-circle me-2"></i> {{ session('success') }}

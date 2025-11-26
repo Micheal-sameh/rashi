@@ -129,6 +129,8 @@ return [
     'settings' => 'الاعدادات',
     'create_groups' => 'اضف مجموعة جديدة',
     'groups' => 'المجموعات',
+    'group' => 'المجموعة',
+    'all_groups' => 'جميع المجموعات',
     'edit_name' => 'تعديل الاسم',
     'edit_group_users' => 'تعديل المستخدمين',
     'close' => 'اغلاق',
