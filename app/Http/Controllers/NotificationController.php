@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SendNotificationRequest;
 use App\Models\Group;
-use App\Models\User;
 use App\Repositories\NotificationRepository;
+use App\Repositories\UserRepository;
 
 class NotificationController extends Controller
 {
     public function __construct(
-        protected NotificationRepository $notificationRepository
+        protected NotificationRepository $notificationRepository,
+        protected UserRepository $userRepository
     ) {}
 
     public function index()
@@ -22,7 +23,7 @@ class NotificationController extends Controller
 
     public function create()
     {
-        $users = User::select('id', 'name')->get();
+        $users = $this->userRepository->dropdown();
         $groups = Group::select('id', 'name')->get();
 
         return view('notifications.create', compact('users', 'groups'));
