@@ -16,4 +16,18 @@ class SettingController extends BaseController
             'android_version' => $androidVersion,
         ]);
     }
+
+    public function aboutUs()
+    {
+        $aboutUs = Setting::where('name', 'about_us')->first();
+
+        return $this->apiResponse($aboutUs?->value);
+    }
+
+    public function terms()
+    {
+        $terms = Setting::where('name', 'terms')->first();
+
+        return $this->apiResponse($terms?->value);
+    }
 }

@@ -136,5 +136,17 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::post('/', [NotificationController::class, 'store'])->name('notifications.store');
         });
 
+        Route::prefix('about_us')->group(function () {
+            Route::get('/show', [SettingController::class, 'aboutUs'])->name('about_us.show');
+            Route::get('/edit', [SettingController::class, 'editAboutUs'])->name('about_us.edit');
+            Route::put('/update', [SettingController::class, 'updateAboutUs'])->name('about_us.update');
+        });
+
+        Route::prefix('terms')->group(function () {
+            Route::get('/show', [SettingController::class, 'aboutUs'])->name('about_us.show');
+            Route::get('/edit', [SettingController::class, 'editAboutUs'])->name('about_us.edit');
+            Route::put('/update', [SettingController::class, 'updateAboutUs'])->name('about_us.update');
+        });
+
     });
 });

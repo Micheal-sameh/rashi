@@ -95,6 +95,9 @@ Route::group(['middleware' => ['auth:sanctum', 'check.competition', 'cache.auth.
         Route::put('/{id}/read', [NotificationController::class, 'markAsRead']);
         Route::put('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
     });
+
+    Route::get('/about_us', [SettingController::class, 'aboutUs']);
+    Route::get('/terms', [SettingController::class, 'terms']);
 });
 
 Route::get('/quizzes/dropdown/{id}', [QuizController::class, 'dropdown']);

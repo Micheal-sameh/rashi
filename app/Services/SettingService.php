@@ -19,4 +19,9 @@ class SettingService
     {
         return $this->settingRepository->update($settings, $files);
     }
+
+    public function getSettingByName($name)
+    {
+        return $this->settingRepository->getSettingByName($name);
+    }
 }

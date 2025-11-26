@@ -14,22 +14,34 @@ class SettingDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Setting::create([
+        //     'name' => 'logo',
+        //     'value' => 'null',
+        //     'type' => 'file',
+        // ]);
+
+        // Setting::create([
+        //     'name' => 'android_version',
+        //     'value' => '0.0.0',
+        //     'type' => 'string',
+        // ]);
+
+        // Setting::create([
+        //     'name' => 'ios_version',
+        //     'value' => '0.0.0',
+        //     'type' => 'string',
+        // ]);
+
         Setting::create([
-            'name' => 'logo',
-            'value' => 'null',
-            'type' => 'file',
+            'name' => 'about_us',
+            'value' => null,
+            'type' => 'text',
         ]);
 
         Setting::create([
-            'name' => 'android_version',
-            'value' => '0.0.0',
-            'type' => 'string',
-        ]);
-
-        Setting::create([
-            'name' => 'ios_version',
-            'value' => '0.0.0',
-            'type' => 'string',
+            'name' => 'terms',
+            'value' => null,
+            'type' => 'text',
         ]);
     }
 }

@@ -55,4 +55,9 @@ class SettingRepository extends BaseRepository
             }
         }
     }
+
+    public function getSettingByName($name)
+    {
+        return $this->model->where('name', $name)->first();
+    }
 }

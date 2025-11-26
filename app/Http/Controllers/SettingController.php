@@ -43,4 +43,35 @@ class SettingController extends Controller
 
         return redirect()->back()->with('success', 'All API tokens have been deleted. All users are now logged out.');
     }
+
+    public function aboutUs()
+    {
+        $first = request()->segment(1);
+        $aboutUs = $this->settingService->getSettingByName($first);
+
+        return view('about_us.show', compact('aboutUs'));
+    }
+
+    public function editAboutUs()
+    {
+        $first = request()->segment(1);
+        $aboutUs = $this->settingService->getSettingByName($first);
+
+        return view('about_us.edit', compact('aboutUs'));
+    }
+
+    public function updateAboutUs(Request $request)
+    {
+        $first = request()->segment(1);
+        $request->validate([
+            'value' => 'required|string',
+        ]);
+
+        $aboutUsSetting = $this->settingService->getSettingByName($first);
+        $aboutUsSetting->update([
+            'value' => $request->value,
+        ]);
+
+        return redirect()->route('about_us.show')->with('success', 'About Us updated successfully.');
+    }
 }
