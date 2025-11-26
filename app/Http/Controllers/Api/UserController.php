@@ -27,7 +27,13 @@ class UserController extends BaseController
 
     public function me()
     {
-        $user = $this->userService->show(auth()->id());
+        $user = $this->userService->show(auth()->id())->load([
+            'roles:id,name',
+            'media',
+            'groups' => function ($q) {
+                $q->where('group_id', '!=', 1);
+            },
+        ]);
 
         return $this->apiResponse(new UserResource($user));
     }

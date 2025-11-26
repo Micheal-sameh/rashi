@@ -32,6 +32,13 @@ class AuthController extends BaseController
             ));
 
             $user = $this->userService->updateOrcreate($input);
+            $user->load([
+                'roles:id,name',
+                'media',
+                'groups' => function ($q) {
+                    $q->where('group_id', '!=', 1);
+                },
+            ]);
             $token = $this->generateToken($user);
 
             return $this->apiResponse([
