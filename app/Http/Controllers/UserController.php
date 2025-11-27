@@ -10,6 +10,7 @@ use App\Repositories\GroupRepository;
 use App\Repositories\PointHistoryRepository;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Mpdf\Mpdf;
 
 class UserController extends Controller
 {
@@ -59,5 +60,22 @@ class UserController extends Controller
         $groups = $this->groupRepository->dropdown();
 
         return view('users.leaderboard', compact('users', 'groups'));
+    }
+
+    public function exportLeaderboard(LeaderBoardRequest $request)
+    {
+        $users = $this->userService->leaderboard($request->group_id);
+
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'default_font' => 'arial',
+        ]);
+
+        $html = view('users.leaderboard_pdf', compact('users'))->render();
+
+        $mpdf->WriteHTML($html);
+
+        return $mpdf->Output('leaderboard.pdf', 'D');
     }
 }

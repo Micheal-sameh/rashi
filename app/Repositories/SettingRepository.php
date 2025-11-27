@@ -56,6 +56,13 @@ class SettingRepository extends BaseRepository
         }
     }
 
+    public function getLogo()
+    {
+        $setting = $this->model->where('name', 'logo')->first();
+
+        return $setting?->getFirstMediaUrl('app_logo') ?? asset('default-logo.png');
+    }
+
     public function getSettingByName($name)
     {
         return $this->model->where('name', $name)->first();

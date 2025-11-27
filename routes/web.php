@@ -55,6 +55,7 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/', [UserController::class, 'index'])->name('users.index');
             Route::get('/{id}/show', [UserController::class, 'show'])->name('users.show');
             Route::get('/leaderboard', [UserController::class, 'leaderboard'])->name('users.leaderboard');
+            Route::get('/leaderboard/export', [UserController::class, 'exportLeaderboard'])->name('users.leaderboard.export');
             Route::put('/{id}/update-groups', [UserController::class, 'updateGroups'])->name('users.updateGroups');
         });
 

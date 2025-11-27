@@ -4,6 +4,9 @@
     <div class="container-fluid px-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold text-primary">{{ __('messages.leaderboard') }}</h2>
+            <a href="{{ route('users.leaderboard.export', request()->query()) }}" class="btn btn-success">
+                <i class="fa fa-download me-2"></i>Export to PDF
+            </a>
         </div>
 
         <!-- Filter Form -->
