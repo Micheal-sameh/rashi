@@ -6,6 +6,7 @@ use App\DTOs\CompetitionCreateDTO;
 use App\Http\Requests\CreateCompetitionRequest;
 use App\Repositories\GroupRepository;
 use App\Services\CompetitionService;
+use Mpdf\Mpdf;
 
 class CompetitionController extends Controller
 {
@@ -107,5 +108,52 @@ class CompetitionController extends Controller
         }
 
         return view('competitions.user-answers', compact('competition', 'users', 'userId', 'quizStats'));
+    }
+
+    public function exportLeaderboard($id)
+    {
+        $competition = $this->competitionService->show($id)->load([
+            'quizzes.questions.answers',
+            'quizzes.questions.userAnswers' => function ($query) {
+                $query->with(['user', 'answer']);
+            },
+        ]);
+
+        $userStats = [];
+        foreach ($competition->quizzes as $quiz) {
+            $quizStats = $this->competitionService->getUserStatsForQuiz($quiz);
+            foreach ($quizStats as $userId => $stats) {
+                if (! isset($userStats[$userId])) {
+                    $userStats[$userId] = [
+                        'name' => $stats['name'],
+                        'total_correct' => 0,
+                        'total_points' => 0,
+                        'total_questions' => 0,
+                    ];
+                }
+                $userStats[$userId]['total_correct'] += $stats['total_correct'];
+                $userStats[$userId]['total_points'] += $stats['total_points'];
+                $userStats[$userId]['total_questions'] += $stats['total_questions'];
+            }
+        }
+
+        // Sort by total_points descending
+        uasort($userStats, function ($a, $b) {
+            return $b['total_points'] <=> $a['total_points'];
+        });
+
+        $logo = \App\Models\Setting::where('name', 'logo')->first();
+
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'default_font' => 'arial',
+        ]);
+        dd($userStats);
+        $html = view('competitions.leaderboard_pdf', compact('competition', 'userStats', 'logo'))->render();
+
+        $mpdf->WriteHTML($html);
+
+        return $mpdf->Output("{$competition->name}.pdf", 'D');
     }
 }

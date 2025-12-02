@@ -5,6 +5,9 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold text-primary">{{ __('messages.competitions') }}: {{ $competition->name }}</h2>
             <div>
+                <a href="{{ route('competitions.leaderboard.export', $competition->id) }}" class="btn btn-primary me-2">
+                    <i class="fa fa-download me-1"></i> Export Leaderboard PDF
+                </a>
                 <form method="GET" action="{{ route('competitions.userAnswers', $competition->id) }}" class="d-inline">
                     <select name="user_id" class="form-select d-inline w-auto me-2" onchange="this.form.submit()">
                         <option value="">All Users</option>
