@@ -220,4 +220,8 @@ return [
     'select_group' => 'Select Group:',
     'choose_a_group' => 'Choose a group...',
     'message_label' => 'Message:',
+    'bonus_awarded' => 'Bonus Awarded',
+    'penalty_applied' => 'Penalty Applied',
+    'bonus_message' => 'automatic message: You have been awarded :points points as a bonus. Reason: :reason',
+    'penalty_message' => 'automatic message: A penalty of :points points has been applied. Reason: :reason',
 ];

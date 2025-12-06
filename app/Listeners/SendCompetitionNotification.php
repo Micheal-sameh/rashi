@@ -51,8 +51,8 @@ class SendCompetitionNotification implements ShouldQueue
                 ]);
 
                 // Send FCM notification
-                $title = 'Competition Activated';
-                $body = "The competition '{$competition->name}' has been activated and is now live!";
+                $title = __('messages.competition_activated');
+                $body = __('messages.competition_activated_body', ['name' => $competition->name]);
                 if ($user->fcmTokens->isNotEmpty()) {
                     foreach ($user->fcmTokens as $token) {
                         $this->firebaseService->sendToDevice($token->token, $title, $body);

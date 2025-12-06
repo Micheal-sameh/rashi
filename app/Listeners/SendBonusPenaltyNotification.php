@@ -22,10 +22,10 @@ class SendBonusPenaltyNotification implements ShouldQueue
         $bonusPenalty = $event->bonusPenalty;
 
         $typeString = $bonusPenalty->type == BonusPenaltyType::BONUS ? 'bonus' : 'penalty';
-        $title = $bonusPenalty->type == BonusPenaltyType::BONUS ? 'Bonus Awarded' : 'Penalty Applied';
+        $title = $bonusPenalty->type == BonusPenaltyType::BONUS ? __('messages.bonus_awarded') : __('messages.penalty_applied');
         $message = $bonusPenalty->type == BonusPenaltyType::BONUS
-            ? "automatic message: You have been awarded {$bonusPenalty->points} points as a bonus. Reason: {$bonusPenalty->reason}"
-            : "automatic message: A penalty of {$bonusPenalty->points} points has been applied. Reason: {$bonusPenalty->reason}";
+            ? __('messages.bonus_message', ['points' => $bonusPenalty->points, 'reason' => $bonusPenalty->reason])
+            : __('messages.penalty_message', ['points' => $bonusPenalty->points, 'reason' => $bonusPenalty->reason]);
 
         $this->notificationRepository->createNotificationForUser(
             $bonusPenalty->user_id,
