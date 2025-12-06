@@ -28,20 +28,20 @@
                 <form class="row g-2" method="GET" action="{{ route('notifications.index') }}">
                     <div class="col-md-6">
                         <input type="text" name="search" value="{{ request('search') }}" class="form-control"
-                            placeholder="Search message or type...">
+                            placeholder="{{ __('messages.search_message_or_type') }}">
                     </div>
                     <div class="col-md-3">
                         <select name="type" class="form-select">
-                            <option value="">All Types</option>
-                            <option value="success" @selected(request('type') == 'success')>Success</option>
-                            <option value="warning" @selected(request('type') == 'warning')>Warning</option>
-                            <option value="error" @selected(request('type') == 'error')>Error</option>
-                            <option value="info" @selected(request('type') == 'info')>Info</option>
+                            <option value="">{{ __('messages.all_types') }}</option>
+                            <option value="success" @selected(request('type') == 'success')>{{ __('messages.success') }}</option>
+                            <option value="warning" @selected(request('type') == 'warning')>{{ __('messages.warning') }}</option>
+                            <option value="error" @selected(request('type') == 'error')>{{ __('messages.error') }}</option>
+                            <option value="info" @selected(request('type') == 'info')>{{ __('messages.info') }}</option>
                         </select>
                     </div>
                     <div class="col-md-3 text-end">
                         <button type="submit" class="btn btn-outline-primary">
-                            <i class="fas fa-search"></i> Filter
+                            <i class="fas fa-search"></i> {{ __('messages.filter') }}
                         </button>
                     </div>
                 </form>
@@ -55,10 +55,10 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light text-center">
                             <tr>
-                                <th style="width: 60px;">#</th>
-                                <th>Message</th>
-                                <th style="width: 120px;">Type</th>
-                                <th style="width: 180px;">Created At</th>
+                                <th style="width: 60px;">{{ __('messages.id') }}</th>
+                                <th>{{ __('messages.message') }}</th>
+                                <th style="width: 120px;">{{ __('messages.type') }}</th>
+                                <th style="width: 180px;">{{ __('messages.created_at') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -90,7 +90,7 @@
                                 <tr>
                                     <td colspan="4" class="text-center py-4 text-muted">
                                         <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
-                                        No notifications found
+                                        {{ __('messages.no_notifications_found') }}
                                     </td>
                                 </tr>
                             @endforelse

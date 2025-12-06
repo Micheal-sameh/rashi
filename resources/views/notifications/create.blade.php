@@ -6,10 +6,10 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Send Manual Notification</h3>
+                    <h3 class="card-title">{{ __('messages.send_notification') }}</h3>
                     <div class="card-tools">
                         <a href="{{ route('notifications.index') }}" class="btn btn-secondary btn-sm">
-                            <i class="fas fa-arrow-left"></i> Back
+                            <i class="fas fa-arrow-left"></i> {{ __('messages.back') }}
                         </a>
                     </div>
                 </div>
@@ -34,9 +34,9 @@
                         </div>
 
                         <div class="form-group" id="user-select">
-                            <label for="user_id">Select User:</label>
+                            <label for="user_id">{{ __('messages.select_user') }}</label>
                             <select name="user_id" class="form-control">
-                                <option value="">Choose a user...</option>
+                                <option value="">{{ __('messages.choose_a_user') }}</option>
                                 @foreach($users as $user)
                                     <option value="{{ $user->id }}" >{{ $user->name }}</option>
                                 @endforeach
@@ -44,9 +44,9 @@
                         </div>
 
                         <div class="form-group" id="group-select" style="display: none;">
-                            <label for="group_id">Select Group:</label>
+                            <label for="group_id">{{ __('messages.select_group') }}</label>
                             <select name="group_id" class="form-control">
-                                <option value="">Choose a group...</option>
+                                <option value="">{{ __('messages.choose_a_group') }}</option>
                                 @foreach($groups as $group)
                                     <option value="{{ $group->id }}" {{ old('group_id') == $group->id ? 'selected' : '' }}>{{ $group->name }}</option>
                                 @endforeach
@@ -61,7 +61,7 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i> Send Notification
+                            <i class="fas fa-paper-plane"></i> {{ __('messages.send_notification') }}
                         </button>
                     </form>
                 </div>
