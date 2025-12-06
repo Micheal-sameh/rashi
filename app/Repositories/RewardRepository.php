@@ -33,7 +33,15 @@ class RewardRepository extends BaseRepository
 
     public function index()
     {
-        $query = $this->model->query()->with(['media']);
+        $query = $this->model->query()->with(['media', 'group']);
+
+        if (request()->is('api/*')) {
+            $user = auth()->user();
+            $groupIds = $user->groups->pluck('id')->toArray();
+            if ($user && $user->groups->isNotEmpty()) {
+                $query->whereIn('group_id', $groupIds);
+            }
+        }
 
         return $this->execute($query);
     }
@@ -45,6 +53,7 @@ class RewardRepository extends BaseRepository
             'quantity' => $input->quantity,
             'status' => $input->status ?? RewardStatus::ACTIVE,
             'points' => $input->points,
+            'group_id' => $input->group_id,
         ]);
         RewardHistory::addRecord($reward);
         if ($image) {

@@ -18,4 +18,9 @@ class Group extends Model
     {
         return $this->belongsToMany(User::class, 'user_groups'); // Pivot table 'group_user'
     }
+
+    public function rewards()
+    {
+        return $this->hasMany(Reward::class);
+    }
 }

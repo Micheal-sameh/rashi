@@ -224,4 +224,5 @@ return [
     'penalty_applied' => 'Penalty Applied',
     'bonus_message' => 'automatic message: You have been awarded :points points as a bonus. Reason: :reason',
     'penalty_message' => 'automatic message: A penalty of :points points has been applied. Reason: :reason',
+    'no_group' => 'No Group',
 ];

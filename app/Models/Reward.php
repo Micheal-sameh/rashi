@@ -18,9 +18,15 @@ class Reward extends Model implements HasMedia
         'status',
         'points',
         'image',
+        'group_id',
     ];
 
     protected $mediaAttributes = [
         'image',
     ];
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
 }

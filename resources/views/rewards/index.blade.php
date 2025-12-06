@@ -30,6 +30,7 @@
                                 <th>{{ __('messages.quantity') }}</th>
                                 <th>{{ __('messages.status') }}</th>
                                 <th>{{ __('messages.points') }}</th>
+                                <th>{{ __('messages.group') }}</th>
                                 <th>{{ __('messages.image') }}</th>
                                 <th>{{ __('messages.actions') }}</th>
                             </tr>
@@ -46,6 +47,7 @@
                                         </span>
                                     </td>
                                     <td>{{ $reward->points }}</td>
+                                    <td>{{ $reward->group ? $reward->group->name : __('messages.no_group') }}</td>
                                     <td>
                                         @if ($reward->hasMedia('rewards_images'))
                                             <img src="{{ $reward->getFirstMediaUrl('rewards_images') }}" alt="Reward Image"

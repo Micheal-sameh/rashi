@@ -69,6 +69,20 @@
                             {{ __('messages.points') }}</label>
                     </div>
 
+                    <!-- Group -->
+                    <div class="form-floating mb-4">
+                        <select class="form-select rounded-pill" id="group_id" name="group_id">
+                            <option value="" selected>{{ __('messages.select_group') }}</option>
+                            @foreach ($groups as $group)
+                                <option value="{{ $group->id }}"
+                                    {{ old('group_id') == $group->id ? 'selected' : '' }}>
+                                    {{ $group->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <label for="group_id"><i class="fa fa-users me-1"></i> {{ __('messages.group') }}</label>
+                    </div>
+
                     <!-- Image Upload -->
                     <div class="mb-4">
                         <label class="fw-semibold mb-2">{{ __('messages.image') }}</label>

@@ -233,4 +233,5 @@ return [
     'penalty_applied' => 'تم تطبيق العقوبة',
     'bonus_message' => 'رسالة تلقائية: تم منحك :points نقاط كبونص. السبب: :reason',
     'penalty_message' => 'رسالة تلقائية: تم تطبيق عقوبة :points نقاط. السبب: :reason',
+    'no_group' => 'لا توجد مجموعة',
 ];

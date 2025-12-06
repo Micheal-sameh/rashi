@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\DTOs\RewardCreateDTO;
 use App\Http\Requests\AddQuantityRequest;
 use App\Http\Requests\RewardCreateRequest;
+use App\Repositories\GroupRepository;
 use App\Services\RewardService;
 
 class RewardController extends Controller
 {
-    public function __construct(protected RewardService $rewardService) {}
+    public function __construct(
+        protected RewardService $rewardService,
+        protected GroupRepository $groupRepository,
+    ) {}
 
     public function index()
     {
@@ -20,13 +24,15 @@ class RewardController extends Controller
 
     public function create()
     {
-        return view('rewards.create');
+        $groups = $this->groupRepository->dropdown();
+
+        return view('rewards.create', compact('groups'));
     }
 
     public function store(RewardCreateRequest $request)
     {
         $input = new RewardCreateDTO(...$request->only(
-            'name', 'quantity', 'points', 'status'
+            'name', 'quantity', 'points', 'status', 'group_id'
         ));
         $this->rewardService->store($input, $request->image);
 
