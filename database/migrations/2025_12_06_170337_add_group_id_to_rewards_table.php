@@ -6,19 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('rewards', function (Blueprint $table) {
-            $table->foreignId('group_id')->default(1)->constrained('groups')->onDelete('set null');
+            $table->foreignId('group_id')
+                ->default(1)
+                ->constrained('groups')
+                ->cascadeOnDelete();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('rewards', function (Blueprint $table) {
