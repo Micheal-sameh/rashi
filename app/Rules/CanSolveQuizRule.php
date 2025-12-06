@@ -3,6 +3,7 @@
 namespace App\Rules;
 
 use App\Repositories\QuizRepository;
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
@@ -20,6 +21,10 @@ class CanSolveQuizRule implements ValidationRule
 
         if (!$quiz?->isSolved?->isEmpty()) {
             $fail('You have already solved this quiz');
+        }
+
+        if (Carbon::parse($quiz->date)->lt(today())) {
+            $fail('This quiz is no longer available to solve');
         }
     }
 }
