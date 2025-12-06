@@ -188,4 +188,11 @@ return [
     'enter_password_to_confirm' => 'Enter your password to confirm',
     'notifications' => 'Notifications',
     'ordered_at' => 'Ordered At',
+    'you_have_already_solved_this_quiz' => 'You have already solved this quiz',
+    'this_quiz_is_no_longer_available_to_solve' => 'This quiz is no longer available to solve',
+    'is_active_cannot_be_deleted' => 'is active cannot be deleted',
+    'the_version_must_be_newer_than' => 'The version must be newer than: :version.',
+    'setting_error' => ':name : :error',
+    'the_selected_question_does_not_belong_to_the_specified_quiz' => 'The selected question does not belong to the specified quiz.',
+    'the_quiz_date_must_be_between' => 'The quiz date must be between the competition start date (:start) and end date (:end).',
 ];

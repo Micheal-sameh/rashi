@@ -19,12 +19,12 @@ class CanSolveQuizRule implements ValidationRule
         $quizRepository = app(QuizRepository::class);
         $quiz = $quizRepository->findById($value);
 
-        if (!$quiz?->isSolved?->isEmpty()) {
-            $fail('You have already solved this quiz');
+        if (! $quiz?->isSolved?->isEmpty()) {
+            $fail(__('messages.you_have_already_solved_this_quiz'));
         }
 
         if (Carbon::parse($quiz->date)->lt(today())) {
-            $fail('This quiz is no longer available to solve');
+            $fail(__('messages.this_quiz_is_no_longer_available_to_solve'));
         }
     }
 }

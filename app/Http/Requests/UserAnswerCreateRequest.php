@@ -20,7 +20,7 @@ class UserAnswerCreateRequest extends FormRequest
                     $quizId = $this->input('quiz_id');
                     $question = \App\Models\QuizQuestion::where('id', $value)->where('quiz_id', $quizId)->first();
                     if (! $question) {
-                        $fail('The selected question does not belong to the specified quiz.');
+                        $fail(__('messages.the_selected_question_does_not_belong_to_the_specified_quiz'));
                     }
                 },
             ],

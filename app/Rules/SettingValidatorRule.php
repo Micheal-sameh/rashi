@@ -36,7 +36,7 @@ class SettingValidatorRule implements ValidationRule
                     function ($attribute, $versionInput, $fail) use ($setting) {
                         $currentVersion = $setting->value;
                         if (version_compare($versionInput, $currentVersion, '<')) {
-                            return $fail("The version must be newer than: $currentVersion.");
+                            return $fail(__('messages.the_version_must_be_newer_than', ['version' => $currentVersion]));
                         }
                     },
                 ],
@@ -53,7 +53,7 @@ class SettingValidatorRule implements ValidationRule
 
                 if ($validator->fails()) {
                     foreach ($validator->errors()->all() as $error) {
-                        $fail("$setting->name : $error");
+                        $fail(__('messages.setting_error', ['name' => $setting->name, 'error' => $error]));
                     }
                 }
             }

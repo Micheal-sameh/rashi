@@ -182,4 +182,11 @@ return [
     'enter_password_to_confirm' => 'أدخل كلمة المرور للتأكيد',
     'notifications' => 'اشعارات',
     'ordered_at' => 'تم الطلب في',
+    'you_have_already_solved_this_quiz' => 'لقد حللت هذا الاختبار بالفعل',
+    'this_quiz_is_no_longer_available_to_solve' => 'هذا الاختبار لم يعد متاحًا للحل',
+    'is_active_cannot_be_deleted' => 'لا يمكن حذف النشط',
+    'the_version_must_be_newer_than' => 'يجب أن تكون الإصدار أحدث من: :version.',
+    'setting_error' => ':name : :error',
+    'the_selected_question_does_not_belong_to_the_specified_quiz' => 'السؤال المحدد لا ينتمي إلى الاختبار المحدد.',
+    'the_quiz_date_must_be_between' => 'يجب أن يكون تاريخ الاختبار بين تاريخ بداية المسابقة (:start) وتاريخ نهايتها (:end).',
 ];

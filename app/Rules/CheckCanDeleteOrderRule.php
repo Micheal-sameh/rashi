@@ -17,7 +17,7 @@ class CheckCanDeleteOrderRule implements ValidationRule
         $order = $orderRepository->findById($value);
 
         if ($order->status == OrderStatus::COMPLETED) {
-            $fail('is active cannot be deleted');
+            $fail(__('messages.is_active_cannot_be_deleted'));
         }
     }
 }
