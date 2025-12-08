@@ -288,6 +288,14 @@
                             class="{{ $activeRoutes['notifications'] ? 'active' : '' }}">
                             <i class="fas fa-bell"></i>{{ __('messages.notifications') }}</a></li>
 
+                    <li><a href="{{ route('about_us.show') }}"
+                            class="{{ $activeRoutes['about_us'] ? 'active' : '' }}">
+                            <i class="fas fa-info-circle"></i>{{ __('messages.about_us') }}</a></li>
+
+                    <li><a href="{{ route('terms.show') }}"
+                            class="{{ $activeRoutes['terms'] ? 'active' : '' }}">
+                            <i class="fas fa-file-contract"></i>{{ __('messages.terms') }}</a></li>
+
                     <li class="mt-3 border-top border-light pt-2">
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf

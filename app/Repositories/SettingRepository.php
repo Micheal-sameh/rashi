@@ -30,7 +30,7 @@ class SettingRepository extends BaseRepository
 
     public function index()
     {
-        $query = $this->model->query();
+        $query = $this->model->query()->where('type', '!=', 'text');
 
         return $this->execute($query);
     }

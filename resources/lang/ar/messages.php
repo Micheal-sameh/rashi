@@ -234,4 +234,8 @@ return [
     'bonus_message' => 'رسالة تلقائية: تم منحك :points نقاط كبونص. السبب: :reason',
     'penalty_message' => 'رسالة تلقائية: تم تطبيق عقوبة :points نقاط. السبب: :reason',
     'no_group' => 'لا توجد مجموعة',
+    'about_us_updated_successfully' => 'تم تحديث من نحن بنجاح.',
+    'terms_updated_successfully' => 'تم تحديث الشروط والأحكام بنجاح.',
+    'about_us' => 'من نحن',
+    'terms' => 'الشروط والأحكام',
 ];

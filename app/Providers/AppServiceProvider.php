@@ -34,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
                 'rewards' => $currentRoute && $currentRoute->named('rewards.*'),
                 'orders' => $currentRoute && $currentRoute->named('orders.*'),
                 'notifications' => $currentRoute && $currentRoute->named('notifications.*'),
+                'about_us' => $currentRoute && $currentRoute->named('about_us.*'),
+                'terms' => $currentRoute && $currentRoute->named('terms.*'),
             ]);
         });
     }

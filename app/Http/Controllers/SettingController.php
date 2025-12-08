@@ -46,32 +46,63 @@ class SettingController extends Controller
 
     public function aboutUs()
     {
-        $first = request()->segment(1);
-        $aboutUs = $this->settingService->getSettingByName($first);
+        $route = request()->segment(1);
+        $aboutUs = $this->settingService->getSettingByName($route);
 
-        return view('about_us.show', compact('aboutUs'));
+        return view('about_us.show', compact('aboutUs', 'route'));
     }
 
     public function editAboutUs()
     {
-        $first = request()->segment(1);
-        $aboutUs = $this->settingService->getSettingByName($first);
+        $route = request()->segment(1);
+        $aboutUs = $this->settingService->getSettingByName($route);
 
         return view('about_us.edit', compact('aboutUs'));
     }
 
     public function updateAboutUs(Request $request)
     {
-        $first = request()->segment(1);
+        $route = request()->segment(1);
         $request->validate([
             'value' => 'required|string',
         ]);
 
-        $aboutUsSetting = $this->settingService->getSettingByName($first);
+        $aboutUsSetting = $this->settingService->getSettingByName($route);
         $aboutUsSetting->update([
             'value' => $request->value,
         ]);
 
-        return redirect()->route('about_us.show')->with('success', 'About Us updated successfully.');
+        return redirect()->route('about_us.show')->with('success', __('messages.about_us_updated_successfully'));
+    }
+
+    public function terms()
+    {
+        $route = request()->segment(1);
+        $terms = $this->settingService->getSettingByName($route);
+
+        return view('about_us.show', compact('terms', 'route'));
+    }
+
+    public function editTerms()
+    {
+        $route = request()->segment(1);
+        $terms = $this->settingService->getSettingByName($route);
+
+        return view('about_us.edit', compact('terms'));
+    }
+
+    public function updateTerms(Request $request)
+    {
+        $route = request()->segment(1);
+        $request->validate([
+            'value' => 'required|string',
+        ]);
+
+        $termsSetting = $this->settingService->getSettingByName($route);
+        $termsSetting->update([
+            'value' => $request->value,
+        ]);
+
+        return redirect()->route("$route.show")->with('success', 'Terms updated successfully.');
     }
 }
