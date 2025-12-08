@@ -15,7 +15,7 @@ class CompetitionStatus
     private static array $translations = [
         self::PENDING     => [
             'en' => 'Pending',
-            'ar' => 'قيد الانتظار',
+            'ar' => 'قريبا',
         ],
         self::ACTIVE    => [
             'en' => 'Active',
