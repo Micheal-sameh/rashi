@@ -229,4 +229,6 @@ return [
     'terms_updated_successfully' => 'Terms updated successfully.',
     'about_us' => 'About Us',
     'terms' => 'Terms and Conditions',
+    'Welcome points' => 'Welcome Points',
+    'welcome_bonus_message' => 'welcome rashi w rafi sent you 50 points, solve more quizzes to get more points',
 ];

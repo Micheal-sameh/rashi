@@ -2,16 +2,30 @@
 
 namespace App\Services;
 
+use App\Enums\BonusPenaltyType;
 use App\Repositories\UserRepository;
 
 class UserService
 {
-    public function __construct(protected UserRepository $userRepository) {}
+    public function __construct(
+        protected UserRepository $userRepository,
+        protected BonusPenaltyService $bonusPenaltyService
+    ) {}
 
     public function updateOrcreate($input)
     {
         $user = $this->userRepository->updateOrcreate($input);
         $user->load('roles', 'groups', 'media');
+
+        // Award welcome bonus if user is newly created
+        if ($user->wasRecentlyCreated) {
+            $this->bonusPenaltyService->store([
+                'user_id' => $user->id,
+                'points' => 50,
+                'type' => BonusPenaltyType::WELCOME_BONUS,
+                'reason' => _('messages.Welcome points'),
+            ]);
+        }
 
         return $user;
     }

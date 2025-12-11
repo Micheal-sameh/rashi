@@ -25,12 +25,11 @@ class BonusPenaltyService
     public function store($data)
     {
         DB::beginTransaction();
-        $data['created_by'] = auth()->id();
+        $data['created_by'] = auth()->id() ?? 1; // Default to system user if no auth
         $bonusPenalty = $this->bonusPenaltyRepository->store($data);
         PointHistory::addRecord($bonusPenalty);
         // Update user points
         $this->userRepository->bonusAndPenalty($bonusPenalty);
-
         // Fire event to send notification
         event(new BonusPenaltyCreated($bonusPenalty));
 

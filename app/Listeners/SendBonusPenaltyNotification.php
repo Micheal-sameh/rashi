@@ -21,11 +21,14 @@ class SendBonusPenaltyNotification implements ShouldQueue
     {
         $bonusPenalty = $event->bonusPenalty;
 
-        $typeString = $bonusPenalty->type == BonusPenaltyType::BONUS ? 'bonus' : 'penalty';
-        $title = $bonusPenalty->type == BonusPenaltyType::BONUS ? __('messages.bonus_awarded') : __('messages.penalty_applied');
-        $message = $bonusPenalty->type == BonusPenaltyType::BONUS
-            ? __('messages.bonus_message', ['points' => $bonusPenalty->points, 'reason' => $bonusPenalty->reason])
-            : __('messages.penalty_message', ['points' => $bonusPenalty->points, 'reason' => $bonusPenalty->reason]);
+        $typeString = $bonusPenalty->type == BonusPenaltyType::PENALTY ? 'penalty' : 'bonus';
+        $typeString = $bonusPenalty->type == BonusPenaltyType::PENALTY ? 'penalty' : 'bonus';
+        $title = $bonusPenalty->type == (BonusPenaltyType::BONUS || BonusPenaltyType::WELCOME_BONUS) ? __('messages.bonus_awarded') : __('messages.penalty_applied');
+        $message = match ($bonusPenalty->type) {
+            BonusPenaltyType::WELCOME_BONUS => __('messages.welcome_bonus_message'),
+            BonusPenaltyType::BONUS => __('messages.bonus_message', ['points' => $bonusPenalty->points, 'reason' => $bonusPenalty->reason]),
+            BonusPenaltyType::PENALTY => __('messages.penalty_message', ['points' => $bonusPenalty->points, 'reason' => $bonusPenalty->reason]),
+        };
 
         $this->notificationRepository->createNotificationForUser(
             $bonusPenalty->user_id,

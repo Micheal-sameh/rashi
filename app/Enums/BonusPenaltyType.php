@@ -11,10 +11,16 @@ class BonusPenaltyType
 
     public const PENALTY = 2;
 
+    public const WELCOME_BONUS = 3;
+
     private static array $translations = [
         self::BONUS => [
             'en' => 'Bonus',
             'ar' => 'مكافأة',
+        ],
+        self::WELCOME_BONUS => [
+            'en' => 'Welcome Bonus',
+            'ar' => 'مكافأة ترحيبية',
         ],
         self::PENALTY => [
             'en' => 'Penalty',

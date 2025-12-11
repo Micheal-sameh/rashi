@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BonusPenaltyType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +41,7 @@ class PointHistory extends Model
         } elseif ($data instanceof BonusPenalty) {
             $type = get_class($data);
             $subject_id = $data->id;
-            $points = ($data->type == 1) ? $data->points : -1 * $data->points; // bonus positive, penalty negative
+            $points = ($data->type == BonusPenaltyType::BONUS || $data->type == BonusPenaltyType::WELCOME_BONUS) ? $data->points : -1 * $data->points; // bonus positive, penalty negative
             $score = 0;
             $user = $data->user;
         } else {

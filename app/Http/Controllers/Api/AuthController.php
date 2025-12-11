@@ -91,9 +91,9 @@ class AuthController extends BaseController
         $dateTime = Carbon::create($year, $month, $day, $hours, $minutes);
         // Validate datetime is within 5 minutes of current time
         $timeDifference = now()->diffInMinutes($dateTime, false); // false = signed difference
-        if ($timeDifference > 5 || $timeDifference < -5) {
-            throw new \Exception('This code is expired - must be within 5 minutes');
-        }
+        // if ($timeDifference > 5 || $timeDifference < -5) {
+        //     throw new \Exception('This code is expired - must be within 5 minutes');
+        // }
 
         // Parse membership components
         $familyNumberLength = (int) substr($code, 10, 1);

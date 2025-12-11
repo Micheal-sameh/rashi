@@ -157,7 +157,7 @@ class UserRepository extends BaseRepository
     public function bonusAndPenalty($bonus)
     {
         $user = $this->findById($bonus->user_id);
-        $points = $bonus->type == BonusPenaltyType::BONUS ? $bonus->points : -$bonus->points;
+        $points = ($bonus->type == BonusPenaltyType::BONUS || $bonus->type == BonusPenaltyType::WELCOME_BONUS) ? $bonus->points : -$bonus->points;
         $user->update([
             'points' => $user->points + $points,
         ]);
