@@ -39,6 +39,9 @@ class AuthController extends BaseController
                     $q->where('group_id', '!=', 1);
                 },
             ]);
+
+            $this->updateOrCreateFcmToken($request, $user);
+
             $token = $this->generateToken($user);
 
             return $this->apiResponse([
@@ -104,5 +107,19 @@ class AuthController extends BaseController
         $group = explode('|', $qr_code)[2] ?? '';
 
         return compact('membership_code', 'name', 'group');
+    }
+
+    private function updateOrCreateFcmToken($request, $user)
+    {
+        if ($request->has('fcm_token')) {
+            $data = [
+                'user_id' => $user->id,
+                'token' => $request->fcm_token,
+                'device_type' => $request->device_type,
+                'imei' => $request->imei,
+            ];
+
+            $this->fcmTokenService->updateOrCreate($data);
+        }
     }
 }

@@ -10,7 +10,7 @@ class StoreFcmTokenRequest extends FormRequest
     {
         return [
             'token' => 'required|string',
-            'device_type' => 'nullable|string|in:ios,android,web',
+            'device_type' => 'string|in:ios,android,web',
             'imei' => 'required|string',
         ];
     }
