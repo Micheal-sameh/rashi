@@ -10,9 +10,9 @@ class LoginRequest extends FormRequest
     {
         return [
             'qr_code' => 'required|string',
-            'fcm_token' => 'required|string',
+            'fcm_token' => 'string',
             'device_type' => 'string|in:ios,android,web',
-            'imei' => 'required|string',
+            'imei' => 'string',
             // 'name' => 'required|string',
             // 'email' => 'unique|users,email|email',
             // 'phone' => 'unique|users,phone|string',
