@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\DTOs\UserLoginDTO;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\LogoutRequest;
 use App\Http\Resources\UserResource;
 use App\Services\FcmTokenService;
 use App\Services\UserService;
+use App\Traits\ArAuthentication;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class AuthController extends BaseController
 {
+    use ArAuthentication;
+
     public function __construct(
         protected UserService $userService,
         protected FcmTokenService $fcmTokenService,
@@ -21,17 +23,7 @@ class AuthController extends BaseController
     public function login(LoginRequest $request)
     {
         try {
-            $credentials = collect($this->getCredentials($request->qr_code));
-
-            $input = new UserLoginDTO(...$credentials->only(
-                'membership_code',
-                'name',
-                'group',
-                // 'password',
-                // 'email',
-            ));
-
-            $user = $this->userService->updateOrcreate($input);
+            $user = $this->ArQrlogin($request->qr_code);
             $user->load([
                 'roles:id,name',
                 'media',
