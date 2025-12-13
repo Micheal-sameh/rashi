@@ -51,7 +51,9 @@ class UserRepository extends BaseRepository
 
         }
 
-        $this->assignGroups($input['groups'], $user);
+        if (isset($input['groups'])) {
+            $this->assignGroups($input['groups'], $user);
+        }
 
         return $user;
     }

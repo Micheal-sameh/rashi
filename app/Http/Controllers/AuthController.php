@@ -3,10 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminLoginRequest;
+use App\Services\UserService;
+use App\Traits\ArAuthentication;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    use ArAuthentication;
+
+    public function __construct(protected UserService $userService) {}
+
     public function loginPage()
     {
         return view('auth.login');
@@ -14,27 +20,16 @@ class AuthController extends Controller
 
     public function login(AdminLoginRequest $request)
     {
-        $credentials = $request->only('membership_code', 'password');
-        $remember = $request->boolean('remember');
+        $user = $this->arLogin($request->membership_code, $request->password);
 
-        if (Auth::attempt($credentials, $remember)) {
-            $user = Auth::user();
-            if (! $user->hasRole(['admin'])) {
-                Auth::logout();
+        Auth::login($user);
+        $request->session()->regenerate();
 
-                return redirect()->back()
-                    ->withInput($request->only('membership_code', 'remember'))
-                    ->withErrors(['membership_code' => __('messages.unauthorized')]);
-            }
+        return redirect()->intended(route('competitions.index'))->with('success', 'Welcome back, Admin!');
 
-            $request->session()->regenerate();
-
-            return redirect()->intended(route('competitions.index'))->with('success', 'Welcome back, Admin!');
-        }
-
-        return redirect()->back()
-            ->withInput($request->only('membership_code', 'remember'))
-            ->withErrors(['membership_code' => __('auth.failed')]);
+        // return redirect()->back()
+        //     ->withInput($request->only('membership_code', 'remember'))
+        //     ->withErrors(['membership_code' => __('auth.failed')]);
     }
 
     public function logout()
