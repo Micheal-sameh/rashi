@@ -27,7 +27,7 @@ trait ArAuthentication
 
         if ($response->failed()) {
             return back()->withErrors([
-                'login_error' => 'Invalid membership code or password.',
+                'login_error' => $response->toPsrResponse()->getReasonPhrase(),
             ])->withInput();
         }
         $data = $response->json()['data'];
