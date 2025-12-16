@@ -60,4 +60,14 @@ trait ArAuthentication
 
         return $user;
     }
+
+    public function resetPassword($email)
+    {
+        $response = Http::post($this->BaseUrl().'reset-password-link', [
+            'secret_key' => $this->arKey(),
+            'email' => $email,
+        ]);
+
+        return $response;
+    }
 }
