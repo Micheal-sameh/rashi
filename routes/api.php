@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BonusPenaltyController;
 use App\Http\Controllers\Api\CompetitionController;
 use App\Http\Controllers\Api\FcmTokenController;
+use App\Http\Controllers\Api\GroupController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\QuizController;
@@ -103,4 +104,5 @@ Route::group(['middleware' => ['auth:sanctum', 'check.competition', 'cache.auth.
 Route::get('/quizzes/dropdown/{id}', [QuizController::class, 'dropdown']);
 Route::get('/versions', [SettingController::class, 'getVersions']);
 
-// });
+Route::post('/groups', [GroupController::class, 'create']);
+Route::put('/groups/{id}', [GroupController::class, 'update']);
