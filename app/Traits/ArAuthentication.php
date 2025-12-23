@@ -9,7 +9,9 @@ trait ArAuthentication
 {
     protected function arKey(): string
     {
-        return env('AR_SECRET_KEY');
+        $key = env('AR_SECRET_KEY');
+
+        return base64_encode($key);
     }
 
     protected function BaseUrl(): string

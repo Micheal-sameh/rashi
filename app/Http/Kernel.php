@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\VerifySecretKey;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
@@ -77,6 +78,6 @@ class Kernel extends HttpKernel
         'role_or_permission' => RoleOrPermissionMiddleware::class,
         'check.competition' => \App\Http\Middleware\CheckCompetitionStatus::class,
         'cache.auth.user' => \App\Http\Middleware\CacheAuthUser::class,
-
+        'verify.secret.key' => VerifySecretKey::class,
     ];
 }

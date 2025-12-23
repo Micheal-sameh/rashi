@@ -104,5 +104,7 @@ Route::group(['middleware' => ['auth:sanctum', 'check.competition', 'cache.auth.
 Route::get('/quizzes/dropdown/{id}', [QuizController::class, 'dropdown']);
 Route::get('/versions', [SettingController::class, 'getVersions']);
 
-Route::post('/groups', [GroupController::class, 'create']);
-Route::put('/groups/{id}', [GroupController::class, 'update']);
+Route::middleware('verify.secret.key')->group(function () {
+    Route::post('/groups', [GroupController::class, 'create']);
+    Route::put('/groups/{id}', [GroupController::class, 'update']);
+});
