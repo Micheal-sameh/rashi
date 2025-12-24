@@ -36,13 +36,13 @@ class UserRepository extends BaseRepository
     {
         $user = $this->model->updateOrCreate(
             [
-                'membership_code' => $input['membership_code'],
+                'membership_code' => strtoupper($input['membership_code']),
             ],
             [
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'phone' => isset($input['phone']) ? $input['phone'] : null,
-                'ar_token' => $input['token'] ?? null,
+                'ar_token' => $input['ar_token'] ?? null,
             ]
         );
 

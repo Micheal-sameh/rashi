@@ -106,5 +106,7 @@ Route::get('/versions', [SettingController::class, 'getVersions']);
 
 Route::middleware('verify.secret.key')->group(function () {
     Route::post('/groups', [GroupController::class, 'create']);
+    Route::put('/groups/users', [GroupController::class, 'manageUsers']);
     Route::put('/groups/{id}', [GroupController::class, 'update']);
+    Route::put('/users/groups/', [UserController::class, 'manageGroups']);
 });

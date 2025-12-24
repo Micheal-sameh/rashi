@@ -30,6 +30,7 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at',
         'password',
         'image',
+        'ar_token',
     ];
 
     protected $mediaAttributes = [

@@ -62,6 +62,7 @@ class GroupRepository extends BaseRepository
 
     public function updateUsers($id, $users)
     {
+        // info($id . '' . $users);
         $group = $this->findById($id);
         $group->users()->sync($users);
 
