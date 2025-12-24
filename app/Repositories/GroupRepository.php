@@ -35,7 +35,7 @@ class GroupRepository extends BaseRepository
         return $this->execute($query);
     }
 
-    public function store($name, $abbreviation, $users)
+    public function store($name, $abbreviation, $users = [])
     {
         $group = $this->model->create([
             'name' => $name,
@@ -62,6 +62,7 @@ class GroupRepository extends BaseRepository
 
     public function updateUsers($id, $users)
     {
+        // info($id . '' . $users);
         $group = $this->findById($id);
         $group->users()->sync($users);
 

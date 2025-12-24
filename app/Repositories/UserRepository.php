@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\DTOs\UserLoginDTO;
 use App\Enums\BonusPenaltyType;
 use App\Models\Group;
 use App\Models\User;
@@ -11,7 +10,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Hash;
 
 class UserRepository extends BaseRepository
 {
@@ -34,21 +32,17 @@ class UserRepository extends BaseRepository
         return $this->pagination ? $query->paginate($this->perPage) : $query->get();
     }
 
-    public function updateOrCreate(UserLoginDTO $input): User
+    public function updateOrCreate($input): User
     {
-        if ($input->password === null) {
-            $input->password = 'password';
-        }
-
         $user = $this->model->updateOrCreate(
             [
-                'membership_code' => $input->membership_code,
-                'name' => $input->name,
+                'membership_code' => strtoupper($input['membership_code']),
             ],
             [
-                'email' => $input->email,
-                'phone' => $input->phone,
-                'password' => Hash::make($input->password),
+                'name' => $input['name'],
+                'email' => $input['email'],
+                'phone' => isset($input['phone']) ? $input['phone'] : null,
+                'ar_token' => $input['ar_token'] ?? null,
             ]
         );
 
@@ -57,7 +51,9 @@ class UserRepository extends BaseRepository
 
         }
 
-        $this->assignGroups($input->group, $user);
+        if (isset($input['groups'])) {
+            $this->assignGroups($input['groups'], $user);
+        }
 
         return $user;
     }
@@ -143,15 +139,15 @@ class UserRepository extends BaseRepository
         return $result;
     }
 
-    protected function assignGroups($group_name, $user)
+    protected function assignGroups($group_names, $user)
     {
-        $groupId = Group::where('abbreviation', $group_name)->value('id');
+        $groupIds = Group::whereIn('abbreviation', $group_names)->value('id');
 
-        $groupsId = [1];
-        if ($groupId) {
-            $groupsId[] = $groupId;
+        $groupsIds = [1];
+        if ($groupIds) {
+            $groupsId[] = $groupIds;
         }
-        $user->groups()->sync($groupsId);
+        $user->groups()->sync($groupsIds);
     }
 
     public function bonusAndPenalty($bonus)

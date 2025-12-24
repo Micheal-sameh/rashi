@@ -37,6 +37,12 @@
                     {{ session('success') }}
                 </div>
             @endif
+            @if (session('status'))
+                <div class="alert alert-info small">
+                    {{ session('status') }}
+                </div>
+            @endif
+
             @if ($errors->any())
                 <div class="alert alert-danger small">
                     <ul class="mb-0 ps-3">
@@ -54,7 +60,8 @@
                 <div class="mb-3">
                     <label for="membership_code" class="form-label">{{ __('messages.membership_code') }}</label>
                     <input id="membership_code" type="text" name="membership_code" required autofocus
-                        class="form-control @error('membership_code') is-invalid @enderror" value="{{ old('membership_code') }}">
+                        class="form-control @error('membership_code') is-invalid @enderror"
+                        value="{{ old('membership_code') }}">
 
                     @error('membership_code')
                         <div class="invalid-feedback">{{ $message }}</div>

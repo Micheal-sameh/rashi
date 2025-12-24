@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\CreateProfilePicRequest;
 use App\Http\Requests\LeaderBoardRequest;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Services\UserService;
+use Exception;
+use Illuminate\Http\Request;
 
 class UserController extends BaseController
 {
@@ -51,5 +54,19 @@ class UserController extends BaseController
         $users = $this->userService->leaderboard($request->group_id);
 
         return $this->respondResource(UserResource::collection($users));
+    }
+
+    public function manageGroups(Request $request)
+    {
+        try {
+            $userData = $request['user'];
+            $user = User::where('ar_token', $userData['arToken'])->first();
+            $groupIds = $request['groupIds'];
+            $this->userService->updateGroups($groupIds, $user->id);
+
+            return true;
+        } catch (Exception $e) {
+            return $e;
+        }
     }
 }
