@@ -9,7 +9,7 @@ class AdminLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'membership_code' => 'required|exists:users,membership_code',
+            'membership_code' => 'required|string',
             'password' => 'required',
             'remember_me' => 'boolean',
         ];
