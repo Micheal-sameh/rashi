@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class VerifySecretKey
 {
@@ -21,9 +22,7 @@ class VerifySecretKey
             abort(401, 'Secret key is required');
         }
 
-        $decodedSecretKey = base64_decode($hashedSecretKey);
-
-        if ($decodedSecretKey !== env('AR_SECRET_KEY')) {
+        if (! Hash::check(env('AR_SECRET_KEY'), $hashedSecretKey)) {
             abort(401, 'Invalid secret key');
         }
 
