@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminLoginRequest;
+use App\Jobs\CheckCompetitionsJob;
 use App\Models\User;
+use App\Repositories\CompetitionRepository;
 use App\Services\UserService;
 use App\Traits\ArAuthentication;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class AuthController extends Controller
 {
     use ArAuthentication;
 
-    public function __construct(protected UserService $userService) {}
+    public function __construct(protected UserService $userService, protected CompetitionRepository $competitionRepository) {}
 
     public function loginPage()
     {
@@ -22,11 +25,21 @@ class AuthController extends Controller
     public function login(AdminLoginRequest $request)
     {
         $user = $this->arLogin($request->membership_code, $request->password);
+
         if (! $user instanceof User) {
             return $user;
         }
         Auth::login($user);
         $request->session()->regenerate();
+
+        // Check if competition status has been checked today
+        $cacheKey = 'competition_checked_'.now()->toDateString();
+        if (! Cache::has($cacheKey)) {
+            // Dispatch the job to check competition status
+            CheckCompetitionsJob::dispatch();
+            // Set cache to prevent dispatching again today
+            Cache::put($cacheKey, true, now()->endOfDay());
+        }
 
         return redirect()->intended(route('competitions.index'))->with('success', 'Welcome back, Admin!');
 
