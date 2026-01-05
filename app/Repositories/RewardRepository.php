@@ -9,6 +9,7 @@ use App\Models\RewardHistory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class RewardRepository extends BaseRepository
 {
@@ -41,7 +42,9 @@ class RewardRepository extends BaseRepository
             if ($user && $user->groups->isNotEmpty()) {
                 $query->whereIn('group_id', $groupIds);
             }
+            $query->where('status', RewardStatus::ACTIVE);
         }
+        $query->orderBy('status');
 
         return $this->execute($query);
     }
@@ -72,6 +75,18 @@ class RewardRepository extends BaseRepository
         return $reward;
     }
 
+    public function cancel($id)
+    {
+        $reward = $this->findById($id);
+        $reward->update([
+            'status' => RewardStatus::CANCELLED,
+        ]);
+
+        RewardHistory::addRecord($reward);
+
+        return $reward;
+    }
+
     public function redeemPoints($reward, $quantity)
     {
         $status = $reward->quantity - $quantity <= 0
@@ -90,5 +105,22 @@ class RewardRepository extends BaseRepository
             'quantity' => $reward->quantity + $quantity,
             'status' => RewardStatus::ACTIVE,
         ]);
+    }
+
+    public function countActiveRewards(): int
+    {
+        return $this->model->where('status', RewardStatus::ACTIVE)->count();
+    }
+
+    public function calculateTotalPointsValue(): int
+    {
+        return $this->model->where('status', RewardStatus::ACTIVE)
+            ->sum(DB::raw('points * quantity'));
+    }
+
+    public function calculateTotalQuantity(): int
+    {
+        return $this->model->where('status', RewardStatus::ACTIVE)
+            ->sum('quantity');
     }
 }

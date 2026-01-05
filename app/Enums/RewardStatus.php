@@ -13,6 +13,8 @@ class RewardStatus
 
     public const INACTIVE = 3;
 
+    public const CANCELLED = 4;
+
     private static array $translations = [
         self::ACTIVE => [
             'en' => 'Active',
@@ -25,6 +27,10 @@ class RewardStatus
         self::INACTIVE => [
             'en' => 'Inactive',
             'ar' => 'غير فعال',
+        ],
+        self::CANCELLED => [
+            'en' => 'Cancelled',
+            'ar' => 'ملغي',
         ],
     ];
 

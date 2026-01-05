@@ -11,8 +11,11 @@ class RewardService
     public function index()
     {
         $rewards = $this->rewardRepository->index();
+        $activeRewardsCount = $this->rewardRepository->countActiveRewards();
+        $totalPointsValue = $this->rewardRepository->calculateTotalPointsValue();
+        $totalQuantity = $this->rewardRepository->calculateTotalQuantity();
 
-        return $rewards;
+        return compact('rewards', 'activeRewardsCount', 'totalPointsValue', 'totalQuantity');
     }
 
     public function store($input, $image)
@@ -28,5 +31,10 @@ class RewardService
     public function addQuantity($quantity, $id)
     {
         return $this->rewardRepository->addQuantity($quantity, $id);
+    }
+
+    public function cancel($id)
+    {
+        return $this->rewardRepository->cancel($id);
     }
 }

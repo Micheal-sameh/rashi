@@ -17,9 +17,13 @@ class RewardController extends Controller
 
     public function index()
     {
-        $rewards = $this->rewardService->index();
+        $data = $this->rewardService->index();
+        $rewards = $data['rewards'];
+        $activeRewardsCount = $data['activeRewardsCount'];
+        $totalPointsValue = $data['totalPointsValue'];
+        $totalQuantity = $data['totalQuantity'];
 
-        return view('rewards.index', compact('rewards'));
+        return view('rewards.index', compact('rewards', 'activeRewardsCount', 'totalPointsValue', 'totalQuantity'));
     }
 
     public function create()
@@ -46,6 +50,17 @@ class RewardController extends Controller
         return response()->json([
             'success' => true,
             'reward' => $reward,
+        ]);
+    }
+
+    public function cancel($id)
+    {
+        $reward = $this->rewardService->cancel($id);
+
+        return response()->json([
+            'success' => true,
+            'reward' => $reward,
+            'status_text' => \App\Enums\RewardStatus::getStringValue($reward->status),
         ]);
     }
 }

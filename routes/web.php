@@ -112,6 +112,7 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/create', [RewardController::class, 'create'])->name('rewards.create');
             Route::get('/edit/{id}', [RewardController::class, 'edit'])->name('rewards.edit');
             Route::put('/{id}/add-quantity', [RewardController::class, 'addQuantity'])->name('rewards.addQuantity');
+            Route::put('/{id}/cancel', [RewardController::class, 'cancel'])->name('rewards.cancel');
             Route::post('/', [RewardController::class, 'store'])->name('rewards.store');
         });
 
