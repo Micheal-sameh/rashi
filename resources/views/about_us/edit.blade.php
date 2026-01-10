@@ -1,10 +1,8 @@
 @extends('layouts.sideBar')
 
-@section('title', 'About Us')
-
 @section('content')
 <div class="container">
-    <form action="{{ route('about_us.update') }}" method="POST">
+    <form action="{{ route("$route.update") }}" method="POST">
         @csrf
         @method('put')
 

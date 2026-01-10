@@ -78,9 +78,9 @@ class SettingController extends Controller
     public function terms()
     {
         $route = request()->segment(1);
-        $terms = $this->settingService->getSettingByName($route);
+        $aboutUs = $this->settingService->getSettingByName($route);
 
-        return view('about_us.show', compact('terms', 'route'));
+        return view('about_us.show', compact('aboutUs', 'route'));
     }
 
     public function editTerms()
@@ -88,7 +88,7 @@ class SettingController extends Controller
         $route = request()->segment(1);
         $terms = $this->settingService->getSettingByName($route);
 
-        return view('about_us.edit', compact('terms'));
+        return view('about_us.edit', compact('terms', 'route'));
     }
 
     public function updateTerms(Request $request)

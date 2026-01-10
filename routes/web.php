@@ -146,9 +146,9 @@ Route::group(['middleware' => ['setlocale']], function () {
         });
 
         Route::prefix('terms')->group(function () {
-            Route::get('/show', [SettingController::class, 'aboutUs'])->name('terms.show');
-            Route::get('/edit', [SettingController::class, 'editAboutUs'])->name('terms.edit');
-            Route::put('/update', [SettingController::class, 'updateAboutUs'])->name('terms.update');
+            Route::get('/show', [SettingController::class, 'terms'])->name('terms.show');
+            Route::get('/edit', [SettingController::class, 'editTerms'])->name('terms.edit');
+            Route::put('/update', [SettingController::class, 'updateTerms'])->name('terms.update');
         });
 
     });
