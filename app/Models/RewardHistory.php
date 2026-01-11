@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RewardStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -27,9 +28,12 @@ class RewardHistory extends Model
             Returns::class => $object->reward->id,
             default => null
         };
-
+        $netQuantity = $quantity ?: $object->quantity;
+        if ($object->status == RewardStatus::CANCELLED) {
+            $netQuantity = -$netQuantity;
+        }
         RewardHistory::create([
-            'quantity' => $quantity ?: $object->quantity,
+            'quantity' => $netQuantity,
             'points' => $object->points,
             'subject_id' => $object->id,
             'subject_type' => get_class($object),

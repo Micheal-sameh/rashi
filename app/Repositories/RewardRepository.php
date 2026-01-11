@@ -62,6 +62,8 @@ class RewardRepository extends BaseRepository
         if ($image) {
             $reward->addMedia($image)->toMediaCollection('rewards_images');
         }
+
+        return $reward;
     }
 
     public function addQuantity($quantity, $id)
@@ -69,7 +71,9 @@ class RewardRepository extends BaseRepository
         $reward = $this->findById($id);
         $reward->update([
             'quantity' => $reward->quantity + $quantity,
+            'status' => RewardStatus::ACTIVE,
         ]);
+
         RewardHistory::addRecord($reward, $quantity);
 
         return $reward;
@@ -78,11 +82,14 @@ class RewardRepository extends BaseRepository
     public function cancel($id)
     {
         $reward = $this->findById($id);
-        $reward->update([
+        $reward->fill([
             'status' => RewardStatus::CANCELLED,
+            'quantity' => 0,
         ]);
 
-        RewardHistory::addRecord($reward);
+        RewardHistory::addRecord($reward, $reward->getOriginal('quantity'));
+
+        $reward->save();
 
         return $reward;
     }

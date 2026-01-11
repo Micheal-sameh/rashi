@@ -3,12 +3,14 @@
 @section('content')
     <div class="container-fluid px-4 py-4">
         <!-- Header Section -->
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-5">
+        <div
+            class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-5">
             <div>
                 <h1 class="fw-bold display-6 text-dark mb-2">{{ __('messages.rewards') }}</h1>
                 <p class="text-muted mb-0">{{ __('messages.manage_your_rewards_catalog') }}</p>
             </div>
-            <a href="{{ route('rewards.create') }}" class="btn btn-primary btn-lg px-4 py-3 shadow-lg rounded-pill d-flex align-items-center gap-2">
+            <a href="{{ route('rewards.create') }}"
+                class="btn btn-primary btn-lg px-4 py-3 shadow-lg rounded-pill d-flex align-items-center gap-2">
                 <i class="fa fa-plus-circle fa-lg"></i>
                 <span class="fw-semibold">{{ __('messages.create_reward') }}</span>
             </a>
@@ -101,7 +103,8 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 fw-semibold">{{ __('messages.rewards_list') }}</h5>
                             <div class="d-flex gap-2">
-                                <input type="text" id="searchInput" class="form-control rounded-pill" placeholder="{{ __('messages.search_rewards') }}" style="width: 250px;">
+                                <input type="text" id="searchInput" class="form-control rounded-pill"
+                                    placeholder="{{ __('messages.search_rewards') }}" style="width: 250px;">
                                 <button class="btn btn-outline-secondary rounded-pill px-3">
                                     <i class="fa fa-filter me-1"></i>
                                     {{ __('messages.filter') }}
@@ -119,7 +122,8 @@
                                         <th class="py-3 fw-semibold text-muted">{{ __('messages.points') }}</th>
                                         <th class="py-3 fw-semibold text-muted">{{ __('messages.group') }}</th>
                                         <th class="py-3 fw-semibold text-muted">{{ __('messages.status') }}</th>
-                                        <th class="pe-4 py-3 fw-semibold text-muted text-end">{{ __('messages.actions') }}</th>
+                                        <th class="pe-4 py-3 fw-semibold text-muted text-end">{{ __('messages.actions') }}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -130,18 +134,17 @@
                                                     <div class="position-relative">
                                                         @if ($reward->hasMedia('rewards_images'))
                                                             <img src="{{ $reward->getFirstMediaUrl('rewards_images') }}"
-                                                                 alt="{{ $reward->name }}"
-                                                                 class="rounded-3 shadow-sm"
-                                                                 width="60"
-                                                                 height="60"
-                                                                 style="object-fit: cover; cursor: pointer;"
-                                                                 onclick="openImageModal({{ $reward->id }})">
-                                                            <div class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-1" style="width: 24px; height: 24px;">
+                                                                alt="{{ $reward->name }}" class="rounded-3 shadow-sm"
+                                                                width="60" height="60"
+                                                                style="object-fit: cover; cursor: pointer;"
+                                                                onclick="openImageModal({{ $reward->id }})">
+                                                            <div class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-1"
+                                                                style="width: 24px; height: 24px;">
                                                                 <i class="fa fa-eye fa-xs"></i>
                                                             </div>
                                                         @else
                                                             <div class="bg-gradient-primary rounded-3 d-flex align-items-center justify-content-center text-white"
-                                                                 style="width: 60px; height: 60px;">
+                                                                style="width: 60px; height: 60px;">
                                                                 <i class="fa fa-gift fa-lg"></i>
                                                             </div>
                                                         @endif
@@ -154,19 +157,21 @@
                                             </td>
                                             <td class="py-3">
                                                 <div class="d-flex align-items-center gap-2">
-                                                    <span id="quantity-{{ $reward->id }}" class="fw-bold fs-5">{{ $reward->quantity }}</span>
-                                                    @if ($reward->status == \App\Enums\RewardStatus::ACTIVE)
+                                                    <span id="quantity-{{ $reward->id }}"
+                                                        class="fw-bold fs-5">{{ $reward->quantity }}</span>
+                                                    @if ($reward->status == \App\Enums\RewardStatus::ACTIVE || $reward->status == \App\Enums\RewardStatus::CANCELLED)
                                                         <button class="btn btn-sm btn-outline-primary rounded-circle p-1"
-                                                                onclick="addQuantity({{ $reward->id }})"
-                                                                data-bs-toggle="tooltip"
-                                                                title="{{ __('messages.add_quantity') }}">
+                                                            onclick="addQuantity({{ $reward->id }})"
+                                                            data-bs-toggle="tooltip"
+                                                            title="{{ __('messages.add_quantity') }}">
                                                             <i class="fa fa-plus fa-xs"></i>
                                                         </button>
                                                     @endif
                                                 </div>
                                             </td>
                                             <td class="py-3">
-                                                <span class="badge bg-gradient-warning text-dark fs-6 px-3 py-2 rounded-pill">
+                                                <span
+                                                    class="badge bg-gradient-warning text-dark fs-6 px-3 py-2 rounded-pill">
                                                     <i class="fa fa-star me-1"></i>
                                                     {{ $reward->points }}
                                                 </span>
@@ -184,14 +189,25 @@
                                             <td class="py-3">
                                                 @php
                                                     $statusConfig = [
-                                                        \App\Enums\RewardStatus::ACTIVE => ['class' => 'bg-success-subtle text-success', 'icon' => 'check-circle'],
-                                                        \App\Enums\RewardStatus::CANCELLED => ['class' => 'bg-danger-subtle text-danger', 'icon' => 'times-circle'],
-                                                        \App\Enums\RewardStatus::INACTIVE => ['class' => 'bg-secondary-subtle text-secondary', 'icon' => 'pause-circle'],
+                                                        \App\Enums\RewardStatus::ACTIVE => [
+                                                            'class' => 'bg-success-subtle text-success',
+                                                            'icon' => 'check-circle',
+                                                        ],
+                                                        \App\Enums\RewardStatus::CANCELLED => [
+                                                            'class' => 'bg-danger-subtle text-danger',
+                                                            'icon' => 'times-circle',
+                                                        ],
+                                                        \App\Enums\RewardStatus::INACTIVE => [
+                                                            'class' => 'bg-secondary-subtle text-secondary',
+                                                            'icon' => 'pause-circle',
+                                                        ],
                                                     ];
-                                                    $config = $statusConfig[$reward->status] ?? $statusConfig[\App\Enums\RewardStatus::INACTIVE];
+                                                    $config =
+                                                        $statusConfig[$reward->status] ??
+                                                        $statusConfig[\App\Enums\RewardStatus::INACTIVE];
                                                 @endphp
                                                 <span id="status-badge-{{ $reward->id }}"
-                                                      class="badge d-inline-flex align-items-center gap-1 px-3 py-2 rounded-pill {{ $config['class'] }}">
+                                                    class="badge d-inline-flex align-items-center gap-1 px-3 py-2 rounded-pill {{ $config['class'] }}">
                                                     <i class="fa fa-{{ $config['icon'] }} fa-xs"></i>
                                                     {{ \App\Enums\RewardStatus::getStringValue($reward->status) }}
                                                 </span>
@@ -199,19 +215,28 @@
                                             <td class="pe-4 py-3 text-end">
                                                 @if ($reward->status == \App\Enums\RewardStatus::ACTIVE)
                                                     <div class="d-flex justify-content-end gap-2">
-                                                        <button class="btn btn-sm btn-outline-primary rounded-pill px-3 d-flex align-items-center gap-1"
-                                                                onclick="addQuantity({{ $reward->id }})">
+                                                        <button
+                                                            class="btn btn-sm btn-outline-primary rounded-pill px-3 d-flex align-items-center gap-1"
+                                                            onclick="addQuantity({{ $reward->id }})">
                                                             <i class="fa fa-plus"></i>
                                                             <span>{{ __('messages.add') }}</span>
                                                         </button>
-                                                        <button class="btn btn-sm btn-outline-danger rounded-pill px-3 d-flex align-items-center gap-1"
-                                                                onclick="cancelReward({{ $reward->id }})">
+                                                        <button
+                                                            class="btn btn-sm btn-outline-danger rounded-pill px-3 d-flex align-items-center gap-1"
+                                                            onclick="cancelReward({{ $reward->id }})">
                                                             <i class="fa fa-times"></i>
                                                             <span>{{ __('messages.cancel') }}</span>
                                                         </button>
                                                     </div>
-                                                @else
-                                                    <span class="text-muted">{{ __('messages.no_actions_available') }}</span>
+                                                @elseif($reward->status == \App\Enums\RewardStatus::CANCELLED)
+                                                    <div class="d-flex justify-content-end gap-2">
+                                                        <button
+                                                            class="btn btn-sm btn-outline-primary rounded-pill px-3 d-flex align-items-center gap-1"
+                                                            onclick="addQuantity({{ $reward->id }})">
+                                                            <i class="fa fa-plus"></i>
+                                                            <span>{{ __('messages.add') }}</span>
+                                                        </button>
+                                                    </div>
                                                 @endif
                                             </td>
                                         </tr>
@@ -234,18 +259,16 @@
                                         <div class="position-relative me-3">
                                             @if ($reward->hasMedia('rewards_images'))
                                                 <img src="{{ $reward->getFirstMediaUrl('rewards_images') }}"
-                                                     alt="{{ $reward->name }}"
-                                                     class="rounded-3 shadow-sm"
-                                                     width="80"
-                                                     height="80"
-                                                     style="object-fit: cover; cursor: pointer;"
-                                                     onclick="openImageModal({{ $reward->id }})">
-                                                <div class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-1" style="width: 20px; height: 20px;">
+                                                    alt="{{ $reward->name }}" class="rounded-3 shadow-sm" width="80"
+                                                    height="80" style="object-fit: cover; cursor: pointer;"
+                                                    onclick="openImageModal({{ $reward->id }})">
+                                                <div class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-1"
+                                                    style="width: 20px; height: 20px;">
                                                     <i class="fa fa-eye fa-2xs"></i>
                                                 </div>
                                             @else
                                                 <div class="bg-gradient-primary rounded-3 d-flex align-items-center justify-content-center text-white"
-                                                     style="width: 80px; height: 80px;">
+                                                    style="width: 80px; height: 80px;">
                                                     <i class="fa fa-gift fa-lg"></i>
                                                 </div>
                                             @endif
@@ -254,18 +277,30 @@
                                             <div class="d-flex justify-content-between align-items-start mb-2">
                                                 <div>
                                                     <h6 class="fw-bold mb-1">{{ $reward->name }}</h6>
-                                                    <small class="text-muted">#{{ $reward->id }}</small>
+                                                    <small class="text-muted">#{{ $reward->id }}</small></br>
+                                                    <small class="text-muted">group: {{ $reward->group->name }}</small>
                                                 </div>
                                                 @php
                                                     $statusConfig = [
-                                                        \App\Enums\RewardStatus::ACTIVE => ['class' => 'bg-success-subtle text-success', 'icon' => 'check-circle'],
-                                                        \App\Enums\RewardStatus::CANCELLED => ['class' => 'bg-danger-subtle text-danger', 'icon' => 'times-circle'],
-                                                        \App\Enums\RewardStatus::INACTIVE => ['class' => 'bg-secondary-subtle text-secondary', 'icon' => 'pause-circle'],
+                                                        \App\Enums\RewardStatus::ACTIVE => [
+                                                            'class' => 'bg-success-subtle text-success',
+                                                            'icon' => 'check-circle',
+                                                        ],
+                                                        \App\Enums\RewardStatus::CANCELLED => [
+                                                            'class' => 'bg-danger-subtle text-danger',
+                                                            'icon' => 'times-circle',
+                                                        ],
+                                                        \App\Enums\RewardStatus::INACTIVE => [
+                                                            'class' => 'bg-secondary-subtle text-secondary',
+                                                            'icon' => 'pause-circle',
+                                                        ],
                                                     ];
-                                                    $config = $statusConfig[$reward->status] ?? $statusConfig[\App\Enums\RewardStatus::INACTIVE];
+                                                    $config =
+                                                        $statusConfig[$reward->status] ??
+                                                        $statusConfig[\App\Enums\RewardStatus::INACTIVE];
                                                 @endphp
                                                 <span id="status-badge-mobile-{{ $reward->id }}"
-                                                      class="badge d-inline-flex align-items-center gap-1 px-2 py-1 rounded-pill {{ $config['class'] }}">
+                                                    class="badge d-inline-flex align-items-center gap-1 px-2 py-1 rounded-pill {{ $config['class'] }}">
                                                     <i class="fa fa-{{ $config['icon'] }} fa-xs"></i>
                                                 </span>
                                             </div>
@@ -273,13 +308,16 @@
                                             <div class="row g-2 mb-3">
                                                 <div class="col-6">
                                                     <div class="bg-light rounded-3 p-2 text-center">
-                                                        <small class="text-muted d-block">{{ __('messages.quantity') }}</small>
-                                                        <span id="quantity-mobile-{{ $reward->id }}" class="fw-bold fs-5">{{ $reward->quantity }}</span>
+                                                        <small
+                                                            class="text-muted d-block">{{ __('messages.quantity') }}</small>
+                                                        <span id="quantity-mobile-{{ $reward->id }}"
+                                                            class="fw-bold fs-5">{{ $reward->quantity }}</span>
                                                     </div>
                                                 </div>
                                                 <div class="col-6">
                                                     <div class="bg-light rounded-3 p-2 text-center">
-                                                        <small class="text-muted d-block">{{ __('messages.points') }}</small>
+                                                        <small
+                                                            class="text-muted d-block">{{ __('messages.points') }}</small>
                                                         <span class="fw-bold fs-5 text-warning">
                                                             <i class="fa fa-star fa-xs"></i>
                                                             {{ $reward->points }}
@@ -290,20 +328,23 @@
 
                                             @if ($reward->status == \App\Enums\RewardStatus::ACTIVE)
                                                 <div class="d-flex gap-2">
-                                                    <button class="btn btn-sm btn-primary rounded-pill flex-fill d-flex align-items-center justify-content-center gap-1 py-2"
-                                                            onclick="addQuantity({{ $reward->id }})">
+                                                    <button
+                                                        class="btn btn-sm btn-primary rounded-pill flex-fill d-flex align-items-center justify-content-center gap-1 py-2"
+                                                        onclick="addQuantity({{ $reward->id }})">
                                                         <i class="fa fa-plus"></i>
                                                         <span>{{ __('messages.add_quantity') }}</span>
                                                     </button>
-                                                    <button class="btn btn-sm btn-outline-danger rounded-pill flex-fill d-flex align-items-center justify-content-center gap-1 py-2"
-                                                            onclick="cancelReward({{ $reward->id }})">
+                                                    <button
+                                                        class="btn btn-sm btn-outline-danger rounded-pill flex-fill d-flex align-items-center justify-content-center gap-1 py-2"
+                                                        onclick="cancelReward({{ $reward->id }})">
                                                         <i class="fa fa-times"></i>
                                                         <span>{{ __('messages.cancel') }}</span>
                                                     </button>
                                                 </div>
                                             @else
                                                 <div class="text-center py-2">
-                                                    <span class="text-muted">{{ __('messages.no_actions_available') }}</span>
+                                                    <span
+                                                        class="text-muted">{{ __('messages.no_actions_available') }}</span>
                                                 </div>
                                             @endif
                                         </div>
@@ -316,11 +357,69 @@
             </div>
 
             <!-- Pagination -->
-            <div class="d-flex justify-content-center mt-5">
-                <nav aria-label="Page navigation">
-                    {{-- {!! $rewards->onEachSide(1)->links('vendor.pagination.custom') !!} --}}
-                </nav>
+            <div class="d-flex justify-content-center pt-2">
+                @if ($rewards->hasPages())
+                    <nav>
+                        <ul class="pagination">
+                            {{-- Previous Page Link --}}
+                            @if ($rewards->onFirstPage())
+                                <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                            @else
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $rewards->previousPageUrl() }}"
+                                        rel="prev">&laquo;</a>
+                                </li>
+                            @endif
+
+                            @php
+                                $current = $rewards->currentPage();
+                                $last = $rewards->lastPage();
+                                $start = max($current - 2, 2);
+                                $end = min($current + 2, $last - 1);
+                            @endphp
+
+                            {{-- First page --}}
+                            <li class="page-item {{ $current === 1 ? 'active' : '' }}">
+                                <a class="page-link" href="{{ $rewards->url(1) }}">1</a>
+                            </li>
+
+                            {{-- Dots before start --}}
+                            @if ($start > 2)
+                                <li class="page-item disabled"><span class="page-link">…</span></li>
+                            @endif
+
+                            {{-- Page range --}}
+                            @for ($page = $start; $page <= $end; $page++)
+                                <li class="page-item {{ $current === $page ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $rewards->url($page) }}">{{ $page }}</a>
+                                </li>
+                            @endfor
+
+                            {{-- Dots after end --}}
+                            @if ($end < $last - 1)
+                                <li class="page-item disabled"><span class="page-link">…</span></li>
+                            @endif
+
+                            {{-- Last page --}}
+                            @if ($last > 1)
+                                <li class="page-item {{ $current === $last ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $rewards->url($last) }}">{{ $last }}</a>
+                                </li>
+                            @endif
+
+                            {{-- Next Page Link --}}
+                            @if ($rewards->hasMorePages())
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $rewards->nextPageUrl() }}" rel="next">&raquo;</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                            @endif
+                        </ul>
+                    </nav>
+                @endif
             </div>
+
         @endif
     </div>
 
@@ -338,7 +437,8 @@
                             <small class="opacity-75">{{ __('messages.increase_reward_stock') }}</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="mb-4">
@@ -350,24 +450,19 @@
                             <span class="input-group-text bg-light border-0">
                                 <i class="fa fa-box text-primary"></i>
                             </span>
-                            <input type="number"
-                                   class="form-control border-0 bg-light rounded-end"
-                                   id="add_quantity"
-                                   name="quantity"
-                                   placeholder="0"
-                                   min="1"
-                                   style="height: 56px;">
+                            <input type="number" class="form-control border-0 bg-light rounded-end" id="add_quantity"
+                                name="quantity" placeholder="0" min="1" style="height: 56px;">
                             <span class="input-group-text bg-light border-0">Units</span>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
                     <button type="button" class="btn btn-outline-secondary rounded-pill px-4 py-2"
-                            data-bs-dismiss="modal">
+                        data-bs-dismiss="modal">
                         {{ __('messages.cancel') }}
                     </button>
                     <button type="button" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold"
-                            onclick="updateQuantity()">
+                        onclick="updateQuantity()">
                         <i class="fa fa-save me-1"></i>
                         {{ __('messages.update_quantity') }}
                     </button>
@@ -390,10 +485,8 @@
                     </div>
                     <div class="modal-body p-4 text-center">
                         @if ($reward->hasMedia('rewards_images'))
-                            <img src="{{ $reward->getFirstMediaUrl('rewards_images') }}"
-                                 alt="{{ $reward->name }}"
-                                 class="img-fluid rounded-3 shadow-sm"
-                                 style="max-height: 70vh; object-fit: contain;">
+                            <img src="{{ $reward->getFirstMediaUrl('rewards_images') }}" alt="{{ $reward->name }}"
+                                class="img-fluid rounded-3 shadow-sm" style="max-height: 70vh; object-fit: contain;">
                         @else
                             <div class="py-5 text-center">
                                 <i class="fa fa-image fa-4x text-muted opacity-25 mb-3"></i>
@@ -429,11 +522,11 @@
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
                     <button type="button" class="btn btn-outline-secondary rounded-pill px-4 py-2 flex-fill"
-                            data-bs-dismiss="modal">
+                        data-bs-dismiss="modal">
                         {{ __('messages.cancel') }}
                     </button>
                     <button type="button" class="btn btn-danger rounded-pill px-4 py-2 flex-fill fw-semibold"
-                            id="confirmModalYesBtn">
+                        id="confirmModalYesBtn">
                         <i class="fa fa-check me-1"></i>
                         {{ __('messages.confirm') }}
                     </button>
@@ -484,7 +577,7 @@
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         }
 
-        .table > :not(caption) > * > * {
+        .table> :not(caption)>*>* {
             padding: 1rem 0.5rem;
         }
 
@@ -526,96 +619,111 @@
 
             if (!quantityToAdd || isNaN(quantityToAdd) || quantityToAdd < 1) {
                 inputElement.classList.add('is-invalid');
-                showToast('{{ __("messages.enter_valid_quantity") }}', 'danger');
+                showToast('{{ __('messages.enter_valid_quantity') }}', 'danger');
                 return;
             }
 
             inputElement.classList.remove('is-invalid');
 
             fetch(`/rewards/${currentRewardId}/add-quantity`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
-                body: JSON.stringify({ quantity: parseInt(quantityToAdd) })
-            })
-            .then(res => {
-                if (!res.ok) throw new Error('Network response was not ok');
-                return res.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    // Update desktop view
-                    const desktopQuantity = document.getElementById(`quantity-${data.reward.id}`);
-                    if (desktopQuantity) {
-                        desktopQuantity.textContent = data.reward.quantity;
-                        animateValue(desktopQuantity, parseInt(desktopQuantity.textContent) - parseInt(quantityToAdd), data.reward.quantity, 500);
-                    }
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: JSON.stringify({
+                        quantity: parseInt(quantityToAdd)
+                    })
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('Network response was not ok');
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Update desktop view
+                        const desktopQuantity = document.getElementById(`quantity-${data.reward.id}`);
+                        if (desktopQuantity) {
+                            desktopQuantity.textContent = data.reward.quantity;
+                            animateValue(desktopQuantity, parseInt(desktopQuantity.textContent) - parseInt(
+                                quantityToAdd), data.reward.quantity, 500);
+                        }
 
-                    // Update mobile view
-                    const mobileQuantity = document.getElementById(`quantity-mobile-${data.reward.id}`);
-                    if (mobileQuantity) {
-                        mobileQuantity.textContent = data.reward.quantity;
-                        animateValue(mobileQuantity, parseInt(mobileQuantity.textContent) - parseInt(quantityToAdd), data.reward.quantity, 500);
-                    }
+                        // Update mobile view
+                        const mobileQuantity = document.getElementById(`quantity-mobile-${data.reward.id}`);
+                        if (mobileQuantity) {
+                            mobileQuantity.textContent = data.reward.quantity;
+                            animateValue(mobileQuantity, parseInt(mobileQuantity.textContent) - parseInt(quantityToAdd),
+                                data.reward.quantity, 500);
+                        }
 
-                    currentModal.hide();
-                    showSuccessMessage('{{ __("messages.quantity_updated_successfully") }}', quantityToAdd);
-                } else {
-                    showToast(data.message || '{{ __("messages.failed_update_quantity") }}', 'danger');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                showToast('{{ __("messages.error_occurred") }}', 'danger');
-            });
+                        currentModal.hide();
+                        showSuccessMessage('{{ __('messages.quantity_updated_successfully') }}', quantityToAdd);
+                    } else {
+                        showToast(data.message || '{{ __('messages.failed_update_quantity') }}', 'danger');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast('{{ __('messages.error_occurred') }}', 'danger');
+                });
         }
 
         function cancelReward(rewardId) {
             const rewardName = document.querySelector(`#reward-row-${rewardId} h6`)?.textContent ||
-                              document.querySelector(`#reward-card-${rewardId} h6`)?.textContent;
+                document.querySelector(`#reward-card-${rewardId} h6`)?.textContent;
 
             showConfirmModal(
-                `{{ __("messages.confirm_cancel_reward") }}<br><strong>"${rewardName}"</strong>?`,
+                `{{ __('messages.confirm_cancel_reward') }}<br><strong>"${rewardName}"</strong>?`,
                 () => {
                     fetch(`/rewards/${rewardId}/cancel`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        }
-                    })
-                    .then(res => {
-                        if (!res.ok) throw new Error('Network response was not ok');
-                        return res.json();
-                    })
-                    .then(data => {
-                        if (data.success) {
-                            // Update status badges
-                            updateStatusBadges(rewardId, data.reward.status, data.status_text);
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content'),
+                            }
+                        })
+                        .then(res => {
+                            if (!res.ok) throw new Error('Network response was not ok');
+                            return res.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                // Update status badges
+                                updateStatusBadges(rewardId, data.reward.status, data.status_text);
 
-                            // Disable action buttons
-                            disableActionButtons(rewardId);
+                                // Disable action buttons
+                                disableActionButtons(rewardId);
 
-                            showSuccessMessage('{{ __("messages.reward_cancelled_successfully") }}', null, 'warning');
-                        } else {
-                            showToast(data.message || '{{ __("messages.failed_cancel_reward") }}', 'danger');
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        showToast('{{ __("messages.error_occurred") }}', 'danger');
-                    });
+                                showSuccessMessage('{{ __('messages.reward_cancelled_successfully') }}', null,
+                                    'warning');
+                            } else {
+                                showToast(data.message || '{{ __('messages.failed_cancel_reward') }}', 'danger');
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            showToast('{{ __('messages.error_occurred') }}', 'danger');
+                        });
                 }
             );
         }
 
         function updateStatusBadges(rewardId, status, statusText) {
             const statusConfig = {
-                {{ \App\Enums\RewardStatus::ACTIVE }}: { class: 'bg-success-subtle text-success', icon: 'check-circle' },
-                {{ \App\Enums\RewardStatus::CANCELLED }}: { class: 'bg-danger-subtle text-danger', icon: 'times-circle' },
-                {{ \App\Enums\RewardStatus::INACTIVE }}: { class: 'bg-secondary-subtle text-secondary', icon: 'pause-circle' },
+                {{ \App\Enums\RewardStatus::ACTIVE }}: {
+                    class: 'bg-success-subtle text-success',
+                    icon: 'check-circle'
+                },
+                {{ \App\Enums\RewardStatus::CANCELLED }}: {
+                    class: 'bg-danger-subtle text-danger',
+                    icon: 'times-circle'
+                },
+                {{ \App\Enums\RewardStatus::INACTIVE }}: {
+                    class: 'bg-secondary-subtle text-secondary',
+                    icon: 'pause-circle'
+                },
             };
 
             const config = statusConfig[status] || statusConfig[{{ \App\Enums\RewardStatus::INACTIVE }}];
@@ -623,14 +731,16 @@
             // Update desktop badge
             const desktopBadge = document.getElementById(`status-badge-${rewardId}`);
             if (desktopBadge) {
-                desktopBadge.className = `badge d-inline-flex align-items-center gap-1 px-3 py-2 rounded-pill ${config.class}`;
+                desktopBadge.className =
+                    `badge d-inline-flex align-items-center gap-1 px-3 py-2 rounded-pill ${config.class}`;
                 desktopBadge.innerHTML = `<i class="fa fa-${config.icon} fa-xs"></i> ${statusText}`;
             }
 
             // Update mobile badge
             const mobileBadge = document.getElementById(`status-badge-mobile-${rewardId}`);
             if (mobileBadge) {
-                mobileBadge.className = `badge d-inline-flex align-items-center gap-1 px-2 py-1 rounded-pill ${config.class}`;
+                mobileBadge.className =
+                    `badge d-inline-flex align-items-center gap-1 px-2 py-1 rounded-pill ${config.class}`;
                 mobileBadge.innerHTML = `<i class="fa fa-${config.icon} fa-xs"></i>`;
             }
         }
@@ -642,7 +752,7 @@
                 const actionsCell = desktopRow.querySelector('td:last-child');
                 if (actionsCell) {
                     actionsCell.innerHTML = `
-                        <span class="text-muted">{{ __("messages.no_actions_available") }}</span>
+                        <span class="text-muted">{{ __('messages.no_actions_available') }}</span>
                     `;
                 }
             }
@@ -654,7 +764,7 @@
                 if (actionsDiv) {
                     actionsDiv.innerHTML = `
                         <div class="text-center py-2 w-100">
-                            <span class="text-muted">{{ __("messages.no_actions_available") }}</span>
+                            <span class="text-muted">{{ __('messages.no_actions_available') }}</span>
                         </div>
                     `;
                 }
@@ -694,14 +804,14 @@
             toastEl.setAttribute('aria-atomic', 'true');
 
             const bgClass = type === 'success' ? 'bg-success' :
-                           type === 'danger' ? 'bg-danger' :
-                           type === 'warning' ? 'bg-warning' : 'bg-info';
+                type === 'danger' ? 'bg-danger' :
+                type === 'warning' ? 'bg-warning' : 'bg-info';
 
             toastEl.innerHTML = `
                 <div class="toast-header border-0 text-white ${bgClass} rounded-top-3">
                     <strong class="me-auto">
                         <i class="fa fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'times-circle' : 'info-circle'} me-2"></i>
-                        ${type === 'success' ? '{{ __("messages.success") }}' : type === 'danger' ? '{{ __("messages.error") }}' : '{{ __("messages.warning") }}'}
+                        ${type === 'success' ? '{{ __('messages.success') }}' : type === 'danger' ? '{{ __('messages.error') }}' : '{{ __('messages.warning') }}'}
                     </strong>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
@@ -711,7 +821,9 @@
             `;
 
             container.appendChild(toastEl);
-            const toast = new bootstrap.Toast(toastEl, { delay: duration });
+            const toast = new bootstrap.Toast(toastEl, {
+                delay: duration
+            });
             toast.show();
 
             toastEl.addEventListener('hidden.bs.toast', () => {
