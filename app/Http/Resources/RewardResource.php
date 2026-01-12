@@ -19,7 +19,7 @@ class RewardResource extends JsonResource
             'name' => $this->name,
             'price' => (int) $this->points,
             'in_stock' => $this->quantity > 0 ? true : false,
-            'image' => $this->getfirstmediaurl('rewards_images'),
+            'image' => $this->getFirstMediaUrl('rewards_images'),
         ];
     }
 }

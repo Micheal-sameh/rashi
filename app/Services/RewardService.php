@@ -10,6 +10,9 @@ class RewardService
 
     public function index()
     {
+        if (request()->is('api/*')) {
+            return $this->rewardRepository->index();
+        }
         $rewards = $this->rewardRepository->index();
         $activeRewardsCount = $this->rewardRepository->countActiveRewards();
         $totalPointsValue = $this->rewardRepository->calculateTotalPointsValue();
