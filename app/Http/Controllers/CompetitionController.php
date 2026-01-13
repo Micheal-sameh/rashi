@@ -149,7 +149,6 @@ class CompetitionController extends Controller
             'format' => 'A4',
             'default_font' => 'arial',
         ]);
-        dd($userStats);
         $html = view('competitions.leaderboard_pdf', compact('competition', 'userStats', 'logo'))->render();
 
         $mpdf->WriteHTML($html);
