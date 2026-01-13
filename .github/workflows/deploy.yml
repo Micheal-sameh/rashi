@@ -1,0 +1,188 @@
+name: CI/CD Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - prelive
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy (main or staging)'
+        required: false
+        default: 'main'
+
+env:
+  MIGRATE_ARGS: "--force --no-interaction"
+  COMPOSER_ALLOW_SUPERUSER: "1"
+  GIT_HTTPS_URL: "https://git.restart-technology.com/shaker/laam-backend.git"
+  STAGING_BRANCH: staging
+  MAIN_BRANCH: main
+
+jobs:
+  php_syntax_check:
+    name: PHP syntax check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v3
+        with:
+          php-version: '8.3'
+      - name: Check PHP syntax
+        run: |
+          echo "Checking PHP syntax..."
+          find . -name "*.php" -not -path "./vendor/*" -exec php -l {} \;
+          echo "PHP syntax check completed successfully!"
+    if: github.ref == 'refs/heads/${{ env.MAIN_BRANCH }}' || github.ref == 'refs/heads/${{ env.STAGING_BRANCH }}'
+
+  deploy_to_staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: php_syntax_check
+    if: github.ref == 'refs/heads/${{ env.STAGING_BRANCH }}' || (github.event_name == 'workflow_dispatch' && github.event.inputs.branch == 'staging')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+      - name: Ensure tar and ssh available
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq openssh-client tar
+      - name: Transfer source via tar
+        run: |
+          tar --exclude=storage --exclude=.env --exclude='.env.*' -czf - . | \
+            ssh -o StrictHostKeyChecking=no ${{ secrets.STAGING_SSH_USER }}@${{ secrets.STAGING_SSH_HOST }} "set -euo pipefail; mkdir -p '${{ secrets.STAGING_WORK_DIR }}'; cd '${{ secrets.STAGING_WORK_DIR }}'; tar -xzf -"
+      - name: Run remote staging post-deploy steps
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.STAGING_SSH_USER }}@${{ secrets.STAGING_SSH_HOST }} "MIGRATE_ARGS='${{ env.MIGRATE_ARGS }}' GIT_HTTPS_URL='${{ env.GIT_HTTPS_URL }}' COMPOSER_ALLOW_SUPERUSER='${{ env.COMPOSER_ALLOW_SUPERUSER }}' WORK_DIR='${{ secrets.STAGING_WORK_DIR }}' bash -se" <<'EOF'
+          set -euo pipefail
+          cd "$WORK_DIR"
+
+          # Enforce HTTPS remote (optional credentials via GIT_USER / GIT_TOKEN)
+          if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+            if [ -n "${GIT_USER:-}" ] && [ -n "${GIT_TOKEN:-}" ]; then
+              git remote set-url origin "https://${GIT_USER}:${GIT_TOKEN}@${GIT_HTTPS_URL#https://}" || true
+            else
+              git remote set-url origin "${GIT_HTTPS_URL}" || true
+            fi
+          fi
+
+          echo 'Cleaning Git status...'
+          git reset --hard HEAD || true
+          git clean -fd || true
+
+          echo 'Installing dependencies...'
+          rm -rf vendor
+          COMPOSER_ALLOW_SUPERUSER="${COMPOSER_ALLOW_SUPERUSER}" composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader || true
+
+          echo 'Rebuilding caches...'
+          php artisan cache:clear || true
+          php artisan config:cache || true
+          php artisan route:cache || true
+          php artisan view:cache || true
+          php artisan optimize:clear || true
+
+          echo 'Creating storage link...'
+          php artisan storage:link || true
+
+          echo 'Running migrations...'
+          php artisan migrate ${MIGRATE_ARGS} || true
+
+          echo 'Permissions...'
+          chmod -R ug+rw storage bootstrap/cache public/uploads || true
+          chown -R www-data:www-data "$WORK_DIR/bootstrap/cache" || true
+          chmod -R 775 "$WORK_DIR/bootstrap/cache" || true
+          chown -R www-data:www-data "$WORK_DIR/storage" || true
+          chmod -R 775 "$WORK_DIR/storage" || true
+          chown -R www-data:www-data "$WORK_DIR/public" || true
+          chown -R www-data:www-data "$WORK_DIR/public/uploads" || true
+
+          # Print current permissions
+          if command -v stat >/dev/null 2>&1; then
+            stat -c "%n: %A %a %U:%G" "$WORK_DIR/bootstrap/cache" 2>/dev/null || ls -ld "$WORK_DIR/bootstrap/cache" || true
+            stat -c "%n: %A %a %U:%G" "$WORK_DIR/storage" 2>/dev/null || ls -ld "$WORK_DIR/storage" || true
+          else
+            ls -ld "$WORK_DIR/bootstrap/cache" || true
+            ls -ld "$WORK_DIR/storage" || true
+          fi
+
+          if [ -n "${APP_USER:-}" ]; then chown -R "${APP_USER}:${APP_USER}" storage bootstrap/cache || true; fi
+
+          echo 'Restarting workers...'
+          sudo supervisorctl restart laravel-worker-staging:* || true
+
+          echo 'Overwriting JsonResource.php (if present)'
+          cp -f ./scripts/resources/JsonResource.php ./vendor/laravel/framework/src/Illuminate/Http/Resources/Json/ || true
+
+          echo 'Staging deployment finished.'
+          EOF
+
+  deploy_to_main:
+    name: Deploy to Main
+    runs-on: ubuntu-latest
+    needs: php_syntax_check
+    if: github.ref == 'refs/heads/${{ env.MAIN_BRANCH }}' || (github.event_name == 'workflow_dispatch' && github.event.inputs.branch == 'main')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.MAIN_SSH_PRIVATE_KEY }}
+      - name: Ensure tar and ssh available
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq openssh-client tar
+      - name: Transfer new source via tar
+        run: |
+          tar --exclude=vendor --exclude=storage --exclude=.env --exclude='.env.*' -czf - . | \
+            ssh -o StrictHostKeyChecking=no "${{ secrets.MAIN_SSH_USER }}@${{ secrets.MAIN_SSH_HOST }}" "set -euo pipefail; mkdir -p '${{ secrets.MAIN_WORK_DIR }}'; cd '${{ secrets.MAIN_WORK_DIR }}'; tar -xzf -"
+      - name: Run remote main post-deploy steps
+        run: |
+          ssh -o StrictHostKeyChecking=no "${{ secrets.MAIN_SSH_USER }}@${{ secrets.MAIN_SSH_HOST }}" "MIGRATE_ARGS='${{ env.MIGRATE_ARGS }}' GIT_HTTPS_URL='${{ env.GIT_HTTPS_URL }}' COMPOSER_ALLOW_SUPERUSER='${{ env.COMPOSER_ALLOW_SUPERUSER }}' WORK_DIR='${{ secrets.MAIN_WORK_DIR }}' bash -se" <<'EOF'
+          set -euo pipefail
+          cd "$WORK_DIR"
+
+          if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+            if [ -n "${GIT_USER:-}" ] && [ -n "${GIT_TOKEN:-}" ]; then
+              git remote set-url origin "https://${GIT_USER}:${GIT_TOKEN}@${GIT_HTTPS_URL#https://}" || true
+            else
+              git remote set-url origin "${GIT_HTTPS_URL}" || true
+            fi
+          fi
+
+          git reset --hard HEAD || true
+          git clean -fd || true
+
+          rm -rf vendor
+          COMPOSER_ALLOW_SUPERUSER="${COMPOSER_ALLOW_SUPERUSER}" composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader || true
+
+          php artisan cache:clear || true
+          php artisan config:cache || true
+          php artisan route:cache || true
+          php artisan view:cache || true
+          php artisan optimize:clear || true
+
+          php artisan storage:link || true
+
+          php artisan migrate ${MIGRATE_ARGS} || true
+
+          chmod -R ug+rw storage bootstrap/cache public/uploads || true
+          chown -R www-data:www-data "$WORK_DIR/bootstrap/cache" || true
+          chmod -R 775 "$WORK_DIR/bootstrap/cache" || true
+          chown -R www-data:www-data "$WORK_DIR/storage" || true
+          chmod -R 775 "$WORK_DIR/storage" || true
+
+          if [ -n "${APP_USER:-}" ]; then chown -R "${APP_USER}:${APP_USER}" storage bootstrap/cache || true; fi
+
+          sudo supervisorctl restart laravel-worker:* || true
+
+          cp -f ./scripts/resources/JsonResource.php ./vendor/laravel/framework/src/Illuminate/Http/Resources/Json/ || true
+
+          echo 'Main deployment finished.'
+          EOF
+
+
