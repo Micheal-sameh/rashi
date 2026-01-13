@@ -43,6 +43,14 @@ jobs:
     if: github.ref == 'refs/heads/staging' || (github.event_name == 'workflow_dispatch' && github.event.inputs.branch == 'staging')
     steps:
       - uses: actions/checkout@v4
+      - name: Verify staging secrets
+        run: |
+          missing=0
+          if [ -z "${{ secrets.STAGING_SSH_PRIVATE_KEY }}" ]; then echo "Secret STAGING_SSH_PRIVATE_KEY is missing"; missing=1; fi
+          if [ -z "${{ secrets.STAGING_SSH_HOST }}" ]; then echo "Secret STAGING_SSH_HOST is missing"; missing=1; fi
+          if [ -z "${{ secrets.STAGING_SSH_USER }}" ]; then echo "Secret STAGING_SSH_USER is missing"; missing=1; fi
+          if [ -z "${{ secrets.STAGING_WORK_DIR }}" ]; then echo "Secret STAGING_WORK_DIR is missing"; missing=1; fi
+          if [ $missing -ne 0 ]; then exit 1; fi
       - name: Prepare SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
@@ -127,6 +135,14 @@ jobs:
     if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.branch == 'main')
     steps:
       - uses: actions/checkout@v4
+      - name: Verify main secrets
+        run: |
+          missing=0
+          if [ -z "${{ secrets.MAIN_SSH_PRIVATE_KEY }}" ]; then echo "Secret MAIN_SSH_PRIVATE_KEY is missing"; missing=1; fi
+          if [ -z "${{ secrets.MAIN_SSH_HOST }}" ]; then echo "Secret MAIN_SSH_HOST is missing"; missing=1; fi
+          if [ -z "${{ secrets.MAIN_SSH_USER }}" ]; then echo "Secret MAIN_SSH_USER is missing"; missing=1; fi
+          if [ -z "${{ secrets.MAIN_WORK_DIR }}" ]; then echo "Secret MAIN_WORK_DIR is missing"; missing=1; fi
+          if [ $missing -ne 0 ]; then exit 1; fi
       - name: Prepare SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
