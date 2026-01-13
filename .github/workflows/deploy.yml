@@ -15,7 +15,7 @@ on:
 env:
   MIGRATE_ARGS: "--force --no-interaction"
   COMPOSER_ALLOW_SUPERUSER: "1"
-  GIT_HTTPS_URL: "https://git.restart-technology.com/shaker/laam-backend.git"
+  GIT_HTTPS_URL: "https://github.com/Micheal-sameh/rashi.git"
   STAGING_BRANCH: staging
   MAIN_BRANCH: main
 
