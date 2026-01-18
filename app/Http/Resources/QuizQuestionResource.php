@@ -15,14 +15,18 @@ class QuizQuestionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $shuffledAnswers = $this->whenLoaded('answers', function () {
+            return $this->answers->shuffle();
+        });
+
         return [
             'id' => $this->id,
             'question' => $this->question,
             'points' => $this->points,
             'is_correct' => (Carbon::parse($this->quiz->date)->lt(today())) ? true : false,
             'answers' => (Carbon::parse($this->quiz->date)->lt(today()))
-            ? $this->whenloaded('answers', ModelAnswerResource::collection($this->answers))
-            : $this->whenloaded('answers', AnswerResource::collection($this->answers)),
+            ? ($shuffledAnswers ? ModelAnswerResource::collection($shuffledAnswers) : null)
+            : ($shuffledAnswers ? AnswerResource::collection($shuffledAnswers) : null),
         ];
     }
 }
