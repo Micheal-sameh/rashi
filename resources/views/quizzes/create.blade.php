@@ -9,6 +9,29 @@
             </a>
         </div>
 
+        <!-- Warning Modal -->
+        <div class="modal fade" id="warningModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">
+                            <i class="fa fa-exclamation-triangle me-2"></i>{{ __('messages.warning') }}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center py-4">
+                        <i class="fa fa-exclamation-circle fa-3x text-warning mb-3"></i>
+                        <p class="fs-5" id="warningMessage"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            {{ __('messages.ok') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-body">
                 <form action="{{ route('quizzes.store') }}" method="POST">
@@ -59,13 +82,13 @@
                     <div id="questions-section">
                         <div class="question card mb-4 border-0 shadow-sm rounded-3" id="question-0">
                             <div class="card-body">
-                                <h5 class="card-title mb-3">Question 1</h5>
+                                <h5 class="card-title mb-3">{{ __('messages.question') }} 1</h5>
 
                                 <input type="text" name="questions[0][question]" class="form-control mb-3"
-                                    placeholder="Enter question text" required>
+                                    placeholder="{{ __('messages.enter_question_text') }}" required>
 
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Points</label>
+                                    <label class="form-label fw-bold">{{ __('messages.points') }}</label>
                                     <input type="number" name="questions[0][points]" class="form-control" min="1"
                                         required>
                                 </div>
@@ -85,7 +108,7 @@
                                                     {{ $i == 1 ? 'required checked' : 'required' }}>
                                             </div>
                                             <input type="text" name="questions[0][answers][{{ $i }}]"
-                                                class="form-control answer-input" placeholder="Answer {{ $i }}" required>
+                                                class="form-control answer-input" placeholder="{{ __('messages.answer') }} {{ $i }}" required>
                                             @if ($i > 2)
                                                 <button type="button" class="btn btn-outline-danger btn-sm remove-answer-btn">
                                                     <i class="fa fa-trash"></i>
@@ -102,7 +125,7 @@
 
                                 <button type="button" class="btn btn-sm btn-outline-danger mt-2"
                                     onclick="removeQuestion('question-0')">
-                                    <i class="fa fa-trash me-1"></i> Remove Question
+                                    <i class="fa fa-trash me-1"></i> {{ __('messages.remove_question') }}
                                 </button>
                             </div>
                         </div>
@@ -148,13 +171,13 @@
             const questionHTML = `
             <div class="question card mb-4 border-0 shadow-sm rounded-3" id="${questionId}">
                 <div class="card-body">
-                    <h5 class="card-title mb-3">Question ${questionIndex + 1}</h5>
+                    <h5 class="card-title mb-3">{{ __('messages.question') }} ${questionIndex + 1}</h5>
 
                     <input type="text" name="questions[${questionIndex}][question]"
-                           class="form-control mb-3" placeholder="Enter question text" required>
+                           class="form-control mb-3" placeholder="{{ __('messages.enter_question_text') }}" required>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Points</label>
+                        <label class="form-label fw-bold">{{ __('messages.points') }}</label>
                         <input type="number" name="questions[${questionIndex}][points]" class="form-control" min="1" required>
                     </div>
 
@@ -174,7 +197,7 @@
                     </button>
 
                     <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="removeQuestion('${questionId}')">
-                        <i class="fa fa-trash me-1"></i> Remove Question
+                        <i class="fa fa-trash me-1"></i> {{ __('messages.remove_question') }}
                     </button>
                 </div>
             </div>
@@ -185,10 +208,25 @@
         }
 
         function removeQuestion(id) {
+            const section = document.getElementById('questions-section');
+            const questionCount = section.querySelectorAll('.question').length;
+
+            // Prevent removing the last question
+            if (questionCount <= 1) {
+                showWarning("{{ __('messages.at_least_one_question_required') }}");
+                return;
+            }
+
             const questionDiv = document.getElementById(id);
             if (questionDiv) {
                 questionDiv.remove();
             }
+        }
+
+        function showWarning(message) {
+            document.getElementById('warningMessage').textContent = message;
+            const modal = new bootstrap.Modal(document.getElementById('warningModal'));
+            modal.show();
         }
 
         // Handle adding answers
@@ -242,7 +280,7 @@
                 const radio = row.querySelector('input[type="radio"]');
 
                 input.name = `questions[${questionIndex}][answers][${newIndex}]`;
-                input.placeholder = `Answer ${newIndex}`;
+                input.placeholder = `{{ __('messages.answer') }} ${newIndex}`;
                 radio.value = newIndex;
 
                 // Remove existing remove buttons
