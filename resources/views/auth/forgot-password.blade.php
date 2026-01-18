@@ -52,12 +52,12 @@
                 @csrf
 
                 <div class="text-center mb-4">
-                    <h4>Forgot Password</h4>
-                    <p class="text-muted small">Enter your email address and we'll send you a link to reset your password.</p>
+                    <h4>{{ __('messages.forgot_password_title') }}</h4>
+                    <p class="text-muted small">{{ __('messages.forgot_password_description') }}</p>
                 </div>
 
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email Address</label>
+                    <label for="email" class="form-label">{{ __('messages.email_address') }}</label>
                     <input id="email" type="email" name="email" required autofocus
                         class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}">
 
@@ -67,11 +67,11 @@
                 </div>
 
                 <div class="d-grid mb-3">
-                    <button type="submit" class="btn btn-primary">Send Password Reset Link</button>
+                    <button type="submit" class="btn btn-primary">{{ __('messages.send_password_reset_link') }}</button>
                 </div>
 
                 <div class="text-center">
-                    <a href="{{ route('loginPage') }}" class="text-decoration-none">Back to Login</a>
+                    <a href="{{ route('loginPage') }}" class="text-decoration-none">{{ __('messages.back_to_login') }}</a>
                 </div>
             </form>
         </div>

@@ -31,16 +31,16 @@
             <tbody>
                 @forelse($users as $user)
                     <tr>
-                        <td class="fw-semibold">{{ $user->name ?? 'N/A' }}</td>
-                        <td>{{ $user->email ?? 'N/A' }}</td>
+                        <td class="fw-semibold">{{ $user->name ?? __('messages.not_available') }}</td>
+                        <td>{{ $user->email ?? __('messages.not_available') }}</td>
                         <td>
                             @if ($user->membership_code)
                                 <span class="badge bg-secondary">{{ $user->membership_code }}</span>
                             @else
-                                N/A
+                                {{ __('messages.not_available') }}
                             @endif
                         </td>
-                        <td>{{ $user->phone ?? 'N/A' }}</td>
+                        <td>{{ $user->phone ?? __('messages.not_available') }}</td>
                         <td class="text-end">{{ $user->score ?? 0 }}</td>
                         <td class="text-end">{{ $user->points ?? 0 }}</td>
                         <td>
@@ -84,7 +84,7 @@
                             @else
                                 <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
                                     style="width: 60px; height: 60px;">
-                                    <span class="text-muted">N/A</span>
+                                    <span class="text-muted">{{ __('messages.not_available') }}</span>
                                 </div>
                             @endif
                         </div>
