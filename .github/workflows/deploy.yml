@@ -24,9 +24,10 @@ jobs:
             git pull origin main
 
             echo "📦 Installing dependencies..."
-            composer install --no-dev --optimize-autoloader
+            docker exec rashi composer install --no-dev --optimize-autoloader
 
             echo "🗃️ Running migrations..."
-            php artisan migrate --force
+            docker exec rashi php artisan migrate --force
+
 
             echo "✅ Deployment completed successfully!"

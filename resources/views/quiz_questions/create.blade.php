@@ -57,31 +57,120 @@
                         <div class="card-body">
                             <h5 class="fw-bold mb-3 text-secondary">
                                 <i class="fa fa-list-ol me-2"></i> {{ __('messages.answers') }}
+                                <span class="badge bg-info ms-2">{{ __('messages.min_2_max_4') }}</span>
                             </h5>
 
-                            @for ($i = 1; $i <= 4; $i++)
-                                <div class="row align-items-center mb-3">
-                                    <div class="col-8">
-                                        <input type="text" name="answers[{{ $i }}]"
-                                            id="answers[{{ $i }}]" class="form-control"
-                                            placeholder="{{ __('messages.answer') }} {{ $i }}"
-                                            value="{{ old("answers.$i") }}" required>
+                            <div id="answersContainer">
+                                @for ($i = 1; $i <= 2; $i++)
+                                    <div class="answer-row row align-items-center mb-3">
+                                        <div class="col-7">
+                                            <input type="text" name="answers[{{ $i }}]"
+                                                class="form-control answer-input"
+                                                placeholder="{{ __('messages.answer') }} {{ $i }}"
+                                                value="{{ old("answers.$i") }}" required>
+                                        </div>
+                                        <div class="col-3 text-end">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="correct"
+                                                    value="{{ $i }}"
+                                                    {{ old('correct') == $i ? 'checked' : ($i == 1 ? 'checked' : '') }} required>
+                                                <label class="form-check-label fw-bold text-success">
+                                                    <i class="fa fa-check-circle me-1"></i> {{ __('messages.correct') }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 text-end">
+                                            @if ($i > 2)
+                                                <button type="button" class="btn btn-sm btn-outline-danger remove-answer">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </div>
                                     </div>
-                                    <div class="col-4 text-end">
+                                @endfor
+                            </div>
+
+                            <button type="button" id="addAnswerBtn" class="btn btn-sm btn-outline-primary mt-2">
+                                <i class="fa fa-plus me-1"></i> {{ __('messages.add_answer') }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <script>
+                        let answerCount = 2;
+                        const maxAnswers = 4;
+                        const minAnswers = 2;
+
+                        document.getElementById('addAnswerBtn').addEventListener('click', function() {
+                            if (answerCount < maxAnswers) {
+                                answerCount++;
+                                const container = document.getElementById('answersContainer');
+                                const newRow = document.createElement('div');
+                                newRow.className = 'answer-row row align-items-center mb-3';
+                                newRow.innerHTML = `
+                                    <div class="col-7">
+                                        <input type="text" name="answers[${answerCount}]"
+                                            class="form-control answer-input"
+                                            placeholder="{{ __('messages.answer') }} ${answerCount}"
+                                            required>
+                                    </div>
+                                    <div class="col-3 text-end">
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" name="correct"
-                                                id="correct_{{ $i }}" value="{{ $i }}"
-                                                {{ old('correct') == $i ? 'checked' : '' }} required>
-                                            <label class="form-check-label fw-bold text-success"
-                                                for="correct_{{ $i }}">
+                                                value="${answerCount}" required>
+                                            <label class="form-check-label fw-bold text-success">
                                                 <i class="fa fa-check-circle me-1"></i> {{ __('messages.correct') }}
                                             </label>
                                         </div>
                                     </div>
-                                </div>
-                            @endfor
-                        </div>
-                    </div>
+                                    <div class="col-2 text-end">
+                                        <button type="button" class="btn btn-sm btn-outline-danger remove-answer">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                `;
+                                container.appendChild(newRow);
+                                updateAddButtonState();
+                            }
+                        });
+
+                        document.addEventListener('click', function(e) {
+                            if (e.target.closest('.remove-answer')) {
+                                const row = e.target.closest('.answer-row');
+                                if (answerCount > minAnswers) {
+                                    row.remove();
+                                    answerCount--;
+                                    reindexAnswers();
+                                    updateAddButtonState();
+                                }
+                            }
+                        });
+
+                        function reindexAnswers() {
+                            const rows = document.querySelectorAll('.answer-row');
+                            rows.forEach((row, index) => {
+                                const newIndex = index + 1;
+                                const input = row.querySelector('.answer-input');
+                                const radio = row.querySelector('input[type=\"radio\"]');
+                                const placeholder = row.querySelector('.answer-input');
+
+                                input.name = `answers[${newIndex}]`;
+                                radio.value = newIndex;
+                                placeholder.placeholder = `{{ __('messages.answer') }} ${newIndex}`;
+                            });
+                        }
+
+                        function updateAddButtonState() {
+                            const btn = document.getElementById('addAnswerBtn');
+                            if (answerCount >= maxAnswers) {
+                                btn.disabled = true;
+                                btn.classList.add('disabled');
+                            } else {
+                                btn.disabled = false;
+                                btn.classList.remove('disabled');
+                            }
+                        }
+                    </script>
 
                     <!-- Buttons -->
                     <div class="d-flex justify-content-between flex-wrap gap-2">

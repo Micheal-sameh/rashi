@@ -51,17 +51,21 @@ class QuizQuestionService
     public function update($id, $input)
     {
         $question = $this->quizQuestionRepository->update($id, $input);
-        $answers = $question->answers()->pluck('id');
-        foreach ($answers as $key => $answer_id) {
-            $this->questionAnswerRepository->update($answer_id, $input->answers[$key + 1], ($input->correct == $key + 1) ? 1 : 0);
+
+        // Delete existing answers
+        $question->answers()->delete();
+
+        // Create new answers
+        foreach ($input->answers as $index => $answer) {
+            $this->questionAnswerRepository->store($question->id, $answer, $input->correct == $index ? 1 : 0);
         }
     }
 
     public function create($input)
     {
         $question = $this->quizQuestionRepository->create($input);
-        for ($i = 0; $i < 4; $i++) {
-            $this->questionAnswerRepository->store($question->id, $input->answers[$i + 1], $input->correct == ($i + 1) ? 1 : 0);
+        foreach ($input->answers as $index => $answer) {
+            $this->questionAnswerRepository->store($question->id, $answer, $input->correct == $index ? 1 : 0);
         }
 
         return $question;
