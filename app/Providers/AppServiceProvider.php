@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Force HTTPS
+        URL::forceScheme('https');
+
         View::composer('layouts.sideBar', function ($view) {
             $currentRoute = request()->route();
             $view->with('activeRoutes', [
