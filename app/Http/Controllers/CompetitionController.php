@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\DTOs\CompetitionCreateDTO;
 use App\Http\Requests\CreateCompetitionRequest;
+use App\Imports\QuizImport;
 use App\Repositories\GroupRepository;
 use App\Services\CompetitionService;
+use Maatwebsite\Excel\Facades\Excel;
 use Mpdf\Mpdf;
 
 class CompetitionController extends Controller
@@ -155,5 +157,53 @@ class CompetitionController extends Controller
         $mpdf->WriteHTML($html);
 
         return $mpdf->Output("{$competition->name}.pdf", 'D');
+    }
+
+    public function uploadQuizzes($id)
+    {
+        request()->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240', // Max 10MB
+        ]);
+
+        try {
+            Excel::import(new QuizImport($id), request()->file('file'));
+
+            if (request()->expectsJson()) {
+                return response()->json(['message' => 'Quizzes uploaded successfully'], 200);
+            }
+
+            return redirect()->route('competitions.index')
+                ->with('success', 'Quizzes uploaded successfully');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $errors = [];
+
+            foreach ($failures as $failure) {
+                $errors[] = "Row {$failure->row()}: ".implode(', ', $failure->errors());
+            }
+
+            $errorMessage = 'Validation errors in Excel file: '.implode(' | ', $errors);
+
+            if (request()->expectsJson()) {
+                return response()->json(['message' => $errorMessage], 422);
+            }
+
+            return redirect()->route('competitions.index')
+                ->with('error', $errorMessage);
+        } catch (\Exception $e) {
+            $errorMessage = 'Error uploading quizzes: '.$e->getMessage();
+
+            if (request()->expectsJson()) {
+                return response()->json(['message' => $errorMessage], 500);
+            }
+
+            return redirect()->route('competitions.index')
+                ->with('error', $errorMessage);
+        }
+    }
+
+    public function downloadExampleExcel()
+    {
+        return Excel::download(new \App\Exports\QuizExampleExport, 'quiz_example.xlsx');
     }
 }

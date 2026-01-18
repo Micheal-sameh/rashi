@@ -62,11 +62,13 @@ Route::group(['middleware' => ['setlocale']], function () {
         Route::prefix('competitions')->group(function () {
             Route::get('/', [CompetitionController::class, 'index'])->name('competitions.index');
             Route::get('/create', [CompetitionController::class, 'create'])->name('competitions.create');
+            Route::get('/download-example-excel', [CompetitionController::class, 'downloadExampleExcel'])->name('competitions.downloadExampleExcel');
             Route::get('/{id}/edit', [CompetitionController::class, 'edit'])->name('competitions.edit');
             Route::get('/{id}/user-answers', [CompetitionController::class, 'userAnswers'])->name('competitions.userAnswers');
             Route::get('/{id}/leaderboard/export', [CompetitionController::class, 'exportLeaderboard'])->name('competitions.leaderboard.export');
             // Route::post('/change-status', [CompetitionController::class, 'changeStatus'])->name('competitions.changeStatus');
             Route::post('/', [CompetitionController::class, 'store'])->name('competitions.store');
+            Route::post('/{id}/upload-quizzes', [CompetitionController::class, 'uploadQuizzes'])->name('competitions.uploadQuizzes');
             Route::put('/{id}/cancel', [CompetitionController::class, 'cancel'])->name('competitions.cancel');
             Route::put('/{id}/change-status', [CompetitionController::class, 'changeStatus'])->name('competitions.changeStatus');
             Route::put('/{id}/set-active', [CompetitionController::class, 'setActive'])->name('competitions.setActive');
