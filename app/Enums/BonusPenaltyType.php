@@ -30,7 +30,7 @@ class BonusPenaltyType
 
     public static function all(): array
     {
-        $locale = App::isLocale('ar') ? 'ar' : 'en';
+        $locale = App::isLocale('en') ? 'en' : 'ar';
 
         return array_map(
             fn ($value) => [
@@ -47,7 +47,7 @@ class BonusPenaltyType
             throw new InvalidArgumentException("Invalid bonus/penalty type value: {$value}");
         }
 
-        return self::$translations[$value][App::isLocale('ar') ? 'ar' : 'en'];
+        return self::$translations[$value][App::isLocale('en') ? 'en' : 'ar'];
     }
 
     public static function getValues(): array

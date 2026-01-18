@@ -270,4 +270,7 @@ return [
     'create_quiz' => 'إنشاء اختبار',
     'at_least_one_question_required' => 'مطلوب سؤال واحد على الأقل',
     'ok' => 'حسناً',
+    'no_bonus_penalties_found' => 'لا توجد مكافآت أو عقوبات',
+    'Welcome points' => 'نقاط الترحيب',
+    'Welcome Bonus' => 'بونص الترحيب',
 ];
