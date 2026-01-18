@@ -12,9 +12,9 @@ class CreateQuestionRequest extends FormRequest
             'question' => 'required|string',
             'quiz_id' => 'required|integer|exists:quizzes,id',
             'points' => 'required|integer',
-            'answers' => 'required|array|min:1',
+            'answers' => 'required|array|min:2|max:4',
             'answers.*' => 'required|string',
-            'correct' => 'required|integer',
+            'correct' => 'required|integer|min:1|max:'.(count($this->input('answers', [])) ?: 4),
         ];
     }
 }

@@ -34,7 +34,7 @@ class CreateQuizRequest extends FormRequest
             'questions' => 'required|array',
             'questions.*.question' => 'required|string',
             'questions.*.points' => 'required|integer',
-            'questions.*.answers' => 'required|array',
+            'questions.*.answers' => 'required|array|min:2|max:4',
             'questions.*.answers.*' => 'required|string',
             'questions.*.correct' => 'required|integer',
         ];

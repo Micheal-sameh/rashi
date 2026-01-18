@@ -70,16 +70,35 @@
                                         required>
                                 </div>
 
-                                @for ($i = 0; $i < 4; $i++)
-                                    <div class="input-group mb-2">
-                                        <div class="input-group-text">
-                                            <input type="radio" name="questions[0][correct]" value="{{ $i }}"
-                                                required>
+                                <div class="mb-2">
+                                    <label class="form-label fw-bold">
+                                        {{ __('messages.answers') }}
+                                        <span class="badge bg-info ms-2">{{ __('messages.min_2_max_4') }}</span>
+                                    </label>
+                                </div>
+
+                                <div class="answers-container" data-question-index="0">
+                                    @for ($i = 1; $i <= 2; $i++)
+                                        <div class="answer-row input-group mb-2">
+                                            <div class="input-group-text">
+                                                <input type="radio" name="questions[0][correct]" value="{{ $i }}"
+                                                    {{ $i == 1 ? 'required checked' : 'required' }}>
+                                            </div>
+                                            <input type="text" name="questions[0][answers][{{ $i }}]"
+                                                class="form-control answer-input" placeholder="Answer {{ $i }}" required>
+                                            @if ($i > 2)
+                                                <button type="button" class="btn btn-outline-danger btn-sm remove-answer-btn">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
                                         </div>
-                                        <input type="text" name="questions[0][answers][{{ $i }}]"
-                                            class="form-control" placeholder="Answer {{ $i + 1 }}" required>
-                                    </div>
-                                @endfor
+                                    @endfor
+                                </div>
+
+                                <button type="button" class="btn btn-sm btn-outline-primary add-answer-btn mb-2"
+                                    data-question-index="0">
+                                    <i class="fa fa-plus me-1"></i> {{ __('messages.add_answer') }}
+                                </button>
 
                                 <button type="button" class="btn btn-sm btn-outline-danger mt-2"
                                     onclick="removeQuestion('question-0')">
@@ -107,19 +126,21 @@
     {{-- JS --}}
     <script>
         let questionIndex = 1;
+        const maxAnswers = 4;
+        const minAnswers = 2;
 
         function addQuestion() {
             const section = document.getElementById('questions-section');
             const questionId = `question-${questionIndex}`;
 
             let answersHTML = '';
-            for (let i = 0; i < 4; i++) {
+            for (let i = 1; i <= 2; i++) {
                 answersHTML += `
-                <div class="input-group mb-2">
+                <div class="answer-row input-group mb-2">
                     <div class="input-group-text">
-                        <input type="radio" name="questions[${questionIndex}][correct]" value="${i}" required>
+                        <input type="radio" name="questions[${questionIndex}][correct]" value="${i}" ${i === 1 ? 'checked' : ''} required>
                     </div>
-                    <input type="text" name="questions[${questionIndex}][answers][${i}]" class="form-control" placeholder="Answer ${i + 1}" required>
+                    <input type="text" name="questions[${questionIndex}][answers][${i}]" class="form-control answer-input" placeholder="Answer ${i}" required>
                 </div>
             `;
             }
@@ -137,7 +158,20 @@
                         <input type="number" name="questions[${questionIndex}][points]" class="form-control" min="1" required>
                     </div>
 
-                    ${answersHTML}
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">
+                            {{ __('messages.answers') }}
+                            <span class="badge bg-info ms-2">{{ __('messages.min_2_max_4') }}</span>
+                        </label>
+                    </div>
+
+                    <div class="answers-container" data-question-index="${questionIndex}">
+                        ${answersHTML}
+                    </div>
+
+                    <button type="button" class="btn btn-sm btn-outline-primary add-answer-btn mb-2" data-question-index="${questionIndex}">
+                        <i class="fa fa-plus me-1"></i> {{ __('messages.add_answer') }}
+                    </button>
 
                     <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="removeQuestion('${questionId}')">
                         <i class="fa fa-trash me-1"></i> Remove Question
@@ -154,6 +188,93 @@
             const questionDiv = document.getElementById(id);
             if (questionDiv) {
                 questionDiv.remove();
+            }
+        }
+
+        // Handle adding answers
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.add-answer-btn')) {
+                const btn = e.target.closest('.add-answer-btn');
+                const questionIndex = btn.getAttribute('data-question-index');
+                const container = document.querySelector(`.answers-container[data-question-index="${questionIndex}"]`);
+                const currentCount = container.querySelectorAll('.answer-row').length;
+
+                if (currentCount < maxAnswers) {
+                    const newIndex = currentCount + 1;
+                    const answerHTML = `
+                        <div class="answer-row input-group mb-2">
+                            <div class="input-group-text">
+                                <input type="radio" name="questions[${questionIndex}][correct]" value="${newIndex}" required>
+                            </div>
+                            <input type="text" name="questions[${questionIndex}][answers][${newIndex}]" class="form-control answer-input" placeholder="Answer ${newIndex}" required>
+                            <button type="button" class="btn btn-outline-danger btn-sm remove-answer-btn">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', answerHTML);
+                    updateAddButtonState(questionIndex);
+                }
+            }
+
+            // Handle removing answers
+            if (e.target.closest('.remove-answer-btn')) {
+                const row = e.target.closest('.answer-row');
+                const container = row.closest('.answers-container');
+                const questionIndex = container.getAttribute('data-question-index');
+                const currentCount = container.querySelectorAll('.answer-row').length;
+
+                if (currentCount > minAnswers) {
+                    row.remove();
+                    reindexAnswers(questionIndex);
+                    updateAddButtonState(questionIndex);
+                }
+            }
+        });
+
+        function reindexAnswers(questionIndex) {
+            const container = document.querySelector(`.answers-container[data-question-index="${questionIndex}"]`);
+            const rows = container.querySelectorAll('.answer-row');
+
+            rows.forEach((row, index) => {
+                const newIndex = index + 1;
+                const input = row.querySelector('.answer-input');
+                const radio = row.querySelector('input[type="radio"]');
+
+                input.name = `questions[${questionIndex}][answers][${newIndex}]`;
+                input.placeholder = `Answer ${newIndex}`;
+                radio.value = newIndex;
+
+                // Remove existing remove buttons
+                const existingBtn = row.querySelector('.remove-answer-btn');
+                if (existingBtn) {
+                    existingBtn.remove();
+                }
+
+                // Add remove button only if more than minAnswers and not first 2
+                if (rows.length > minAnswers && newIndex > minAnswers) {
+                    if (!row.querySelector('.remove-answer-btn')) {
+                        const removeBtn = document.createElement('button');
+                        removeBtn.type = 'button';
+                        removeBtn.className = 'btn btn-outline-danger btn-sm remove-answer-btn';
+                        removeBtn.innerHTML = '<i class="fa fa-trash"></i>';
+                        row.appendChild(removeBtn);
+                    }
+                }
+            });
+        }
+
+        function updateAddButtonState(questionIndex) {
+            const container = document.querySelector(`.answers-container[data-question-index="${questionIndex}"]`);
+            const btn = document.querySelector(`.add-answer-btn[data-question-index="${questionIndex}"]`);
+            const currentCount = container.querySelectorAll('.answer-row').length;
+
+            if (currentCount >= maxAnswers) {
+                btn.disabled = true;
+                btn.classList.add('disabled');
+            } else {
+                btn.disabled = false;
+                btn.classList.remove('disabled');
             }
         }
     </script>
