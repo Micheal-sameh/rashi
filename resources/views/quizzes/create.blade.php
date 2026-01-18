@@ -118,15 +118,17 @@
                                     @endfor
                                 </div>
 
-                                <button type="button" class="btn btn-sm btn-outline-primary add-answer-btn mb-2"
-                                    data-question-index="0">
-                                    <i class="fa fa-plus me-1"></i> {{ __('messages.add_answer') }}
-                                </button>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-primary add-answer-btn"
+                                        data-question-index="0">
+                                        <i class="fa fa-plus me-1"></i> {{ __('messages.add_answer') }}
+                                    </button>
 
-                                <button type="button" class="btn btn-sm btn-outline-danger mt-2"
-                                    onclick="removeQuestion('question-0')">
-                                    <i class="fa fa-trash me-1"></i> {{ __('messages.remove_question') }}
-                                </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                        onclick="removeQuestion('question-0')">
+                                        <i class="fa fa-trash me-1"></i> {{ __('messages.remove_question') }}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
