@@ -275,4 +275,5 @@ return [
     'no_bonus_penalties_found' => 'لا توجد مكافآت أو عقوبات',
     'Welcome points' => 'نقاط الترحيب',
     'Welcome Bonus' => 'بونص الترحيب',
+    'not_available' => 'غير متاح',
 ];

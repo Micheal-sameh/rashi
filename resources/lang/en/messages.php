@@ -264,4 +264,5 @@ return [
     'ok' => 'OK',
     'Welcome points' => 'Welcome Points',
     'Welcome Bonus' => 'Welcome Bonus',
+    'not_available' => 'N/A',
 ];
