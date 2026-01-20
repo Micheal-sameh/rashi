@@ -14,7 +14,7 @@ class QuestionCreateDTO extends DTO
     public ?array $answers;
 
     public function __construct(
-        string $question = parent::STRING,
+        ?string $question = parent::STRING,
         int $points = parent::INT,
         int $quiz_id = parent::INT,
         int $correct = parent::INT,

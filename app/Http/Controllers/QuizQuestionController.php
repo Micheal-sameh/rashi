@@ -47,7 +47,13 @@ class QuizQuestionController extends Controller
         $input = new QuestionCreateDTO(...$request->only(
             'question', 'quiz_id', 'points', 'answers', 'correct'
         ));
-        $this->quizQuestionService->create($input);
+        $question = $this->quizQuestionService->create($input);
+
+        // Handle image upload
+        if ($request->hasFile('question_image')) {
+            $question->addMediaFromRequest('question_image')
+                ->toMediaCollection('question_image');
+        }
 
         return redirect()->back()->with('success', 'Question created successfully');
     }
@@ -78,7 +84,19 @@ class QuizQuestionController extends Controller
         $input = new QuestionCreateDTO(...$request->only(
             'question', 'quiz_id', 'points', 'answers', 'correct'
         ));
-        $this->quizQuestionService->update($id, $input);
+        $question = $this->quizQuestionService->update($id, $input);
+
+        // Handle image removal
+        if ($request->has('remove_image')) {
+            $question->clearMediaCollection('question_image');
+        }
+
+        // Handle new image upload
+        if ($request->hasFile('question_image')) {
+            $question->clearMediaCollection('question_image');
+            $question->addMediaFromRequest('question_image')
+                ->toMediaCollection('question_image');
+        }
 
         return redirect()->route('questions.index')->with('success', 'Question updated successfully');
     }

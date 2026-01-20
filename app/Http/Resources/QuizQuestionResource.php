@@ -18,6 +18,9 @@ class QuizQuestionResource extends JsonResource
         return [
             'id' => $this->id,
             'question' => $this->question,
+            'question_image' => $this->hasMedia('question_image')
+                ? $this->getFirstMediaUrl('question_image')
+                : null,
             'points' => $this->points,
             'is_correct' => (Carbon::parse($this->quiz->date)->lt(today())) ? true : false,
             'answers' => (Carbon::parse($this->quiz->date)->lt(today()))
