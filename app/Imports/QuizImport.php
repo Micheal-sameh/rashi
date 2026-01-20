@@ -47,7 +47,12 @@ class QuizImport implements ToCollection, WithHeadingRow, WithValidation
                         $parsedDate = now();
                         if ($quizDate) {
                             try {
-                                $parsedDate = \Carbon\Carbon::parse($quizDate);
+                                // Check if it's an Excel serial date number
+                                if (is_numeric($quizDate)) {
+                                    $parsedDate = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($quizDate);
+                                } else {
+                                    $parsedDate = \Carbon\Carbon::parse($quizDate);
+                                }
                             } catch (\Exception $e) {
                                 // If parsing fails, use current date
                                 $parsedDate = now();
