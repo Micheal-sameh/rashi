@@ -23,20 +23,61 @@
                 @endif
 
                 <!-- Edit Form -->
-                <form action="{{ route('questions.update', $question->id) }}" method="POST">
+                <form action="{{ route('questions.update', $question->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
                     <!-- Hidden Quiz ID -->
                     <input type="hidden" name="quiz_id" value="{{ $question->quiz_id }}">
 
-                    <!-- Question -->
-                    <div class="mb-3">
+                    <!-- Question Type Toggle -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fa fa-image text-primary me-1"></i> {{ __('messages.question_type') }}
+                        </label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="question_type" id="text_type" value="text"
+                                {{ !$question->hasMedia('question_image') ? 'checked' : '' }}>
+                            <label class="btn btn-outline-primary" for="text_type">
+                                <i class="fa fa-font me-1"></i> Text
+                            </label>
+                            <input type="radio" class="btn-check" name="question_type" id="image_type" value="image"
+                                {{ $question->hasMedia('question_image') ? 'checked' : '' }}>
+                            <label class="btn btn-outline-primary" for="image_type">
+                                <i class="fa fa-image me-1"></i> Image
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Question Text -->
+                    <div class="mb-3 {{ $question->hasMedia('question_image') ? 'd-none' : '' }}" id="text-question-container">
                         <label for="question" class="form-label fw-bold">
                             <i class="fa fa-question-circle text-info me-1"></i> {{ __('messages.question') }}
                         </label>
                         <input type="text" name="question" id="question" class="form-control form-control-lg"
-                            value="{{ old('question', $question->question) }}" required>
+                            value="{{ old('question', $question->question) }}">
+                    </div>
+
+                    <!-- Question Image -->
+                    <div class="mb-3 {{ !$question->hasMedia('question_image') ? 'd-none' : '' }}" id="image-question-container">
+                        <label for="question_image" class="form-label fw-bold">
+                            <i class="fa fa-image text-info me-1"></i> {{ __('messages.question_image') }}
+                        </label>
+                        @if ($question->hasMedia('question_image'))
+                            <div class="mb-2">
+                                <img src="{{ $question->getFirstMediaUrl('question_image') }}" class="img-thumbnail" style="max-width: 300px;">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" name="remove_image" id="remove_image">
+                                    <label class="form-check-label text-danger" for="remove_image">
+                                        {{ __('messages.remove_image') }}
+                                    </label>
+                                </div>
+                            </div>
+                        @endif
+                        <input type="file" name="question_image" id="question_image" class="form-control"
+                            accept="image/*">
+                        <small class="text-muted">{{ __('messages.supported_formats') }}: JPG, PNG, GIF</small>
+                        <div id="image-preview" class="mt-2"></div>
                     </div>
 
                     <!-- Points -->
@@ -97,6 +138,43 @@
                         let answerCount = {{ count($question?->answers) }};
                         const maxAnswers = 4;
                         const minAnswers = 2;
+
+                        // Question type toggle
+                        document.querySelectorAll('input[name="question_type"]').forEach(radio => {
+                            radio.addEventListener('change', function() {
+                                const textContainer = document.getElementById('text-question-container');
+                                const imageContainer = document.getElementById('image-question-container');
+                                const textInput = document.getElementById('question');
+                                const imageInput = document.getElementById('question_image');
+
+                                if (this.value === 'text') {
+                                    textContainer.classList.remove('d-none');
+                                    imageContainer.classList.add('d-none');
+                                    textInput.required = true;
+                                    imageInput.required = false;
+                                } else {
+                                    textContainer.classList.add('d-none');
+                                    imageContainer.classList.remove('d-none');
+                                    textInput.required = false;
+                                    imageInput.required = false;
+                                }
+                            });
+                        });
+
+                        // Image preview
+                        document.getElementById('question_image')?.addEventListener('change', function(e) {
+                            const preview = document.getElementById('image-preview');
+                            const file = e.target.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = function(e) {
+                                    preview.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="max-width: 300px;">`;
+                                }
+                                reader.readAsDataURL(file);
+                            } else {
+                                preview.innerHTML = '';
+                            }
+                        });
 
                         document.getElementById('addAnswerBtn').addEventListener('click', function() {
                             if (answerCount < maxAnswers) {

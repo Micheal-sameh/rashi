@@ -59,6 +59,8 @@ class QuizQuestionService
         foreach ($input->answers as $index => $answer) {
             $this->questionAnswerRepository->store($question->id, $answer, $input->correct == $index ? 1 : 0);
         }
+
+        return $question;
     }
 
     public function create($input)

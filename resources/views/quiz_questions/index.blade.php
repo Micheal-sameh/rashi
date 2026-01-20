@@ -69,7 +69,14 @@
                         <tbody>
                             @foreach ($questions as $question)
                                 <tr>
-                                    <td>{{ $question->question }}</td>
+                                    <td>
+                                        @if ($question->hasMedia('question_image'))
+                                            <img src="{{ $question->getFirstMediaUrl('question_image') }}"
+                                                class="img-thumbnail" style="max-width: 100px;">
+                                        @else
+                                            {{ $question->question }}
+                                        @endif
+                                    </td>
                                     <td><span class="badge bg-primary">{{ $question->points }}</span></td>
                                     @foreach ($question->answers as $answer)
                                         <td>
@@ -109,7 +116,12 @@
                 @foreach ($questions as $question)
                     <div class="card shadow-sm border-0 rounded-4 mb-3">
                         <div class="card-body">
-                            <h6 class="fw-bold mb-2">{{ $question->question }}</h6>
+                            @if ($question->hasMedia('question_image'))
+                                <img src="{{ $question->getFirstMediaUrl('question_image') }}"
+                                    class="img-fluid rounded mb-2" style="max-width: 100%;">
+                            @else
+                                <h6 class="fw-bold mb-2">{{ $question->question }}</h6>
+                            @endif
                             <p class="mb-2">
                                 <span class="badge bg-primary">{{ __('messages.points') }}: {{ $question->points }}</span>
                             </p>
