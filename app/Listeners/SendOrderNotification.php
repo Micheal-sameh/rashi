@@ -33,8 +33,8 @@ class SendOrderNotification implements ShouldQueue
         $user = $order->user;
         $servant = $order->servant;
 
-        $title = 'New Order Created';
-        $body = "Order #{$order->id} has been created for {$order->reward->name}.";
+        $title = __('messages.new_order_created');
+        $body = __('messages.order_created_body', ['id' => $order->id, 'reward' => $order->reward->name]);
 
         // Send to user
         if ($user && $user->fcmTokens->isNotEmpty()) {
@@ -56,8 +56,8 @@ class SendOrderNotification implements ShouldQueue
         $user = $order->user;
         $servant = $order->servant;
 
-        $title = 'Order Received';
-        $body = "Order #{$order->id} has been received: reward {$order->reward->name}.";
+        $title = __('messages.order_received');
+        $body = __('messages.order_received_body', ['id' => $order->id, 'reward' => $order->reward->name]);
 
         // Send to user
         if ($user && $user->fcmTokens->isNotEmpty()) {
@@ -79,8 +79,8 @@ class SendOrderNotification implements ShouldQueue
         $user = $order->user;
         $servant = $order->servant;
 
-        $title = 'Order Cancelled';
-        $body = "Order #{$order->id} has been cancelled for reward: {$order->reward->name}..";
+        $title = __('messages.order_cancelled');
+        $body = __('messages.order_cancelled_body', ['id' => $order->id, 'reward' => $order->reward->name]);
 
         // Send to user
         if ($user && $user->fcmTokens->isNotEmpty()) {

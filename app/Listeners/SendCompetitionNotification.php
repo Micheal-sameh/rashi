@@ -26,8 +26,8 @@ class SendCompetitionNotification implements ShouldQueue
 
             // Create the notification first
             $notification = Notification::create([
-                'title' => 'Competition Activated',
-                'message' => "automatic message: The competition '{$competition->name}' has been activated and is now live!",
+                'title' => __('messages.competition_activated'),
+                'message' => __('messages.competition_activated_body', ['name' => $competition->name]),
                 'type' => 'success',
                 'subject_type' => Competition::class,
                 'subject_id' => $competition->id,

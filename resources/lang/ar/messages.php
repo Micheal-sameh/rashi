@@ -225,6 +225,8 @@ return [
     'order_received_body' => 'تم استلام الطلب #:id: مكافأة :reward.',
     'order_cancelled' => 'تم إلغاء الطلب',
     'order_cancelled_body' => 'تم إلغاء الطلب #:id للمكافأة: :reward.',
+    'manual_notification_prefix' => 'إرسال يدوي',
+    'notification_sent_successfully' => 'تم إرسال الإشعار بنجاح',
     'bonus_penalties' => 'البونص والعقوبات',
     'add_bonus_penalty' => 'إضافة بونص أو عقوبة',
     'all_users' => 'جميع المستخدمين',
