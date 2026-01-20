@@ -269,4 +269,6 @@ return [
     'Welcome points' => 'Welcome Points',
     'Welcome Bonus' => 'Welcome Bonus',
     'not_available' => 'N/A',
+    'search_quiz_name' => 'Search quiz name...',
+    'all' => 'All',
 ];

@@ -280,4 +280,6 @@ return [
     'Welcome points' => 'نقاط الترحيب',
     'Welcome Bonus' => 'بونص الترحيب',
     'not_available' => 'غير متاح',
+    'search_quiz_name' => 'ابحث في اسم الاختبار...',
+    'all' => 'الكل',
 ];

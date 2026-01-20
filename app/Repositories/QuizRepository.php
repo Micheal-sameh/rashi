@@ -29,10 +29,11 @@ class QuizRepository extends BaseRepository
         return $this->pagination ? $query->paginate($this->perPage) : $query->get();
     }
 
-    public function index($competition_id)
+    public function index($competition_id, $search = null)
     {
         $query = $this->model
             ->when(isset($competition_id), fn ($q) => $q->where('competition_id', $competition_id))
+            ->when(isset($search), fn ($q) => $q->where('name', 'like', '%'.$search.'%'))
             ->orderByRaw('DATE(date) = CURDATE() DESC') // put today's first
             ->orderByDesc('date');
 

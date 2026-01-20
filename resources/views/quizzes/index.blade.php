@@ -9,6 +9,42 @@
             </a>
         </div>
 
+        {{-- Search Filters --}}
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-body">
+                <form action="{{ route('quizzes.index') }}" method="GET">
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label for="competition_id" class="form-label">{{ __('messages.competition') }}</label>
+                            <select name="competition_id" id="competition_id" class="form-select">
+                                <option value="">{{ __('messages.all') }}</option>
+                                @foreach ($competitions as $competition)
+                                    <option value="{{ $competition->id }}"
+                                        {{ request('competition_id') == $competition->id ? 'selected' : '' }}>
+                                        {{ $competition->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="search" class="form-label">{{ __('messages.search') }}</label>
+                            <input type="text" name="search" id="search" class="form-control"
+                                placeholder="{{ __('messages.search_quiz_name') }}"
+                                value="{{ request('search') }}">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-search me-1"></i> {{ __('messages.search') }}
+                            </button>
+                            <a href="{{ route('quizzes.index') }}" class="btn btn-secondary">
+                                <i class="fa fa-redo"></i>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         {{-- Alerts --}}
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -84,7 +120,7 @@
 
                 @if ($quizzes->hasPages())
                     <div class="card-footer d-flex justify-content-center">
-                        {{ $quizzes->links('pagination::bootstrap-5') }}
+                        {{ $quizzes->appends(request()->query())->links('pagination::bootstrap-5') }}
                     </div>
                 @endif
             </div>
@@ -123,7 +159,7 @@
 
                 @if ($quizzes->hasPages())
                     <div class="d-flex justify-content-center">
-                        {{ $quizzes->links('pagination::bootstrap-5') }}
+                        {{ $quizzes->appends(request()->query())->links('pagination::bootstrap-5') }}
                     </div>
                 @endif
             </div>
