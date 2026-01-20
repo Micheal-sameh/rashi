@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class BonusPenalty extends Model
 {
-    use HasFactory;
+    use Auditable, HasFactory;
 
     protected $table = 'bonuses_penalties';
 

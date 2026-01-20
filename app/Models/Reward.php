@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -9,8 +10,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Reward extends Model implements HasMedia
 {
-    use HasFactory;
-    use InteractsWithMedia;
+    use Auditable, HasFactory, InteractsWithMedia;
 
     protected $fillable = [
         'name',
