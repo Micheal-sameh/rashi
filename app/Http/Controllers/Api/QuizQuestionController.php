@@ -15,7 +15,7 @@ class QuizQuestionController extends BaseController
     {
         $questions = $this->quizQuestionService->index($request);
 
-        return $this->respondResource(QuizQuestionResource::collection($questions),
+        return $this->respondResource(QuizQuestionResource::collection($questions->shuffle()),
             additional_data: [
                 'quiz_have_solved' => ! $questions->first()->quiz->isSolved->isEmpty(),
                 'show_results' => (Carbon::parse($questions->first()->quiz->date)->lt(today())),

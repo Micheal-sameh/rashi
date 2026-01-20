@@ -22,7 +22,7 @@ class QuizQuestionResource extends JsonResource
             'is_correct' => (Carbon::parse($this->quiz->date)->lt(today())) ? true : false,
             'answers' => (Carbon::parse($this->quiz->date)->lt(today()))
             ? $this->whenloaded('answers', ModelAnswerResource::collection($this->answers))
-            : $this->whenloaded('answers', AnswerResource::collection($this->answers)),
+            : $this->whenloaded('answers', AnswerResource::collection($this->answers->shuffle())),
         ];
     }
 }

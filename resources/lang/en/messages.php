@@ -262,4 +262,7 @@ return [
     'create_quiz' => 'Create Quiz',
     'at_least_one_question_required' => 'At least one question is required.',
     'ok' => 'OK',
+    'Welcome points' => 'Welcome Points',
+    'Welcome Bonus' => 'Welcome Bonus',
+    'not_available' => 'N/A',
 ];

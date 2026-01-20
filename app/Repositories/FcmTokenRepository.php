@@ -31,7 +31,7 @@ class FcmTokenRepository extends BaseRepository
 
     public function getTokensByUserId($userId)
     {
-        return $this->model->where('user_id', $userId)->pluck('token')->toArray();
+        return $this->model->where('user_id', $userId)->pluck('token')->unique()->values()->toArray();
     }
 
     public function deleteByToken($token)

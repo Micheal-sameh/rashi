@@ -225,6 +225,8 @@ return [
     'order_received_body' => 'تم استلام الطلب #:id: مكافأة :reward.',
     'order_cancelled' => 'تم إلغاء الطلب',
     'order_cancelled_body' => 'تم إلغاء الطلب #:id للمكافأة: :reward.',
+    'manual_notification_prefix' => 'إرسال يدوي',
+    'notification_sent_successfully' => 'تم إرسال الإشعار بنجاح',
     'bonus_penalties' => 'البونص والعقوبات',
     'add_bonus_penalty' => 'إضافة بونص أو عقوبة',
     'all_users' => 'جميع المستخدمين',
@@ -270,4 +272,8 @@ return [
     'create_quiz' => 'إنشاء اختبار',
     'at_least_one_question_required' => 'مطلوب سؤال واحد على الأقل',
     'ok' => 'حسناً',
+    'no_bonus_penalties_found' => 'لا توجد مكافآت أو عقوبات',
+    'Welcome points' => 'نقاط الترحيب',
+    'Welcome Bonus' => 'بونص الترحيب',
+    'not_available' => 'غير متاح',
 ];
