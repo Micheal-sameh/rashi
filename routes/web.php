@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BonusPenaltyController;
 use App\Http\Controllers\CompetitionController;
@@ -151,6 +152,11 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/show', [SettingController::class, 'terms'])->name('terms.show');
             Route::get('/edit', [SettingController::class, 'editTerms'])->name('terms.edit');
             Route::put('/update', [SettingController::class, 'updateTerms'])->name('terms.update');
+        });
+
+        Route::prefix('audit-logs')->group(function () {
+            Route::get('/', [AuditLogController::class, 'index'])->name('audit-logs.index');
+            Route::get('/{id}', [AuditLogController::class, 'show'])->name('audit-logs.show');
         });
 
     });
