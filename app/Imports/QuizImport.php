@@ -32,6 +32,7 @@ class QuizImport implements ToCollection, WithHeadingRow, WithValidation
             foreach ($rows as $row) {
                 // Get quiz name from row
                 $quizName = trim($row['quiz_name']);
+                $quizDate = isset($row['date']) ? $row['date'] : null;
 
                 // If quiz name changed or first row, handle quiz creation/retrieval
                 if ($quizName !== $currentQuizName && ! empty($quizName)) {
@@ -42,11 +43,21 @@ class QuizImport implements ToCollection, WithHeadingRow, WithValidation
 
                     // If quiz doesn't exist, create it
                     if (! $currentQuiz) {
+                        // Parse the date
+                        $parsedDate = now();
+                        if ($quizDate) {
+                            try {
+                                $parsedDate = \Carbon\Carbon::parse($quizDate);
+                            } catch (\Exception $e) {
+                                // If parsing fails, use current date
+                                $parsedDate = now();
+                            }
+                        }
+
                         $currentQuiz = Quiz::create([
                             'name' => $quizName,
+                            'date' => $parsedDate,
                             'competition_id' => $this->competitionId,
-                            'description' => 'Imported from Excel',
-                            'duration' => 30, // Default duration, adjust as needed
                         ]);
                     }
 
@@ -110,6 +121,7 @@ class QuizImport implements ToCollection, WithHeadingRow, WithValidation
     {
         return [
             'quiz_name' => 'required',
+            'date' => 'nullable',
             'question' => 'required',
             'points' => 'required|integer|min:1',
             'answer_1' => 'required',
@@ -124,6 +136,7 @@ class QuizImport implements ToCollection, WithHeadingRow, WithValidation
     {
         return [
             'quiz_name.required' => 'Quiz name is required',
+            'date.date' => 'Date must be a valid date format',
             'question.required' => 'Question is required',
             'points.required' => 'Points are required',
             'points.integer' => 'Points must be a number',

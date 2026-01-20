@@ -236,7 +236,8 @@
                         <div class="alert alert-info rounded-3">
                             <h6 class="fw-bold"><i class="fa fa-info-circle me-1"></i>Excel Format:</h6>
                             <ul class="mb-0 small">
-                                <li><strong>Headers:</strong> quiz_name, question, points, answer_1, answer_2, answer_3, answer_4, correct</li>
+                                <li><strong>Headers:</strong> quiz_name, date, question, points, answer_1, answer_2, answer_3, answer_4, correct</li>
+                                <li>The <strong>date</strong> column should contain the quiz date (format: YYYY-MM-DD or any valid date format)</li>
                                 <li>The <strong>correct</strong> column should contain the answer number (1, 2, 3, or 4)</li>
                                 <li>Rows with the same quiz_name will be grouped together</li>
                                 <li>If a quiz name already exists, questions will be added to it</li>
