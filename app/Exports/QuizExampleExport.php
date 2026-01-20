@@ -15,6 +15,7 @@ class QuizExampleExport implements FromArray, WithColumnWidths, WithHeadings, Wi
         return [
             [
                 'Math Quiz',
+                '2025-01-15',
                 'What is 2 + 2?',
                 10,
                 '3',
@@ -25,6 +26,7 @@ class QuizExampleExport implements FromArray, WithColumnWidths, WithHeadings, Wi
             ],
             [
                 'Math Quiz',
+                '2025-01-15',
                 'What is 5 x 3?',
                 10,
                 '8',
@@ -35,6 +37,7 @@ class QuizExampleExport implements FromArray, WithColumnWidths, WithHeadings, Wi
             ],
             [
                 'Science Quiz',
+                '2025-01-20',
                 'What is the chemical symbol for water?',
                 15,
                 'H2O',
@@ -45,6 +48,7 @@ class QuizExampleExport implements FromArray, WithColumnWidths, WithHeadings, Wi
             ],
             [
                 'Science Quiz',
+                '2025-01-20',
                 'What planet is closest to the sun?',
                 15,
                 'Mercury',
@@ -60,6 +64,7 @@ class QuizExampleExport implements FromArray, WithColumnWidths, WithHeadings, Wi
     {
         return [
             'quiz_name',
+            'date',
             'question',
             'points',
             'answer_1',
@@ -90,13 +95,14 @@ class QuizExampleExport implements FromArray, WithColumnWidths, WithHeadings, Wi
     {
         return [
             'A' => 20,
-            'B' => 40,
-            'C' => 10,
-            'D' => 15,
+            'B' => 15,
+            'C' => 40,
+            'D' => 10,
             'E' => 15,
             'F' => 15,
             'G' => 15,
-            'H' => 10,
+            'H' => 15,
+            'I' => 10,
         ];
     }
 }
