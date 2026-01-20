@@ -43,6 +43,7 @@ class CompetitionRepository extends BaseRepository
                 if ($userGroupIds->isNotEmpty()) {
                     $query->whereHas('groups', fn ($q) => $q->whereIn('groups.id', $userGroupIds));
                 }
+                $query->where('status', '!=', CompetitionStatus::FINISHED);
             })
             ->when(request()->is('api/*'), fn ($q) => $q->orderByRaw('
                 CASE
