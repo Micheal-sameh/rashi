@@ -78,13 +78,21 @@
                                         @endif
                                     </td>
                                     <td><span class="badge bg-primary">{{ $question->points }}</span></td>
-                                    @foreach ($question->answers as $answer)
+                                    @php
+                                        $answers = $question->answers->toArray();
+                                        $answersCount = count($answers);
+                                    @endphp
+                                    @for ($i = 0; $i < 4; $i++)
                                         <td>
-                                            <span class="{{ $answer->is_correct ? 'fw-bold text-success' : '' }}">
-                                                {{ $answer->answer }}
-                                            </span>
+                                            @if ($i < $answersCount)
+                                                <span class="{{ $answers[$i]['is_correct'] ? 'fw-bold text-success' : '' }}">
+                                                    {{ $answers[$i]['answer'] }}
+                                                </span>
+                                            @else
+                                                -
+                                            @endif
                                         </td>
-                                    @endforeach
+                                    @endfor
                                     <td class="text-center">
                                         <a href="{{ route('questions.edit', $question->id) }}"
                                             class="btn btn-sm btn-outline-primary">

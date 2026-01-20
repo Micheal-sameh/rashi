@@ -9,6 +9,7 @@ use App\Models\Quiz;
 use App\Rules\CheckIsActiveRule;
 use App\Services\CompetitionService;
 use App\Services\QuizService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class QuizController extends Controller
@@ -20,11 +21,12 @@ class QuizController extends Controller
         //
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $quizzes = $this->quizService->index();
+        $quizzes = $this->quizService->index($request->competition_id, $request->search);
+        $competitions = $this->competitionService->dropdown();
 
-        return view('quizzes.index', compact('quizzes'));
+        return view('quizzes.index', compact('quizzes', 'competitions'));
     }
 
     public function create()
