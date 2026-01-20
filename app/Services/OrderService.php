@@ -23,9 +23,9 @@ class OrderService
         protected PointHistoryRepository $pointHistoryRepository,
     ) {}
 
-    public function index($user_id = null, $status = null)
+    public function index($user_id = null, $status = null, $membership_code = null)
     {
-        $orders = $this->orderRepository->index($user_id, $status);
+        $orders = $this->orderRepository->index($user_id, $status, $membership_code);
 
         return $orders;
     }

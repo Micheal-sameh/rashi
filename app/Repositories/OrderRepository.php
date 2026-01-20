@@ -31,7 +31,7 @@ class OrderRepository extends BaseRepository
         return $this->pagination ? $query->paginate($this->perPage) : $query->get();
     }
 
-    public function index($user_id, $status)
+    public function index($user_id, $status, $membership_code = null)
     {
         $user = Auth::user();
         $query = $this->model->query()
@@ -39,6 +39,9 @@ class OrderRepository extends BaseRepository
             ->when(! $user->can('view_all_orders'), fn ($q) => $q->where('user_id', $user->id))
             ->when(isset($user_id), fn ($q) => $q->where('user_id', $user_id))
             ->when(isset($status), fn ($q) => $q->where('status', $status))
+            ->when(isset($membership_code), fn ($q) => $q->whereHas('user', function ($query) use ($membership_code) {
+                $query->where('membership_code', 'like', '%'.$membership_code.'%');
+            }))
             ->orderBy('status')
             ->latest();
 

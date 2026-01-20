@@ -13,7 +13,7 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
-        $orders = $this->orderService->index($request->user_id, $request->status);
+        $orders = $this->orderService->index($request->user_id, $request->status, $request->membership_code);
 
         return view('orders.index', compact('orders'));
     }

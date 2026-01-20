@@ -8,7 +8,7 @@
 
         <!-- Search Filter Form -->
         <form method="GET" action="{{ route('orders.index') }}" class="row g-3 mb-4">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label for="status" class="form-label fw-semibold">{{ __('messages.status') }}</label>
                 <select name="status" id="status" class="form-select">
                     <option value="">{{ __('messages.status') }}</option>
@@ -20,7 +20,7 @@
                 </select>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label for="user_id" class="form-label fw-semibold">{{ __('messages.user_name') }}</label>
                 <select name="user_id" id="user_id" class="form-select">
                     <option value="">{{ __('messages.users') }}</option>
@@ -32,7 +32,13 @@
                 </select>
             </div>
 
-            <div class="col-md-4 d-flex align-items-end">
+            <div class="col-md-3">
+                <label for="membership_code" class="form-label fw-semibold">{{ __('messages.membership_code') }}</label>
+                <input type="text" name="membership_code" id="membership_code" class="form-control"
+                       placeholder="{{ __('messages.membership_code') }}" value="{{ request('membership_code') }}">
+            </div>
+
+            <div class="col-md-3 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary shadow-sm">
                     <i class="fa fa-search me-1"></i>{{ __('messages.search') }}
                 </button>
