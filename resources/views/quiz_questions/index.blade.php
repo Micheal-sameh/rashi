@@ -69,7 +69,7 @@
                         <tbody>
                             @foreach ($questions as $question)
                                 <tr>
-                                    <td>
+                                    <td style="max-width: 250px; word-wrap: break-word; white-space: normal;">
                                         @if ($question->hasMedia('question_image'))
                                             <img src="{{ $question->getFirstMediaUrl('question_image') }}"
                                                 class="img-thumbnail" style="max-width: 100px;">
@@ -83,7 +83,7 @@
                                         $answersCount = count($answers);
                                     @endphp
                                     @for ($i = 0; $i < 4; $i++)
-                                        <td>
+                                        <td style="max-width: 200px; word-wrap: break-word; white-space: normal;">
                                             @if ($i < $answersCount)
                                                 <span class="{{ $answers[$i]['is_correct'] ? 'fw-bold text-success' : '' }}">
                                                     {{ $answers[$i]['answer'] }}
