@@ -22,7 +22,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Force HTTPS
-        URL::forceScheme('https');
+        if (config('app.env') !== 'local') {
+            URL::forceScheme('https');
+        }
 
         View::composer('layouts.sideBar', function ($view) {
             $currentRoute = request()->route();

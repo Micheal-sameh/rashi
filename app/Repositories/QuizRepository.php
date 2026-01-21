@@ -31,7 +31,8 @@ class QuizRepository extends BaseRepository
 
     public function index($competition_id, $search = null)
     {
-        $query = $this->model
+        $query = $this->model->query()
+            ->with('competition:id,name')
             ->when(isset($competition_id), fn ($q) => $q->where('competition_id', $competition_id))
             ->when(isset($search), fn ($q) => $q->where('name', 'like', '%'.$search.'%'))
             ->orderByRaw('DATE(date) = CURDATE() DESC') // put today's first
@@ -73,12 +74,20 @@ class QuizRepository extends BaseRepository
     public function delete($id)
     {
         $quiz = $this->findById($id);
-        $quiz->questions?->each(function ($question) {
-            $question->answers->each(function ($answer) {
-                $answer->delete();
-            });
-            $question->delete();
-        });
+
+        // Use eager loading with bulk deletes to prevent N+1
+        $quiz->load('questions.answers');
+
+        // Get all IDs at once
+        $questionIds = $quiz->questions->pluck('id');
+
+        if ($questionIds->isNotEmpty()) {
+            // Bulk delete answers
+            \App\Models\QuestionAnswer::whereIn('quiz_question_id', $questionIds)->delete();
+            // Bulk delete questions
+            \App\Models\QuizQuestion::whereIn('id', $questionIds)->delete();
+        }
+
         $quiz->delete();
     }
 }

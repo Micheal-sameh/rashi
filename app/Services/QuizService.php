@@ -18,7 +18,12 @@ class QuizService
     public function index($competition_id = null, $search = null)
     {
         $quizzes = $this->quizRepository->index($competition_id, $search);
-        $quizzes->load('competition');
+        // Load competition if not a paginated result or if items exist
+        if (method_exists($quizzes, 'isEmpty') && ! $quizzes->isEmpty()) {
+            $quizzes->load('competition');
+        } elseif (method_exists($quizzes, 'getCollection')) {
+            $quizzes->load('competition');
+        }
 
         return $quizzes;
     }

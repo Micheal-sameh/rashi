@@ -38,6 +38,8 @@ class RewardRepository extends BaseRepository
 
         if (request()->is('api/*')) {
             $user = auth()->user();
+            // Eager load groups to prevent N+1
+            $user->loadMissing('groups');
             $groupIds = $user->groups->pluck('id')->toArray();
             if ($user && $user->groups->isNotEmpty()) {
                 $query->whereIn('group_id', $groupIds);

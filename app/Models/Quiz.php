@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Auditable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -35,5 +36,18 @@ class Quiz extends Model
     public function questions()
     {
         return $this->hasMany(QuizQuestion::class);
+    }
+
+    /**
+     * Scope for eager loading full quiz data with all relationships
+     */
+    public function scopeWithFullData(Builder $query): Builder
+    {
+        return $query->with([
+            'competition',
+            'questions.answers',
+            'questions.userAnswers.user',
+            'questions.userAnswers.answer',
+        ]);
     }
 }

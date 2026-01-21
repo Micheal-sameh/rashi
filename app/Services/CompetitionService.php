@@ -66,6 +66,11 @@ class CompetitionService
 
     public function getUserStatsForQuiz($quiz)
     {
+        // Ensure relationships are loaded to prevent N+1
+        if (! $quiz->relationLoaded('questions')) {
+            $quiz->load(['questions.userAnswers.user', 'questions.userAnswers.answer']);
+        }
+
         $userStats = [];
         foreach ($quiz->questions as $question) {
             foreach ($question->userAnswers as $userAnswer) {

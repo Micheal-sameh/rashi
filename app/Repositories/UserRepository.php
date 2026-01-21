@@ -116,6 +116,7 @@ class UserRepository extends BaseRepository
     {
         $user = $this->findById($id);
         $user->groups()->sync($groups);
+        $user->load('groups');
 
         return $user;
     }

@@ -39,7 +39,6 @@ class UserController extends Controller
     {
         $user = $this->userService->show($id);
         $points = $this->pointHistoryRepository->userHistory($id);
-        $points->load('user', 'subject');
         $groups = $this->groupRepository->dropdown();
 
         return view('users.show', compact('user', 'points', 'groups'));

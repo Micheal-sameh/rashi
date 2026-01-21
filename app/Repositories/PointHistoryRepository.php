@@ -30,7 +30,10 @@ class PointHistoryRepository extends BaseRepository
 
     public function userHistory($id)
     {
-        $query = $this->model->where('user_id', $id)->latest();
+        $query = $this->model->query()
+            ->with(['user:id,name', 'subject'])
+            ->where('user_id', $id)
+            ->latest();
 
         return $this->execute($query);
     }

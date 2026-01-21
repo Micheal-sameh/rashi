@@ -35,7 +35,7 @@ class OrderRepository extends BaseRepository
     {
         $user = Auth::user();
         $query = $this->model->query()
-            ->with(['reward.media', 'user.media', 'servant:id,name'])
+            ->withApiRelations()
             ->when(! $user->can('view_all_orders'), fn ($q) => $q->where('user_id', $user->id))
             ->when(isset($user_id), fn ($q) => $q->where('user_id', $user_id))
             ->when(isset($status), fn ($q) => $q->where('status', $status))
@@ -75,7 +75,10 @@ class OrderRepository extends BaseRepository
 
     public function myOrders()
     {
-        $query = $this->model->where('user_id', Auth::id())->latest();
+        $query = $this->model->query()
+            ->withApiRelations()
+            ->where('user_id', Auth::id())
+            ->latest();
 
         return $this->execute($query);
     }

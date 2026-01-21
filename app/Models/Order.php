@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Auditable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,5 +33,17 @@ class Order extends Model
     public function servant()
     {
         return $this->belongsTo(User::class, 'servant_id');
+    }
+
+    /**
+     * Scope for eager loading common API relationships
+     */
+    public function scopeWithApiRelations(Builder $query): Builder
+    {
+        return $query->with([
+            'reward.media',
+            'user.media',
+            'servant:id,name',
+        ]);
     }
 }

@@ -57,7 +57,6 @@ class OrderService
     public function myOrders()
     {
         $orders = $this->orderRepository->myOrders();
-        $orders->load('servant', 'reward', 'user');
         $count = method_exists($orders, 'total') ? $orders->total() : $orders->count();
         $total_points = $this->orderRepository->totalPoints();
 

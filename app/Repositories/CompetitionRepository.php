@@ -34,7 +34,8 @@ class CompetitionRepository extends BaseRepository
 
     public function index()
     {
-        $query = $this->model->query()->with(['media'])
+        $query = $this->model->query()
+            ->withApiRelations()
             ->where('status', '!=', CompetitionStatus::CANCELLED)
             ->when(request()->is('api/*') && auth()->check(), function ($query) {
                 $user = Cache::get('auth_user_'.auth()->id()) ?? auth()->user();
