@@ -95,7 +95,7 @@
         .sidebar .brand img {
             width: 100px;
             height: 100px;
-            border-radius: 50%;
+            border-radius: 10%;
             object-fit: cover;
             border: 3px solid rgba(255,255,255,0.2);
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
