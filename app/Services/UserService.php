@@ -67,4 +67,9 @@ class UserService
 
         return $users;
     }
+
+    public function getAdmins(?string $search = null)
+    {
+        return $this->userRepository->getAdmins($search);
+    }
 }

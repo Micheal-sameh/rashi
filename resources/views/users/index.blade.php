@@ -2,7 +2,12 @@
 
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
-        <h1 class="fw-bold text-primary mb-4">{{ __('messages.users') }}</h1>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="fw-bold text-primary mb-0">{{ __('messages.users') }}</h1>
+            <a href="{{ route('users.admins') }}" class="btn btn-outline-primary">
+                <i class="fas fa-user-shield me-2"></i>{{ __('messages.admin_users') }}
+            </a>
+        </div>
 
         <!-- Filter Bar -->
         <div class="row g-3 mb-4">

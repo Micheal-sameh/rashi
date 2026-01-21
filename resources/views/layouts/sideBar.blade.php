@@ -513,6 +513,10 @@
                     <li><a href="{{ route('users.index') }}" class="{{ $activeRoutes['users'] ? 'active' : '' }}">
                             <i class="fas fa-users"></i>{{ __('messages.users') }}</a></li>
 
+                    <li><a href="{{ route('users.admins') }}"
+                            class="{{ request()->routeIs('users.admins') ? 'active' : '' }}">
+                            <i class="fas fa-user-shield"></i>{{ __('messages.admin_users') }}</a></li>
+
                     <li><a href="{{ route('users.leaderboard') }}"
                             class="{{ $activeRoutes['leaderboard'] ? 'active' : '' }}">
                             <i class="fas fa-trophy"></i>{{ __('messages.leaderboard') }}</a></li>

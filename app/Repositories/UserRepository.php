@@ -213,4 +213,19 @@ class UserRepository extends BaseRepository
             ->limit(10)
             ->get();
     }
+
+    public function getAdmins(?string $search = null)
+    {
+        return $this->model->query()->role('admin')
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('membership_code', 'like', "%{$search}%");
+                });
+            })
+            ->with(['media', 'groups'])
+            ->latest()
+            ->paginate(15);
+    }
 }

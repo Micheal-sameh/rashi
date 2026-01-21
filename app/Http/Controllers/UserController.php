@@ -35,6 +35,13 @@ class UserController extends Controller
         return view('users.index', compact('users', 'groups'));
     }
 
+    public function admins(Request $request)
+    {
+        $admins = $this->userService->getAdmins($request->search);
+
+        return view('users.admins', compact('admins'));
+    }
+
     public function show($id)
     {
         $user = $this->userService->show($id);
