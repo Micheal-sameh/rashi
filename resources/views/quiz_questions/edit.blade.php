@@ -1,8 +1,10 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container py-4" style="max-width: 900px;">
-        <div class="card shadow-sm border-0 rounded-4">
+    <div class="container-fluid px-3 px-lg-4 py-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-10">
+                <div class="card shadow-sm border-0 rounded-4">
             <div class="card-body p-4">
                 <!-- Heading -->
                 <h3 class="fw-bold text-primary mb-4">
@@ -260,6 +262,8 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
             </div>
         </div>
     </div>

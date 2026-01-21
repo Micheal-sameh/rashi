@@ -1,9 +1,11 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container py-4" style="max-width: 600px;">
+    <div class="container-fluid px-3 px-lg-4 py-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
 
-        <!-- Heading -->
+                <!-- Heading -->
         <h2 class="mb-4 fw-bold text-primary">{{ __('messages.create_groups') }}</h2>
 
         <!-- Form Card -->
@@ -97,4 +99,7 @@
             }
         }
     </style>
+            </div>
+        </div>
+    </div>
 @endsection

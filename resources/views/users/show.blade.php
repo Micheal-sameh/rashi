@@ -1,7 +1,7 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container mt-4" style="width:95%">
+    <div class="container-fluid px-3 px-lg-4 mt-4">
 
         <!-- User Details Card -->
         <div class="card shadow-sm mb-4 rounded-4">

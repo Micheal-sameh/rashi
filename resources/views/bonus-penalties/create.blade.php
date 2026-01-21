@@ -1,8 +1,10 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container py-4" style="max-width: 800px;">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="container-fluid px-3 px-lg-4 py-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="fw-bold text-primary">{{ __('messages.add_bonus_penalty') }}</h1>
             <a href="{{ route('bonus-penalties.index') }}" class="btn btn-secondary shadow-sm">
                 <i class="fa fa-arrow-left me-1"></i>{{ __('messages.back') }}
@@ -74,6 +76,8 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
             </div>
         </div>
     </div>

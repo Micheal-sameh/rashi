@@ -1,7 +1,7 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container-fluid py-4">
+    <div class="container-fluid px-3 px-lg-4 py-4">
 
         {{-- Header --}}
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">

@@ -1,7 +1,7 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container-fluid px-4">
+    <div class="container-fluid px-3 px-lg-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold text-primary">
                 <i class="fa fa-history me-2"></i>{{ __('messages.audit_logs') }}

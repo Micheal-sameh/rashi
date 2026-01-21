@@ -1,7 +1,7 @@
 @extends('layouts.sideBar')
 
 @section('content')
-<div class="container">
+<div class="container-fluid px-3 px-lg-4 py-4">
     <form action="{{ route("$route.update") }}" method="POST">
         @csrf
         @method('put')

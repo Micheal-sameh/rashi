@@ -1,7 +1,7 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container py-4" style="max-width: 1200px;">
+    <div class="container-fluid px-3 px-lg-4 py-4">
         <h1 class="fw-bold text-primary mb-4">{{ __('messages.users') }}</h1>
 
         <!-- Filter Bar -->

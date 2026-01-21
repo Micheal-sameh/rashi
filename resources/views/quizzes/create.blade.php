@@ -1,8 +1,10 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container-fluid px-4" style="max-width: 1000px;">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="container-fluid px-3 px-lg-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-10">
+                <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold text-primary">{{ __('messages.create_quiz') }}</h2>
             <a href="{{ route('quizzes.index') }}" class="btn btn-outline-secondary">
                 <i class="fa fa-arrow-left me-1"></i> {{ __('messages.back') }}
@@ -318,4 +320,7 @@
             }
         }
     </script>
+            </div>
+        </div>
+    </div>
 @endsection

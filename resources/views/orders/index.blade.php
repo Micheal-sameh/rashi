@@ -1,7 +1,7 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container py-4"">
+    <div class="container-fluid px-3 px-lg-4 py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="fw-bold text-primary">{{ __('messages.orders') }}</h1>
         </div>
