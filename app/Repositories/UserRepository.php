@@ -216,7 +216,7 @@ class UserRepository extends BaseRepository
 
     public function getAdmins(?string $search = null)
     {
-        return $this->model->query()->role('admin')
+        $query = $this->model->query()->role('admin')
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
@@ -225,7 +225,8 @@ class UserRepository extends BaseRepository
                 });
             })
             ->with(['media', 'groups'])
-            ->latest()
-            ->paginate(15);
+            ->latest();
+
+        return $this->execute($query);
     }
 }

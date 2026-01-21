@@ -20,7 +20,7 @@ Created a dedicated page to display and manage only users with the "admin" role 
 public function admins(Request $request)
 {
     $admins = $this->userService->getAdmins($request->search);
-    
+
     return view('users.admins', compact('admins'));
 }
 ```
