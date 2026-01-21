@@ -98,7 +98,7 @@
         @else
             <!-- Desktop Table View -->
             <div class="d-none d-lg-block">
-                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card border-0 shadow-lg rounded-4 ">
                     <div class="card-header bg-transparent border-0 py-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 fw-semibold">{{ __('messages.rewards_list') }}</h5>
@@ -253,7 +253,7 @@
                 <div class="row g-3">
                     @foreach ($rewards as $reward)
                         <div class="col-12" id="reward-card-{{ $reward->id }}">
-                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                            <div class="card border-0 shadow-sm rounded-4 ">
                                 <div class="card-body p-0">
                                     <div class="d-flex align-items-start p-4">
                                         <div class="position-relative me-3">

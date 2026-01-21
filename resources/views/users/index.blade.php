@@ -21,7 +21,7 @@
         </div>
 
         <!-- User Table -->
-        <div id="userTableWrapper" class="table-responsive shadow-sm rounded-4 overflow-hidden">
+        <div id="userTableWrapper" class="table-responsive shadow-sm rounded-4 ">
             @include('users.user-table', ['users' => $users])
         </div>
     </div>

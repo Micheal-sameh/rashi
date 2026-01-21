@@ -1,6 +1,6 @@
 <!-- Desktop Table View -->
 <div class="d-none d-lg-block">
-    <div class="table-responsive shadow-sm rounded-4 overflow-hidden w-100">
+    <div class="table-responsive shadow-sm rounded-4 w-100">
         <table class="table table-hover table-striped align-middle mb-0 w-100">
             <thead class="table-light">
                 <tr>

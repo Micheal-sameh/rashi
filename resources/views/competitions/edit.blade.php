@@ -4,7 +4,7 @@
     <div class="container-fluid px-3 px-lg-4 py-4">
         <div class="row justify-content-center">
             <div class="col-12 col-xl-10">
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card border-0 shadow-sm rounded-4 ">
             <div class="card-body p-4">
                 <!-- Title -->
                 <h3 class="fw-bold mb-4 text-primary">

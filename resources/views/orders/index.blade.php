@@ -46,7 +46,7 @@
         </form>
 
         <!-- Orders Table (Desktop) -->
-        <div class="table-responsive shadow-sm rounded-4 overflow-hidden d-none d-md-block">
+        <div class="table-responsive shadow-sm rounded-4  d-none d-md-block">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>

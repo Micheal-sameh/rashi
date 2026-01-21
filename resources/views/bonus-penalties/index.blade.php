@@ -32,7 +32,7 @@
 
         <!-- Desktop Table View -->
         <div class="d-none d-md-block">
-            <div class="table-responsive shadow-sm rounded-4 overflow-hidden">
+            <div class="table-responsive shadow-sm rounded-4 ">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>

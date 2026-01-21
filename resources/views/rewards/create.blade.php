@@ -32,7 +32,7 @@
             @endif
 
             <!-- Form Card -->
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="card border-0 shadow-lg rounded-4 ">
                 <div class="card-header bg-gradient-primary text-white border-0 py-4">
                     <div class="d-flex align-items-center gap-3">
                         <div class="bg-white bg-opacity-25 rounded-circle p-2">

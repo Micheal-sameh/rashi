@@ -31,7 +31,7 @@
         @endif
 
         <!-- Groups Table Card -->
-        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="card shadow-sm border-0 rounded-4 ">
             <div class="card-body table-responsive">
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
