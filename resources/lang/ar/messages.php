@@ -324,4 +324,5 @@ return [
     'Group' => 'المجموعة',
     'Notification' => 'الإشعار',
     'Setting' => 'الإعدادات',
+    'Archive' => 'الأرشيف',
 ];

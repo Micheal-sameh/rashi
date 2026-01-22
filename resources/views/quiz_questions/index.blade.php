@@ -36,11 +36,20 @@
             </div>
         </div>
 
-        {{-- Create button --}}
-        <div id="createButtonWrapper" class="mb-3" style="display: none;">
-            <a id="createQuestionLink" href="#" class="btn btn-success">
-                <i class="fa fa-plus-circle me-1"></i> {{ __('messages.create_questions') }}
-            </a>
+        {{-- Create button and Archive filter --}}
+        <div class="d-flex gap-2 mb-3">
+            <div id="createButtonWrapper" style="display: none;">
+                <a id="createQuestionLink" href="#" class="btn btn-success">
+                    <i class="fa fa-plus-circle me-1"></i> {{ __('messages.create_questions') }}
+                </a>
+            </div>
+            <div class="form-check form-switch d-flex align-items-center">
+                <input class="form-check-input" type="checkbox" id="archiveFilter"
+                    {{ request()->get('archive') == '1' ? 'checked' : '' }}>
+                <label class="form-check-label ms-2" for="archiveFilter">
+                    <i class="fa fa-archive me-1"></i> {{ __('messages.Archive') }}
+                </label>
+            </div>
         </div>
 
         {{-- Alerts --}}
@@ -287,5 +296,20 @@
         function closeModal() {
             document.getElementById('imageModal').style.display = "none";
         }
+
+        // Archive filter functionality
+        const archiveFilter = document.getElementById('archiveFilter');
+        archiveFilter.addEventListener('change', function() {
+            const competitionId = competitionSelect.value;
+            const quizId = quizSelect.value;
+            const isArchived = this.checked ? '1' : '0';
+
+            const query = new URLSearchParams();
+            if (competitionId) query.set('competition_id', competitionId);
+            if (quizId) query.set('quiz_id', quizId);
+            if (this.checked) query.set('archive', isArchived);
+
+            window.location.href = `/questions?${query.toString()}`;
+        });
     </script>
 @endsection

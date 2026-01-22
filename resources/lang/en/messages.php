@@ -301,4 +301,5 @@ return [
     'no_audit_logs_found' => 'No audit logs found',
     'date_from' => 'Date From',
     'date_to' => 'Date To',
+    'Archive' => 'Archive',
 ];
