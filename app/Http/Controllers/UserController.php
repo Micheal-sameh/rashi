@@ -18,7 +18,9 @@ class UserController extends Controller
         protected UserService $userService,
         protected GroupRepository $groupRepository,
         protected PointHistoryRepository $pointHistoryRepository,
-    ) {}
+    ) {
+        $this->middleware('permission:can_generate_qr_code')->only(['qrCode']);
+    }
 
     public function index(Request $request)
     {
@@ -83,5 +85,12 @@ class UserController extends Controller
         $mpdf->WriteHTML($html);
 
         return $mpdf->Output('leaderboard.pdf', 'D');
+    }
+
+    public function qrCode($id)
+    {
+        $user = $this->userService->show($id);
+
+        return view('users.qrcode', compact('user'));
     }
 }

@@ -51,11 +51,12 @@ Route::group(['middleware' => ['setlocale']], function () {
         Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
     });
 
-    Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::middleware(['auth', 'role:admin|super_admin'])->group(function () {
         Route::prefix('users')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('users.index');
             Route::get('/admins', [UserController::class, 'admins'])->name('users.admins');
             Route::get('/{id}/show', [UserController::class, 'show'])->name('users.show');
+            Route::get('/{id}/qrcode', [UserController::class, 'qrCode'])->name('users.qrcode');
             Route::get('/leaderboard', [UserController::class, 'leaderboard'])->name('users.leaderboard');
             Route::get('/leaderboard/export', [UserController::class, 'exportLeaderboard'])->name('users.leaderboard.export');
             Route::put('/{id}/update-groups', [UserController::class, 'updateGroups'])->name('users.updateGroups');

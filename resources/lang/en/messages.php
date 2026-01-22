@@ -301,4 +301,14 @@ return [
     'no_audit_logs_found' => 'No audit logs found',
     'date_from' => 'Date From',
     'date_to' => 'Date To',
+
+    // QR Code
+    'user_qr_code' => 'User QR Code',
+    'qr_code' => 'QR Code',
+    'qr_code_data' => 'QR Code Data',
+    'download_qr' => 'Download QR Code',
+    'print_qr' => 'Print QR Code',
+    'back_to_user' => 'Back to User',
+    'generate_qr_code' => 'Generate QR Code',
+    'membership_code' => 'Membership Code',
 ];

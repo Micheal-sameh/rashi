@@ -57,6 +57,12 @@
                                 title="{{ __('messages.view') }}">
                                 <i class="fa fa-eye"></i>
                             </a>
+                            @can('can_generate_qr_code')
+                                <a href="{{ route('users.qrcode', $user->id) }}" class="btn btn-sm btn-success shadow-sm"
+                                    title="{{ __('messages.qr_code') }}">
+                                    <i class="fa fa-qrcode"></i>
+                                </a>
+                            @endcan
                         </td>
                     </tr>
                 @empty
@@ -103,9 +109,13 @@
                         </div>
                     </div>
                     <div class="card-footer bg-transparent border-0 p-2 d-flex justify-content-end">
-                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-primary shadow-sm"
+                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-primary shadow-sm me-1"
                             title="{{ __('messages.view') }}">
                             <i class="fa fa-eye"></i>
+                        </a>
+                        <a href="{{ route('users.qrcode', $user->id) }}" class="btn btn-sm btn-success shadow-sm"
+                            title="{{ __('messages.qr_code') }}">
+                            <i class="fa fa-qrcode"></i>
                         </a>
                     </div>
                 </div>

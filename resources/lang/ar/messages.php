@@ -324,4 +324,14 @@ return [
     'Group' => 'المجموعة',
     'Notification' => 'الإشعار',
     'Setting' => 'الإعدادات',
+
+    // QR Code
+    'user_qr_code' => 'رمز الاستجابة السريع للمستخدم',
+    'qr_code' => 'رمز QR',
+    'qr_code_data' => 'بيانات رمز QR',
+    'download_qr' => 'تحميل رمز QR',
+    'print_qr' => 'طباعة رمز QR',
+    'back_to_user' => 'العودة للمستخدم',
+    'generate_qr_code' => 'توليد رمز QR',
+    'membership_code' => 'رمز العضوية',
 ];

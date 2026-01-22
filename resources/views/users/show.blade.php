@@ -5,8 +5,13 @@
 
         <!-- User Details Card -->
         <div class="card shadow-sm mb-4 rounded-4">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">{{ __('messages.user_details') }}</h4>
+                @can('can_generate_qr_code')
+                    <a href="{{ route('users.qrcode', $user->id) }}" class="btn btn-light btn-sm">
+                        <i class="fas fa-qrcode me-2"></i>{{ __('messages.generate_qr_code') }}
+                    </a>
+                @endcan
             </div>
             <div class="card-body">
                 <div class="row gy-3">
