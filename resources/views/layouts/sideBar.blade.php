@@ -565,6 +565,14 @@
                             class="{{ $activeRoutes['terms'] ? 'active' : '' }}">
                             <i class="fas fa-file-contract"></i>{{ __('messages.terms') }}</a></li>
 
+                    <li><a href="{{ route('social-media.index') }}"
+                            class="{{ $activeRoutes['social-media'] ? 'active' : '' }}">
+                            <i class="fas fa-share-alt"></i>{{ __('messages.social_media') }}</a></li>
+
+                    <li><a href="{{ route('info-videos.index') }}"
+                            class="{{ $activeRoutes['info-videos'] ? 'active' : '' }}">
+                            <i class="fas fa-video"></i>{{ __('messages.info_videos') }}</a></li>
+
                     <li class="mt-3 border-top border-light pt-2">
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf

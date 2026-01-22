@@ -1392,6 +1392,125 @@
           }
         }
       }
+    },
+    "/social-media": {
+      "get": {
+        "tags": [
+          "Social Media"
+        ],
+        "summary": "Get all social media platforms",
+        "description": "Retrieve list of all social media platforms with their links and icons.",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of social media platforms",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Facebook"
+                      },
+                      "link": {
+                        "type": "string",
+                        "example": "https://www.facebook.com/example"
+                      },
+                      "icon": {
+                        "type": "string",
+                        "example": "fab fa-facebook"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/info-videos": {
+      "get": {
+        "tags": [
+          "Info Videos"
+        ],
+        "summary": "Get all visible info videos",
+        "description": "Retrieve list of all visible information videos ordered by rank.",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of visible info videos",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "Introduction Video"
+                      },
+                      "link": {
+                        "type": "string",
+                        "example": "https://youtube.com/watch?v=example"
+                      },
+                      "appear": {
+                        "type": "integer",
+                        "example": 1,
+                        "description": "0 = Hidden, 1 = Appear"
+                      },
+                      "appear_status": {
+                        "type": "string",
+                        "example": "Appear"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

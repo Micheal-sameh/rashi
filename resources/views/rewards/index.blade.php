@@ -278,7 +278,7 @@
                                                 <div>
                                                     <h6 class="fw-bold mb-1">{{ $reward->name }}</h6>
                                                     <small class="text-muted">#{{ $reward->id }}</small></br>
-                                                    <small class="text-muted">group: {{ $reward->group->name }}</small>
+                                                    <small class="text-muted">{{ __('messages.group_label') }} {{ $reward->group->name }}</small>
                                                 </div>
                                                 @php
                                                     $statusConfig = [
@@ -452,7 +452,7 @@
                             </span>
                             <input type="number" class="form-control border-0 bg-light rounded-end" id="add_quantity"
                                 name="quantity" placeholder="0" min="1" style="height: 56px;">
-                            <span class="input-group-text bg-light border-0">Units</span>
+                            <span class="input-group-text bg-light border-0">{{ __('messages.units') }}</span>
                         </div>
                     </div>
                 </div>
@@ -834,7 +834,7 @@
         function showSuccessMessage(message, quantity = null, type = 'success') {
             let fullMessage = message;
             if (quantity) {
-                fullMessage = `${message} (+${quantity} units)`;
+                fullMessage = `${message} (+${quantity} {{ __('messages.units_added') }})`;
             }
             showToast(fullMessage, type);
         }

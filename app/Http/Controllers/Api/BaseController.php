@@ -5,6 +5,24 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Traits\ResponseHandler;
 
+/**
+ * @OA\Info(
+ *     version="1.0.0",
+ *     title="Rashi API Documentation",
+ *     description="API documentation for Rashi application",
+ *
+ *     @OA\Contact(
+ *         email="support@rashi.com"
+ *     )
+ * )
+ *
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
+ * )
+ */
 class BaseController extends Controller
 {
     use ResponseHandler;

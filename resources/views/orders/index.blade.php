@@ -110,16 +110,11 @@
                                         </button>
                                     </form>
 
-                                    <!-- Cancel Form -->
-                                    <form action="{{ route('orders.cancel', $order->id) }}" method="POST"
-                                        class="d-inline ms-1">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit" class="btn btn-danger btn-sm shadow-sm"
-                                            onclick="return confirm('{{ __('Are you sure?') }}')">
-                                            <i class="fa fa-times me-1"></i>{{ __('messages.cancel') }}
-                                        </button>
-                                    </form>
+                                    <!-- Cancel Button -->
+                                    <button type="button" class="btn btn-danger btn-sm shadow-sm cancel-order"
+                                        data-id="{{ $order->id }}">
+                                        <i class="fa fa-times me-1"></i>{{ __('messages.cancel') }}
+                                    </button>
                                 @endif
                             </td>
 
@@ -207,16 +202,11 @@
                                         </button>
                                     </form>
 
-                                    <!-- Cancel Form -->
-                                    <form action="{{ route('orders.cancel', $order->id) }}" method="POST"
-                                        class="d-inline ms-1">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit" class="btn btn-danger btn-sm shadow-sm"
-                                            onclick="return confirm('{{ __('Are you sure?') }}')">
-                                            <i class="fa fa-times me-1"></i>{{ __('messages.cancel') }}
-                                        </button>
-                                    </form>
+                                    <!-- Cancel Button -->
+                                    <button type="button" class="btn btn-danger btn-sm shadow-sm cancel-order"
+                                        data-id="{{ $order->id }}">
+                                        <i class="fa fa-times me-1"></i>{{ __('messages.cancel') }}
+                                    </button>
                                 </div>
                             </div>
                         @endif
@@ -304,9 +294,37 @@
         </div>
     </div>
 
+    <!-- Cancel Confirmation Modal -->
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-header bg-danger text-white border-0">
+                    <h5 class="modal-title" id="cancelOrderModalLabel">
+                        <i class="fa fa-exclamation-triangle me-2"></i>{{ __('messages.confirm_cancellation') }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <i class="fa fa-times-circle fa-4x text-danger mb-3"></i>
+                    <p class="fs-5 mb-0">{{ __('messages.are_you_sure_cancel_order') }}</p>
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                        <i class="fa fa-times me-1"></i>{{ __('messages.no') }}
+                    </button>
+                    <button type="button" class="btn btn-danger px-4" id="confirmCancelOrder">
+                        <i class="fa fa-check me-1"></i>{{ __('messages.yes_cancel') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                let orderIdToCancel = null;
+
                 // Handle receive button
                 document.querySelectorAll('.receive-order').forEach(button => {
                     button.addEventListener('click', function() {
@@ -342,37 +360,47 @@
 
                 // Handle cancel button
                 document.querySelectorAll('.cancel-order').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const orderId = this.dataset.id;
-
-                        if (!confirm('Are you sure you want to cancel this order?')) {
-                            return;
-                        }
-
-                        fetch(`/orders/cancel/${orderId}`, {
-                                method: 'PUT',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                },
-                                body: JSON.stringify({})
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    const row = this.closest('tr');
-                                    row.querySelector('td:nth-child(4)').textContent = data.status;
-                                    this.previousElementSibling?.remove(); // Remove receive button
-                                    this.remove(); // Remove cancel button
-                                } else {
-                                    alert(data.message || 'Something went wrong');
-                                }
-                            })
-                            .catch(error => {
-                                console.error(error);
-                                alert('An error occurred');
-                            });
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        orderIdToCancel = this.dataset.id;
+                        const cancelModal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
+                        cancelModal.show();
                     });
+                });
+
+                // Confirm cancel order
+                document.getElementById('confirmCancelOrder').addEventListener('click', function() {
+                    if (!orderIdToCancel) return;
+
+                    fetch(`/orders/cancel/${orderIdToCancel}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({})
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                const row = document.querySelector(`button.cancel-order[data-id="${orderIdToCancel}"]`).closest('tr');
+                                if (row) {
+                                    row.querySelector('td:nth-child(4)').textContent = data.status;
+                                    const receiveBtn = row.querySelector('.receive-order');
+                                    const cancelBtn = row.querySelector('.cancel-order');
+                                    if (receiveBtn) receiveBtn.remove();
+                                    if (cancelBtn) cancelBtn.remove();
+                                }
+                                bootstrap.Modal.getInstance(document.getElementById('cancelOrderModal')).hide();
+                                orderIdToCancel = null;
+                            } else {
+                                alert(data.message || 'Something went wrong');
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            alert('An error occurred');
+                        });
                 });
 
                 // Handle modal info display

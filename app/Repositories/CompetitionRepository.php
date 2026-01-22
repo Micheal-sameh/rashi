@@ -175,15 +175,20 @@ class CompetitionRepository extends BaseRepository
             ->update(['status' => CompetitionStatus::FINISHED]);
     }
 
-    public function getUsersForCompetition($competition)
+    public function getUsersForCompetition($competition, $groupId = null)
     {
-        return $competition->quizzes()
+        $query = $competition->quizzes()
             ->join('quiz_questions', 'quizzes.id', '=', 'quiz_questions.quiz_id')
             ->join('user_answers', 'quiz_questions.id', '=', 'user_answers.quiz_question_id')
             ->join('users', 'user_answers.user_id', '=', 'users.id')
             ->select('users.id', 'users.name')
-            ->distinct()
-            ->orderBy('users.name')
-            ->get();
+            ->distinct();
+
+        if ($groupId) {
+            $query->join('user_groups', 'users.id', '=', 'user_groups.user_id')
+                ->where('user_groups.group_id', $groupId);
+        }
+
+        return $query->orderBy('users.name')->get();
     }
 }

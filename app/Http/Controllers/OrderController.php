@@ -22,6 +22,15 @@ class OrderController extends Controller
     {
         $order = $this->orderService->received($id);
 
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'status' => \App\Enums\OrderStatus::getStringValue($order->status),
+                'servant_name' => $order->servant?->name ?? '',
+                'message' => 'Order received successfully',
+            ]);
+        }
+
         return redirect()->back()->with('success', 'received successfuly');
     }
 
@@ -32,10 +41,25 @@ class OrderController extends Controller
         ]);
 
         if ($validator->fails()) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()->first(),
+                ], 422);
+            }
+
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
         $order = $this->orderService->cancel($id);
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'status' => \App\Enums\OrderStatus::getStringValue($order->status),
+                'message' => 'Order cancelled successfully',
+            ]);
+        }
 
         return redirect()->back()->with('success', 'deleted Successfuly');
     }

@@ -4,12 +4,14 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BonusPenaltyController;
 use App\Http\Controllers\Api\CompetitionController;
 use App\Http\Controllers\Api\FcmTokenController;
+use App\Http\Controllers\Api\InfoVideoController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\QuizQuestionController;
 use App\Http\Controllers\Api\RewardController;
 use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\SocialMediaController;
 use App\Http\Controllers\Api\UserAnswerController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
@@ -98,6 +100,9 @@ Route::group(['middleware' => ['auth:sanctum', 'check.competition', 'cache.auth.
 
     Route::get('/about_us', [SettingController::class, 'aboutUs']);
     Route::get('/terms', [SettingController::class, 'terms']);
+
+    Route::get('/social-media', [SocialMediaController::class, 'index']);
+    Route::get('/info-videos', [InfoVideoController::class, 'index']);
 });
 
 Route::get('/quizzes/dropdown/{id}', [QuizController::class, 'dropdown']);

@@ -6,12 +6,14 @@ use App\Http\Controllers\BonusPenaltyController;
 use App\Http\Controllers\CompetitionController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\InfoVideoController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuizQuestionController;
 use App\Http\Controllers\RewardController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SocialMediaController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -158,6 +160,22 @@ Route::group(['middleware' => ['setlocale']], function () {
         Route::prefix('audit-logs')->group(function () {
             Route::get('/', [AuditLogController::class, 'index'])->name('audit-logs.index');
             Route::get('/{id}', [AuditLogController::class, 'show'])->name('audit-logs.show');
+        });
+
+        Route::prefix('social-media')->group(function () {
+            Route::get('/', [SocialMediaController::class, 'index'])->name('social-media.index');
+            Route::get('/{id}/edit', [SocialMediaController::class, 'edit'])->name('social-media.edit');
+            Route::put('/{id}', [SocialMediaController::class, 'update'])->name('social-media.update');
+        });
+
+        Route::prefix('info-videos')->group(function () {
+            Route::get('/', [InfoVideoController::class, 'index'])->name('info-videos.index');
+            Route::get('/create', [InfoVideoController::class, 'create'])->name('info-videos.create');
+            Route::post('/', [InfoVideoController::class, 'store'])->name('info-videos.store');
+            Route::get('/{id}/edit', [InfoVideoController::class, 'edit'])->name('info-videos.edit');
+            Route::put('/{id}', [InfoVideoController::class, 'update'])->name('info-videos.update');
+            Route::delete('/{id}', [InfoVideoController::class, 'destroy'])->name('info-videos.destroy');
+            Route::post('/update-rank', [InfoVideoController::class, 'updateRank'])->name('info-videos.update-rank');
         });
 
     });

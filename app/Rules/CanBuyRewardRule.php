@@ -22,7 +22,7 @@ class CanBuyRewardRule implements ValidationRule
             $fail(__('messages.points_not_enough'));
         }
 
-        if ($reward->quantity <= $value) {
+        if ($reward->quantity < $value) {
             $fail(__('messages.quantity_not_enough'));
         }
 

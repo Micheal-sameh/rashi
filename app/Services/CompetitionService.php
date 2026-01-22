@@ -59,12 +59,12 @@ class CompetitionService
         DB::commit();
     }
 
-    public function getUsersForCompetition($competition)
+    public function getUsersForCompetition($competition, $groupId = null)
     {
-        return $this->competitionRepository->getUsersForCompetition($competition);
+        return $this->competitionRepository->getUsersForCompetition($competition, $groupId);
     }
 
-    public function getUserStatsForQuiz($quiz)
+    public function getUserStatsForQuiz($quiz, $userIds = [])
     {
         // Ensure relationships are loaded to prevent N+1
         if (! $quiz->relationLoaded('questions')) {
@@ -75,6 +75,12 @@ class CompetitionService
         foreach ($quiz->questions as $question) {
             foreach ($question->userAnswers as $userAnswer) {
                 $userId = $userAnswer->user_id;
+
+                // Skip if filtering by user IDs and this user is not in the list
+                if (! empty($userIds) && ! in_array($userId, $userIds)) {
+                    continue;
+                }
+
                 if (! isset($userStats[$userId])) {
                     $userStats[$userId] = [
                         'name' => $userAnswer->user->name,

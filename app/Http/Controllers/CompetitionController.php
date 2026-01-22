@@ -90,40 +90,49 @@ class CompetitionController extends Controller
 
     public function userAnswers($id)
     {
-        $userId = request('user_id');
+        $userIds = request('user_ids', []);
+        $groupId = request('group_id');
+
         $competition = $this->competitionService->show($id)->load([
             'quizzes.questions.answers',
-            'quizzes.questions.userAnswers' => function ($query) use ($userId) {
-                if ($userId) {
-                    $query->where('user_id', $userId);
+            'quizzes.questions.userAnswers' => function ($query) use ($userIds) {
+                if (! empty($userIds)) {
+                    $query->whereIn('user_id', $userIds);
                 }
                 $query->with(['user', 'answer']);
             },
         ]);
 
-        $users = $this->competitionService->getUsersForCompetition($competition);
+        // Get users based on group filter or all users
+        $users = $this->competitionService->getUsersForCompetition($competition, $groupId);
 
-        // Calculate user stats for each quiz
+        // Calculate user stats for each quiz, filtered by selected users
         $quizStats = [];
         foreach ($competition->quizzes as $quiz) {
-            $quizStats[$quiz->id] = $this->competitionService->getUserStatsForQuiz($quiz);
+            $quizStats[$quiz->id] = $this->competitionService->getUserStatsForQuiz($quiz, $userIds);
         }
 
-        return view('competitions.user-answers', compact('competition', 'users', 'userId', 'quizStats'));
+        return view('competitions.user-answers', compact('competition', 'users', 'quizStats'));
     }
 
     public function exportLeaderboard($id)
     {
+        $userIds = request('user_ids', []);
+        $groupId = request('group_id');
+
         $competition = $this->competitionService->show($id)->load([
             'quizzes.questions.answers',
-            'quizzes.questions.userAnswers' => function ($query) {
+            'quizzes.questions.userAnswers' => function ($query) use ($userIds) {
+                if (! empty($userIds)) {
+                    $query->whereIn('user_id', $userIds);
+                }
                 $query->with(['user', 'answer']);
             },
         ]);
 
         $userStats = [];
         foreach ($competition->quizzes as $quiz) {
-            $quizStats = $this->competitionService->getUserStatsForQuiz($quiz);
+            $quizStats = $this->competitionService->getUserStatsForQuiz($quiz, $userIds);
             foreach ($quizStats as $userId => $stats) {
                 if (! isset($userStats[$userId])) {
                     $userStats[$userId] = [

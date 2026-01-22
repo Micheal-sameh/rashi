@@ -14,7 +14,7 @@
             <div class="col-md-4">
                 <label for="user_id" class="form-label fw-semibold">{{ __('messages.user_name') }}</label>
                 <select name="user_id" id="user_id" class="form-select">
-                    <option value="">{{ __('messages.all_users') }}</option>
+                    <option value="">{{ __('messages.all_bonusPenalties') }}</option>
                     @foreach (App\Models\User::OrderBy('name')->get() as $user)
                         <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
                             {{ $user->name }}
@@ -58,7 +58,8 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="badge {{ $bonusPenalty->type == \App\Enums\BonusPenaltyType::BONUS ? 'bg-success' : 'bg-danger' }}">
+                                    <span
+                                        class="badge {{ $bonusPenalty->type == \App\Enums\BonusPenaltyType::BONUS ? 'bg-success' : 'bg-danger' }}">
                                         {{ \App\Enums\BonusPenaltyType::getStringValue($bonusPenalty->type) }}
                                     </span>
                                 </td>
@@ -67,14 +68,16 @@
                                 <td>{{ $bonusPenalty->creator->name ?? '' }}</td>
                                 <td>{{ $bonusPenalty->created_at->format('Y-m-d H:i') }}</td>
                                 <td>
-                                    <a href="{{ route('bonus-penalties.show', $bonusPenalty->id) }}" class="btn btn-info btn-sm shadow-sm">
+                                    <a href="{{ route('bonus-penalties.show', $bonusPenalty->id) }}"
+                                        class="btn btn-info btn-sm shadow-sm">
                                         <i class="fa fa-eye me-1"></i>{{ __('messages.view') }}
                                     </a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted">{{ __('messages.no_bonus_penalties_found') }}</td>
+                                <td colspan="7" class="text-center text-muted">
+                                    {{ __('messages.no_bonus_penalties_found') }}</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -95,7 +98,8 @@
                                 data-image="{{ $bonusPenalty->user?->getFirstMediaUrl('profile_images') ?: asset('images/default.png') }}">
                                 {{ $bonusPenalty->user->name ?? '' }}
                             </span>
-                            <span class="badge {{ $bonusPenalty->type == \App\Enums\BonusPenaltyType::BONUS ? 'bg-success' : 'bg-danger' }}">
+                            <span
+                                class="badge {{ $bonusPenalty->type == \App\Enums\BonusPenaltyType::BONUS ? 'bg-success' : 'bg-danger' }}">
                                 {{ \App\Enums\BonusPenaltyType::getStringValue($bonusPenalty->type) }}
                             </span>
                         </div>
@@ -131,6 +135,71 @@
                 </div>
             @endforelse
         </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center pt-2">
+            @if ($bonusPenalties->hasPages())
+                <nav>
+                    <ul class="pagination">
+                        {{-- Previous Page Link --}}
+                        @if ($bonusPenalties->onFirstPage())
+                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                        @else
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $bonusPenalties->previousPageUrl() }}"
+                                    rel="prev">&laquo;</a>
+                            </li>
+                        @endif
+
+                        @php
+                            $current = $bonusPenalties->currentPage();
+                            $last = $bonusPenalties->lastPage();
+                            $start = max($current - 2, 2);
+                            $end = min($current + 2, $last - 1);
+                        @endphp
+
+                        {{-- First page --}}
+                        <li class="page-item {{ $current === 1 ? 'active' : '' }}">
+                            <a class="page-link" href="{{ $bonusPenalties->url(1) }}">1</a>
+                        </li>
+
+                        {{-- Dots before start --}}
+                        @if ($start > 2)
+                            <li class="page-item disabled"><span class="page-link">…</span></li>
+                        @endif
+
+                        {{-- Page range --}}
+                        @for ($page = $start; $page <= $end; $page++)
+                            <li class="page-item {{ $current === $page ? 'active' : '' }}">
+                                <a class="page-link" href="{{ $bonusPenalties->url($page) }}">{{ $page }}</a>
+                            </li>
+                        @endfor
+
+                        {{-- Dots after end --}}
+                        @if ($end < $last - 1)
+                            <li class="page-item disabled"><span class="page-link">…</span></li>
+                        @endif
+
+                        {{-- Last page --}}
+                        @if ($last > 1)
+                            <li class="page-item {{ $current === $last ? 'active' : '' }}">
+                                <a class="page-link" href="{{ $bonusPenalties->url($last) }}">{{ $last }}</a>
+                            </li>
+                        @endif
+
+                        {{-- Next Page Link --}}
+                        @if ($bonusPenalties->hasMorePages())
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $bonusPenalties->nextPageUrl() }}" rel="next">&raquo;</a>
+                            </li>
+                        @else
+                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                        @endif
+                    </ul>
+                </nav>
+            @endif
+        </div>
+
     </div>
 
     <!-- Info Modal -->
