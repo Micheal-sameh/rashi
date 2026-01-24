@@ -376,16 +376,28 @@
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
                             },
                             body: JSON.stringify({})
                         })
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(data => {
+                                    throw new Error(data.message || 'Something went wrong');
+                                });
+                            }
+                            return response.json();
+                        })
                         .then(data => {
                             if (data.success) {
-                                const row = document.querySelector(`button.cancel-order[data-id="${orderIdToCancel}"]`).closest('tr');
+                                const row = document.querySelector(`button.cancel-order[data-id="${orderIdToCancel}"]`)?.closest('tr');
                                 if (row) {
-                                    row.querySelector('td:nth-child(4)').textContent = data.status;
+                                    const statusBadge = row.querySelector('td:nth-child(4) .badge');
+                                    if (statusBadge) {
+                                        statusBadge.textContent = data.status;
+                                        statusBadge.className = 'badge bg-danger';
+                                    }
                                     const receiveBtn = row.querySelector('.receive-order');
                                     const cancelBtn = row.querySelector('.cancel-order');
                                     if (receiveBtn) receiveBtn.remove();
@@ -398,8 +410,9 @@
                             }
                         })
                         .catch(error => {
-                            console.error(error);
-                            alert('An error occurred');
+                            console.error('Error:', error);
+                            alert(error.message || 'An error occurred while cancelling the order');
+                            bootstrap.Modal.getInstance(document.getElementById('cancelOrderModal')).hide();
                         });
                 });
 

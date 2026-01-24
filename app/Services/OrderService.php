@@ -65,19 +65,26 @@ class OrderService
 
     public function cancel($id)
     {
-        DB::beginTransaction();
-        $order = $this->orderRepository->cancel($id);
-        $order->load('servant');
-        $return = Returns::addRecord($order);
-        $reward = $this->rewardRepository->findById($order->reward_id);
-        $this->rewardRepository->returnRewards($reward, $order->quantity);
-        $this->userRepository->returnReward($order->points, $order->user_id);
-        RewardHistory::addRecord($return, $return->quantity);
-        PointHistory::addRecord($return);
-        DB::commit();
+        try {
+            DB::beginTransaction();
 
-        event(new OrderCancelled($order));
+            $order = $this->orderRepository->cancel($id);
+            $order->load('servant');
+            $return = Returns::addRecord($order);
+            $reward = $this->rewardRepository->findById($order->reward_id);
+            $this->rewardRepository->returnRewards($reward, $order->quantity);
+            $this->userRepository->returnReward($order->points, $order->user_id);
+            RewardHistory::addRecord($return, $return->quantity);
+            PointHistory::addRecord($return);
 
-        return $order;
+            DB::commit();
+
+            event(new OrderCancelled($order));
+
+            return $order;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 }

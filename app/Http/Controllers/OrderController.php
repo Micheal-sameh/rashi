@@ -51,16 +51,27 @@ class OrderController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $order = $this->orderService->cancel($id);
+        try {
+            $order = $this->orderService->cancel($id);
 
-        if (request()->expectsJson()) {
-            return response()->json([
-                'success' => true,
-                'status' => \App\Enums\OrderStatus::getStringValue($order->status),
-                'message' => 'Order cancelled successfully',
-            ]);
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'status' => \App\Enums\OrderStatus::getStringValue($order->status),
+                    'message' => 'Order cancelled successfully',
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'deleted Successfuly');
+        } catch (\Exception $e) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error cancelling order: '.$e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'Error cancelling order: '.$e->getMessage());
         }
-
-        return redirect()->back()->with('success', 'deleted Successfuly');
     }
 }
