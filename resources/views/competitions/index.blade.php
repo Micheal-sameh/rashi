@@ -265,9 +265,15 @@
                         <!-- Excel Format Guide -->
                         <div class="card bg-light border-0 rounded-3">
                             <div class="card-body">
-                                <h6 class="fw-bold text-primary mb-3">
-                                    <i class="fa fa-table me-2"></i>{{ __('messages.excel_format_guide') }}
-                                </h6>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="fw-bold text-primary mb-0">
+                                        <i class="fa fa-table me-2"></i>{{ __('messages.excel_format_guide') }}
+                                    </h6>
+                                    <a href="{{ route('competitions.downloadExampleExcel') }}"
+                                       class="btn btn-primary btn-sm">
+                                        <i class="fa fa-download me-1"></i>{{ __('messages.download_template') }}
+                                    </a>
+                                </div>
                                 <ul class="mb-0 small">
                                     <li class="mb-2">
                                         <strong>{{ __('messages.required_columns') }}:</strong>
