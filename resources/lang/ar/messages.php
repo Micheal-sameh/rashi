@@ -461,4 +461,5 @@ return [
     'accepted_formats' => 'التنسيقات المقبولة',
     'manage_all_competitions' => 'إدارة جميع المسابقات',
     'upload_quizzes' => 'رفع الاختبارات',
+    'already_cancelled_cannot_be_cancelled_again' => 'تم الإلغاء بالفعل ولا يمكن إلغاؤه مرة أخرى',
 ];

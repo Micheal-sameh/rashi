@@ -19,5 +19,8 @@ class CheckCanDeleteOrderRule implements ValidationRule
         if ($order->status == OrderStatus::COMPLETED) {
             $fail(__('messages.is_active_cannot_be_deleted'));
         }
+        if ($order->status == OrderStatus::CANCELLED) {
+            $fail(__('messages.already_cancelled_cannot_be_cancelled_again'));
+        }
     }
 }

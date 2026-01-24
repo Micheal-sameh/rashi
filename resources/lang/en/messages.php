@@ -438,4 +438,5 @@ return [
     'accepted_formats' => 'Accepted formats',
     'manage_all_competitions' => 'Manage All Competitions',
     'upload_quizzes' => 'Upload Quizzes',
+    'already_cancelled_cannot_be_cancelled_again' => 'already cancelled cannot be cancelled again',
 ];
