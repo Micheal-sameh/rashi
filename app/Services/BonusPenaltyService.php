@@ -25,13 +25,25 @@ class BonusPenaltyService
     public function store($data)
     {
         DB::beginTransaction();
-        $data['created_by'] = auth()->id() ?? 1; // Default to system user if no auth
+
+        // Check if creator is admin
+        $creator = \App\Models\User::find(auth()->id());
+        $isAdmin = $creator && $creator->hasRole('admin');
+
+        $data['created_by'] = auth()->id() ?? 1;
+        $data['status'] = $isAdmin ? \App\Enums\BonusPenaltyStatus::APPLIED : \App\Enums\BonusPenaltyStatus::PENDING_APPROVAL;
+        $data['approved_by'] = $isAdmin ? auth()->id() : null;
+
         $bonusPenalty = $this->bonusPenaltyRepository->store($data);
-        PointHistory::addRecord($bonusPenalty);
-        // Update user points
-        $this->userRepository->bonusAndPenalty($bonusPenalty);
-        // Fire event to send notification
-        event(new BonusPenaltyCreated($bonusPenalty));
+
+        // Only process points if status is applied (auto-approved by admin)
+        if ($isAdmin) {
+            PointHistory::addRecord($bonusPenalty);
+            // Update user points
+            $this->userRepository->bonusAndPenalty($bonusPenalty);
+            // Fire event to send notification
+            event(new BonusPenaltyCreated($bonusPenalty));
+        }
 
         DB::commit();
 

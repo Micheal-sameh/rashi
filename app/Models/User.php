@@ -76,4 +76,14 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->notifications()->unread();
     }
+
+    public function bonusPenaltiesCreated()
+    {
+        return $this->hasMany(BonusPenalty::class, 'created_by');
+    }
+
+    public function bonusPenaltiesApproved()
+    {
+        return $this->hasMany(BonusPenalty::class, 'approved_by');
+    }
 }

@@ -521,6 +521,14 @@
                             class="{{ $activeRoutes['leaderboard'] ? 'active' : '' }}">
                             <i class="fas fa-trophy"></i>{{ __('messages.leaderboard') }}</a></li>
 
+                    <li><a href="{{ route('families.index') }}"
+                            class="{{ request()->routeIs('families.*') ? 'active' : '' }}">
+                            <i class="fas fa-users-cog"></i>{{ __('messages.families') }}</a></li>
+
+                    <li><a href="{{ route('user-history.index') }}"
+                            class="{{ request()->routeIs('user-history.*') ? 'active' : '' }}">
+                            <i class="fas fa-history"></i>{{ __('messages.user_history') }}</a></li>
+
                     <li><a href="{{ route('competitions.index') }}"
                             class="{{ $activeRoutes['competitions'] ? 'active' : '' }}">
                             <i class="fas fa-flag"></i>{{ __('messages.competitions') }}</a></li>
@@ -544,6 +552,12 @@
                     <li><a href="{{ route('bonus-penalties.index') }}"
                             class="{{ $activeRoutes['bonus-penalties'] ? 'active' : '' }}">
                             <i class="fas fa-balance-scale"></i>{{ __('messages.bonus-penalties') }}</a></li>
+
+                    @if(Auth::user()->hasRole('admin'))
+                        <li><a href="{{ route('bonus-penalties.pending') }}"
+                                class="{{ request()->routeIs('bonus-penalties.pending') ? 'active' : '' }}">
+                                <i class="fas fa-clock"></i>{{ __('messages.pending_approvals') }}</a></li>
+                    @endif
 
                     <li><a href="{{ route('rewards.index') }}"
                             class="{{ $activeRoutes['rewards'] ? 'active' : '' }}">

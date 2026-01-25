@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\BonusPenaltyStatus;
+use App\Models\BonusPenalty;
+use App\Models\PointHistory;
 use App\Services\BonusPenaltyService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BonusPenaltyController extends Controller
 {
@@ -11,9 +15,110 @@ class BonusPenaltyController extends Controller
 
     public function index(Request $request)
     {
-        $bonusPenalties = $this->bonusPenaltyService->index($request->user_id);
+        $query = BonusPenalty::with(['user', 'creator', 'approver'])
+            ->where('status', BonusPenaltyStatus::APPLIED);
+
+        // Search by name or membership_code
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('membership_code', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by created_by
+        if ($request->filled('created_by')) {
+            $query->where('created_by', $request->created_by);
+        }
+
+        // Filter by user_id
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        $bonusPenalties = $query->orderBy('created_at', 'desc')->paginate(15);
 
         return view('bonus-penalties.index', compact('bonusPenalties'));
+    }
+
+    public function pendingList(Request $request)
+    {
+        // Check if user is admin
+        if (! Auth::user()->hasRole('admin')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $query = BonusPenalty::with(['user', 'creator'])
+            ->where('status', BonusPenaltyStatus::PENDING_APPROVAL);
+
+        // Search by name or membership_code
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('membership_code', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by created_by
+        if ($request->filled('created_by')) {
+            $query->where('created_by', $request->created_by);
+        }
+
+        $bonusPenalties = $query->orderBy('created_at', 'desc')->paginate(15);
+
+        return view('bonus-penalties.pending', compact('bonusPenalties'));
+    }
+
+    public function approve($id)
+    {
+        // Check if user is admin
+        if (! Auth::user()->hasRole('admin')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $bonusPenalty = BonusPenalty::findOrFail($id);
+
+        if ($bonusPenalty->status == BonusPenaltyStatus::APPLIED) {
+            return redirect()->back()->with('error', 'This bonus/penalty has already been approved.');
+        }
+
+        $bonusPenalty->update([
+            'status' => BonusPenaltyStatus::APPLIED,
+            'approved_by' => Auth::id(),
+        ]);
+
+        // Add to point history
+        PointHistory::addRecord($bonusPenalty);
+
+        // Update user points
+        $user = $bonusPenalty->user;
+        if ($bonusPenalty->type == \App\Enums\BonusPenaltyType::BONUS || $bonusPenalty->type == \App\Enums\BonusPenaltyType::WELCOME_BONUS) {
+            $user->increment('points', $bonusPenalty->points);
+        } else {
+            $user->decrement('points', $bonusPenalty->points);
+        }
+
+        return redirect()->back()->with('success', 'Bonus/Penalty approved successfully.');
+    }
+
+    public function reject($id)
+    {
+        // Check if user is admin
+        if (! Auth::user()->hasRole('admin')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $bonusPenalty = BonusPenalty::findOrFail($id);
+
+        if ($bonusPenalty->status == BonusPenaltyStatus::APPLIED) {
+            return redirect()->back()->with('error', 'This bonus/penalty has already been approved and cannot be rejected.');
+        }
+
+        $bonusPenalty->delete();
+
+        return redirect()->back()->with('success', 'Bonus/Penalty rejected and deleted successfully.');
     }
 
     public function create()

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BonusPenaltyController;
 use App\Http\Controllers\CompetitionController;
+use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\InfoVideoController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\RewardController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SocialMediaController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserHistoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -134,6 +136,9 @@ Route::group(['middleware' => ['setlocale']], function () {
 
         Route::prefix('bonus-penalties')->group(function () {
             Route::get('/', [BonusPenaltyController::class, 'index'])->name('bonus-penalties.index');
+            Route::get('/pending', [BonusPenaltyController::class, 'pendingList'])->name('bonus-penalties.pending');
+            Route::post('/{id}/approve', [BonusPenaltyController::class, 'approve'])->name('bonus-penalties.approve');
+            Route::delete('/{id}/reject', [BonusPenaltyController::class, 'reject'])->name('bonus-penalties.reject');
             Route::get('/create', [BonusPenaltyController::class, 'create'])->name('bonus-penalties.create');
             Route::post('/', [BonusPenaltyController::class, 'store'])->name('bonus-penalties.store');
             Route::get('/{id}', [BonusPenaltyController::class, 'show'])->name('bonus-penalties.show');
@@ -176,6 +181,15 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::put('/{id}', [InfoVideoController::class, 'update'])->name('info-videos.update');
             Route::delete('/{id}', [InfoVideoController::class, 'destroy'])->name('info-videos.destroy');
             Route::post('/update-rank', [InfoVideoController::class, 'updateRank'])->name('info-videos.update-rank');
+        });
+
+        Route::prefix('families')->group(function () {
+            Route::get('/', [FamilyController::class, 'index'])->name('families.index');
+            Route::get('/{familyCode}', [FamilyController::class, 'show'])->name('families.show');
+        });
+
+        Route::prefix('user-history')->group(function () {
+            Route::get('/', [UserHistoryController::class, 'index'])->name('user-history.index');
         });
 
     });
