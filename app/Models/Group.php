@@ -19,6 +19,14 @@ class Group extends Model
         return $this->belongsToMany(User::class, 'user_groups'); // Pivot table 'group_user'
     }
 
+    /**
+     * Get admin users in this group
+     */
+    public function admins()
+    {
+        return $this->users()->role('admin');
+    }
+
     public function rewards()
     {
         return $this->hasMany(Reward::class);

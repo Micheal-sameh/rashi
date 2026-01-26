@@ -30,6 +30,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/oauth2callback', function () {
+    $code = request('code');
+    if ($code) {
+        return view('google-drive-callback', ['code' => $code]);
+    }
+    return 'No authorization code received';
+});
+
 Route::get('/', function () {
     return redirect()->route('competitions.index');
 });

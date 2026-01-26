@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Enums\CompetitionStatus;
 use App\Events\CompetitionStatusUpdated;
+use App\Jobs\SendCompetitionFinishedReports;
 use App\Models\Competition;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -123,9 +124,12 @@ class CompetitionRepository extends BaseRepository
 
         $competition->status = $nextStatus;
         $competition->save();
-
+        if ($nextStatus == CompetitionStatus::FINISHED) {
+            // Dispatch job to send competition finished reports
+            SendCompetitionFinishedReports::dispatch($competition->id);
+        }
         // Fire event for status update
-        event(new CompetitionStatusUpdated($competition, $oldStatus, $nextStatus));
+        // event(new CompetitionStatusUpdated($competition, $oldStatus, $nextStatus));
 
         $statusClass = match ($nextStatus) {
             CompetitionStatus::PENDING => 'btn-primary',
@@ -169,10 +173,17 @@ class CompetitionRepository extends BaseRepository
             event(new CompetitionStatusUpdated($competition, $oldStatus, $competition->status));
         }
 
-        $this->model
+        $toFinish = $this->model
             ->where('status', CompetitionStatus::ACTIVE)
             ->whereDate('end_at', '<', $today)
-            ->update(['status' => CompetitionStatus::FINISHED]);
+            ->get();
+
+        foreach ($toFinish as $competition) {
+            $competition->update(['status' => CompetitionStatus::FINISHED]);
+
+            // Dispatch job to send competition finished reports
+            SendCompetitionFinishedReports::dispatch($competition->id);
+        }
     }
 
     public function getUsersForCompetition($competition, $groupId = null)
