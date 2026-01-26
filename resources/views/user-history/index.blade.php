@@ -85,39 +85,29 @@
                                     <tr>
                                         <th>{{ __('messages.date') }}</th>
                                         <th>{{ __('messages.type') }}</th>
-                                        <th>{{ __('messages.source') }}</th>
-                                        <th>{{ __('messages.description') }}</th>
                                         <th class="text-end">{{ __('messages.credit') }}</th>
                                         <th class="text-end">{{ __('messages.debit') }}</th>
-                                        <th class="text-end">{{ __('messages.balance') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @php $runningBalance = 0; @endphp
                                     @forelse($pointHistory as $history)
                                         @php
-                                            if ($history->type == 'credit') {
-                                                $runningBalance += $history->points;
-                                            } else {
-                                                $runningBalance -= $history->points;
-                                            }
+                                            $credit = ['Bonus', 'Return', 'Quiz'];
                                         @endphp
                                         <tr>
                                             <td>{{ $history->created_at->format('Y-m-d H:i') }}</td>
                                             <td>
-                                                <span class="badge {{ $history->type == 'credit' ? 'bg-success' : 'bg-danger' }}">
+                                                <span class="badge {{ in_array($history->type, $credit) ? 'bg-success' : 'bg-danger' }}">
                                                     {{ ucfirst($history->type) }}
                                                 </span>
                                             </td>
-                                            <td>{{ $history->source ?? 'N/A' }}</td>
-                                            <td>{{ $history->description ?? '-' }}</td>
                                             <td class="text-end text-success fw-bold">
-                                                {{ $history->type == 'credit' ? '+' . $history->points : '-' }}
+                                                {{ $history->type == in_array($history->type, $credit) ? '+' . $history->amount : '-' }}
                                             </td>
                                             <td class="text-end text-danger fw-bold">
-                                                {{ $history->type == 'debit' ? '-' . $history->points : '-' }}
+                                                {{ $history->type == !in_array($history->type, $credit) ? '-' . $history->amount : '-' }}
                                             </td>
-                                            <td class="text-end fw-bold">{{ $runningBalance }}</td>
                                         </tr>
                                     @empty
                                         <tr>

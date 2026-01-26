@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\BonusPenaltyStatus;
 use App\Events\BonusPenaltyCreated;
 use App\Models\PointHistory;
 use App\Repositories\BonusPenaltyRepository;
@@ -53,5 +54,25 @@ class BonusPenaltyService
     public function show($id)
     {
         return $this->bonusPenaltyRepository->findById($id);
+    }
+
+    public function approve($bonusPenalty)
+    {
+        DB::beginTransaction();
+
+        $bonusPenalty->status = BonusPenaltyStatus::APPLIED;
+        $bonusPenalty->approved_by = auth()->id();
+        $bonusPenalty->save();
+
+        // Process points
+        PointHistory::addRecord($bonusPenalty);
+        // Update user points
+        $this->userRepository->bonusAndPenalty($bonusPenalty);
+        // Fire event to send notification
+        event(new BonusPenaltyCreated($bonusPenalty));
+
+        DB::commit();
+
+        return $bonusPenalty;
     }
 }

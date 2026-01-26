@@ -61,4 +61,15 @@ class PointHistory extends Model
             'subject_type' => $type,
         ]);
     }
+
+    public function getTypeAttribute()
+    {
+        return match ($this->subject_type) {
+            BonusPenalty::class => in_array($this->subject->type, [BonusPenaltyType::BONUS, BonusPenaltyType::WELCOME_BONUS]) ? 'Bonus' : 'Penalty',
+            Order::class => 'Redeem',
+            Quiz::class => 'Quiz',
+            Returns::class => 'Return',
+            default => 'debit',
+        };
+    }
 }

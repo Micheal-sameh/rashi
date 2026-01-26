@@ -55,25 +55,36 @@ class FamilyController extends Controller
 
     public function show($familyCode)
     {
-        // Get all family members
+        // Get all family members with their groups in one query
         $members = User::where('membership_code', 'like', $familyCode.'%')
+            ->with('groups')
             ->orderByRaw("CAST(SUBSTRING_INDEX(membership_code, 'NR', -1) AS UNSIGNED)")
             ->get();
 
         // Get detailed information for each member
         $membersData = [];
         foreach ($members as $member) {
-            // Get quiz statistics
-            $totalQuizzes = Quiz::count();
-            $solvedQuizzes = DB::table('user_quizzes')
-                ->where('user_id', $member->id)
-                ->distinct('quiz_id')
-                ->count('quiz_id');
+            // Get quiz statistics - filter by user's groups
+            $userGroupIds = $member->groups->pluck('id')->toArray();
 
-            $lastQuiz = DB::table('user_quizzes')
+            $totalQuizzes = Quiz::query()
+                ->whereHas('competition', function ($query) use ($userGroupIds) {
+                    $query->whereHas('groups', function ($q) use ($userGroupIds) {
+                        $q->whereIn('groups.id', $userGroupIds);
+                    });
+                })->count();
+            $solvedQuizzes = DB::table('user_answers')
                 ->where('user_id', $member->id)
-                ->join('quizzes', 'user_quizzes.quiz_id', '=', 'quizzes.id')
-                ->orderBy('user_quizzes.created_at', 'desc')
+                ->join('quiz_questions', 'user_answers.quiz_question_id', '=', 'quiz_questions.id')
+                ->distinct('quiz_questions.quiz_id')
+                ->count('quiz_questions.quiz_id');
+
+            $lastQuiz = DB::table('user_answers')
+                ->where('user_id', $member->id)
+                ->join('quiz_questions', 'user_answers.quiz_question_id', '=', 'quiz_questions.id')
+                ->join('quizzes', 'quiz_questions.quiz_id', '=', 'quizzes.id')
+                ->orderBy('user_answers.created_at', 'desc')
+                ->select('quizzes.*', 'user_answers.created_at as answer_created_at')
                 ->first();
 
             // Get last redeem (order)
@@ -97,11 +108,14 @@ class FamilyController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->first();
 
-            // Get last competition
-            $lastCompetition = DB::table('competition_user')
-                ->where('user_id', $member->id)
-                ->join('competitions', 'competition_user.competition_id', '=', 'competitions.id')
-                ->orderBy('competition_user.created_at', 'desc')
+            // Get last competition (through user_answers -> quiz_questions -> quizzes -> competitions)
+            $lastCompetition = DB::table('user_answers')
+                ->where('user_answers.user_id', $member->id)
+                ->join('quiz_questions', 'user_answers.quiz_question_id', '=', 'quiz_questions.id')
+                ->join('quizzes', 'quiz_questions.quiz_id', '=', 'quizzes.id')
+                ->join('competitions', 'quizzes.competition_id', '=', 'competitions.id')
+                ->orderBy('user_answers.created_at', 'desc')
+                ->select('competitions.*', 'user_answers.created_at as answer_created_at')
                 ->first();
 
             // Get groups except General
@@ -114,8 +128,8 @@ class FamilyController extends Controller
                 'quizzes_solved' => $solvedQuizzes,
                 'total_quizzes' => $totalQuizzes,
                 'last_quiz' => $lastQuiz ? [
-                    'name' => $lastQuiz->title ?? $lastQuiz->name ?? 'N/A',
-                    'date' => $lastQuiz->created_at ?? null,
+                    'name' => $lastQuiz->name ?? 'N/A',
+                    'date' => $lastQuiz->answer_created_at ?? null,
                 ] : null,
                 'last_order' => $lastOrder ? [
                     'reward' => $lastOrder->reward->name ?? 'N/A',
@@ -131,7 +145,7 @@ class FamilyController extends Controller
                 ] : null,
                 'last_competition' => $lastCompetition ? [
                     'name' => $lastCompetition->name ?? 'N/A',
-                    'date' => $lastCompetition->created_at ?? null,
+                    'date' => $lastCompetition->answer_created_at ?? null,
                 ] : null,
                 'groups' => $groups,
             ];

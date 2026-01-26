@@ -86,4 +86,9 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasMany(BonusPenalty::class, 'approved_by');
     }
+
+    public function userAnswers()
+    {
+        return $this->hasMany(UserAnswer::class);
+    }
 }

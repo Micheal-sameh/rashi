@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enums\BonusPenaltyStatus;
 use App\Models\BonusPenalty;
-use App\Models\PointHistory;
 use App\Services\BonusPenaltyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -84,21 +83,7 @@ class BonusPenaltyController extends Controller
             return redirect()->back()->with('error', 'This bonus/penalty has already been approved.');
         }
 
-        $bonusPenalty->update([
-            'status' => BonusPenaltyStatus::APPLIED,
-            'approved_by' => Auth::id(),
-        ]);
-
-        // Add to point history
-        PointHistory::addRecord($bonusPenalty);
-
-        // Update user points
-        $user = $bonusPenalty->user;
-        if ($bonusPenalty->type == \App\Enums\BonusPenaltyType::BONUS || $bonusPenalty->type == \App\Enums\BonusPenaltyType::WELCOME_BONUS) {
-            $user->increment('points', $bonusPenalty->points);
-        } else {
-            $user->decrement('points', $bonusPenalty->points);
-        }
+        $this->bonusPenaltyService->approve($bonusPenalty);
 
         return redirect()->back()->with('success', 'Bonus/Penalty approved successfully.');
     }
