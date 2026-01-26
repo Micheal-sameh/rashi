@@ -31,9 +31,9 @@ class UserHistoryController extends Controller
                 // Calculate totals
                 foreach ($pointHistory as $history) {
                     if (! in_array($history->type, ['Bonus', 'Return', 'Quiz'])) {
-                        $totalDebit += $history->points;
+                        $totalDebit += $history->amount;
                     } else {
-                        $totalCredit += $history->points;
+                        $totalCredit += $history->amount;
                     }
                 }
             }

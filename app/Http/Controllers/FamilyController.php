@@ -39,7 +39,7 @@ class FamilyController extends Controller
             foreach ($familyCodes as $familyCode) {
                 $familyMembers = User::where('membership_code', 'like', $familyCode.'%')
                     ->orderByRaw("CAST(SUBSTRING_INDEX(membership_code, 'NR', -1) AS UNSIGNED)")
-                    ->get();
+                    ->get(['id', 'name', 'membership_code']);
 
                 if ($familyMembers->isNotEmpty()) {
                     $families[] = [
@@ -59,7 +59,7 @@ class FamilyController extends Controller
         $members = User::where('membership_code', 'like', $familyCode.'%')
             ->with('groups')
             ->orderByRaw("CAST(SUBSTRING_INDEX(membership_code, 'NR', -1) AS UNSIGNED)")
-            ->get();
+            ->get(['id', 'name', 'membership_code', 'points', 'score']);
 
         // Get detailed information for each member
         $membersData = [];
