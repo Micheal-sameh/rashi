@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PointHistory;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserHistoryController extends Controller
 {
@@ -18,24 +19,40 @@ class UserHistoryController extends Controller
 
         if ($search) {
             // Search for user by name or membership_code
-            $user = User::where('name', 'like', "%{$search}%")
-                ->orWhere('membership_code', 'like', "%{$search}%")
+            $user = User::where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('membership_code', 'like', "%{$search}%");
+            })
+                ->select('id', 'name', 'membership_code', 'points', 'score')
                 ->first();
 
             if ($user) {
-                // Get point history for this user
+                // Calculate totals using database aggregation for better performance
+                $creditTypes = ['App\\\\Models\\\\BonusPenalty', 'App\\\\Models\\\\Quiz', 'App\\\\Models\\\\Returns'];
+
+                $totals = DB::table('point_histories')
+                    ->where('user_id', $user->id)
+                    ->selectRaw('
+                        SUM(CASE
+                            WHEN subject_type IN ("'.implode('","', $creditTypes).'")
+                            THEN amount
+                            ELSE 0
+                        END) as total_credit,
+                        SUM(CASE
+                            WHEN subject_type NOT IN ("'.implode('","', $creditTypes).'")
+                            THEN amount
+                            ELSE 0
+                        END) as total_debit
+                    ')
+                    ->first();
+
+                $totalCredit = $totals->total_credit ?? 0;
+                $totalDebit = $totals->total_debit ?? 0;
+
+                // Get point history with limited columns
                 $pointHistory = PointHistory::where('user_id', $user->id)
                     ->orderBy('created_at', 'desc')
-                    ->get();
-
-                // Calculate totals
-                foreach ($pointHistory as $history) {
-                    if (! in_array($history->type, ['Bonus', 'Return', 'Quiz'])) {
-                        $totalDebit += $history->amount;
-                    } else {
-                        $totalCredit += $history->amount;
-                    }
-                }
+                    ->get(['id', 'user_id', 'subject_type', 'subject_id', 'amount', 'created_at']);
             }
         }
 
