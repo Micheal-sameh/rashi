@@ -1,5 +1,10 @@
 @extends('layouts.sideBar')
 
+@php
+    use App\Enums\BonusPenaltyStatus;
+    use App\Enums\BonusPenaltyType;
+    use Carbon\Carbon;
+@endphp
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -56,7 +61,7 @@
                                 @if ($memberData['last_quiz'])
                                     <p class="mb-1"><strong>{{ $memberData['last_quiz']['name'] }}</strong></p>
                                     <small
-                                        class="text-muted">{{ $memberData['last_quiz']['date'] ? \Carbon\Carbon::parse($memberData['last_quiz']['date'])->format('Y-m-d H:i') : 'N/A' }}</small>
+                                        class="text-muted">{{ $memberData['last_quiz']['date'] ? Carbon::parse($memberData['last_quiz']['date'])->format('Y-m-d H:i') : 'N/A' }}</small>
                                 @else
                                     <p class="mb-0 text-muted">{{ __('messages.no_data') }}</p>
                                 @endif
@@ -70,7 +75,7 @@
                                 @if ($memberData['last_order'])
                                     <p class="mb-1"><strong>{{ $memberData['last_order']['reward'] }}</strong></p>
                                     <small
-                                        class="text-muted">{{ $memberData['last_order']['date']->format('Y-m-d H:i') }}</small>
+                                        class="text-muted">{{ Carbon::parse($memberData['last_order']['date'])->format('Y-m-d H:i') }}</small>
                                 @else
                                     <p class="mb-0 text-muted">{{ __('messages.no_data') }}</p>
                                 @endif
@@ -85,7 +90,7 @@
                                     <p class="mb-1 text-success"><strong>+{{ $memberData['last_bonus']['value'] }}
                                             {{ __('messages.points') }}</strong></p>
                                     <small
-                                        class="text-muted">{{ $memberData['last_bonus']['date']->format('Y-m-d H:i') }}</small>
+                                        class="text-muted">{{ Carbon::parse($memberData['last_bonus']['date'])->format('Y-m-d H:i') }}</small>
                                 @else
                                     <p class="mb-0 text-muted">{{ __('messages.no_data') }}</p>
                                 @endif
@@ -100,7 +105,7 @@
                                     <p class="mb-1 text-danger"><strong>-{{ $memberData['last_penalty']['value'] }}
                                             {{ __('messages.points') }}</strong></p>
                                     <small
-                                        class="text-muted">{{ $memberData['last_penalty']['date']->format('Y-m-d H:i') }}</small>
+                                        class="text-muted">{{ Carbon::parse($memberData['last_penalty']['date'])->format('Y-m-d H:i') }}</small>
                                 @else
                                     <p class="mb-0 text-muted">{{ __('messages.no_data') }}</p>
                                 @endif
@@ -114,7 +119,7 @@
                                 @if ($memberData['last_competition'])
                                     <p class="mb-1"><strong>{{ $memberData['last_competition']['name'] }}</strong></p>
                                     <small
-                                        class="text-muted">{{ $memberData['last_competition']['date'] ? \Carbon\Carbon::parse($memberData['last_competition']['date'])->format('Y-m-d H:i') : 'N/A' }}</small>
+                                        class="text-muted">{{ $memberData['last_competition']['date'] ? Carbon::parse($memberData['last_competition']['date'])->format('Y-m-d H:i') : 'N/A' }}</small>
                                 @else
                                     <p class="mb-0 text-muted">{{ __('messages.no_data') }}</p>
                                 @endif
