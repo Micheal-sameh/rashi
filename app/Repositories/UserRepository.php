@@ -43,9 +43,9 @@ class UserRepository extends BaseRepository
         $user = $this->model->updateOrCreate(
             [
                 'membership_code' => $input->membership_code,
-                'name' => $input->name,
             ],
             [
+                'name' => $input->name,
                 'email' => $input->email,
                 'phone' => $input->phone,
                 'password' => Hash::make($input->password),
