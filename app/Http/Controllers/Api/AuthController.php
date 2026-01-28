@@ -26,7 +26,7 @@ class AuthController extends BaseController
             $input = new UserLoginDTO(...$credentials->only(
                 'membership_code',
                 'name',
-                'group',
+                'groups',
                 // 'password',
                 // 'email',
             ));
@@ -105,8 +105,12 @@ class AuthController extends BaseController
         $membership_code = "E1C1F{$membershipPart}NR{$NR}";
         $name = explode('|', $qr_code)[1];
         $group = explode('|', $qr_code)[2] ?? '';
+        if ($group) {
+            dd($group);
+            $groups = explode(',', $group);
+        }
 
-        return compact('membership_code', 'name', 'group');
+        return compact('membership_code', 'name', 'groups');
     }
 
     private function updateOrCreateFcmToken($request, $user)

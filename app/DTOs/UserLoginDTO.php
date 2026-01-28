@@ -11,7 +11,7 @@ class UserLoginDTO extends DTO
     public ?string $email;
     public ?string $phone;
     public ?string $membership_code;
-    public ?string $group;
+    public ?array $groups;
     public ?string $password;
 
     public function __construct(
@@ -19,7 +19,7 @@ class UserLoginDTO extends DTO
         string $email = parent::STRING,
         string $phone = parent::STRING,
         string $membership_code = parent::STRING,
-        string $group = parent::STRING,
+        array $groups = parent::ARRAY,
         string $password = parent::STRING,
     ) {
         parent::__construct(compact(...$this->getParameterList()));
