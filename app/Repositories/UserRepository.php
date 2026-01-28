@@ -57,7 +57,7 @@ class UserRepository extends BaseRepository
 
         }
 
-        $this->assignGroups($input->group, $user);
+        $this->assignGroups($input->groups, $user);
 
         return $user;
     }
@@ -144,14 +144,15 @@ class UserRepository extends BaseRepository
         return $result;
     }
 
-    protected function assignGroups($group_name, $user)
+    protected function assignGroups($group_names, $user)
     {
-        $groupId = Group::where('abbreviation', $group_name)->value('id');
+        $groupIds = Group::whereIn('abbreviation', $group_names)->pluck('id');
 
         $groupsId = [1];
-        if ($groupId) {
-            $groupsId[] = $groupId;
+        if ($groupIds->isNotEmpty()) {
+            $groupsId = array_merge($groupsId, $groupIds->toArray());
         }
+
         $user->groups()->sync($groupsId);
     }
 
