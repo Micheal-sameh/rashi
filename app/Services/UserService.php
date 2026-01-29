@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\BonusPenaltyType;
 use App\Repositories\UserRepository;
 
 class UserService
@@ -18,13 +17,9 @@ class UserService
         $user->load('roles', 'groups', 'media');
 
         // Award welcome bonus if user is newly created
+        dd($user->wasRecentlyCreated);
         if ($user->wasRecentlyCreated) {
-            $this->bonusPenaltyService->store([
-                'user_id' => $user->id,
-                'points' => 50,
-                'type' => BonusPenaltyType::WELCOME_BONUS,
-                'reason' => _('messages.Welcome points'),
-            ]);
+            $this->bonusPenaltyService->welcomeBonus($user);
         }
 
         return $user;

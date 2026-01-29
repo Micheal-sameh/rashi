@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\BonusPenaltyStatus;
+use App\Enums\BonusPenaltyType;
 use App\Events\BonusPenaltyCreated;
 use App\Models\PointHistory;
 use App\Repositories\BonusPenaltyRepository;
@@ -74,5 +75,31 @@ class BonusPenaltyService
         DB::commit();
 
         return $bonusPenalty;
+    }
+
+    public function reject($bonusPenalty)
+    {
+        $bonusPenalty->status = BonusPenaltyStatus::REJECTED;
+        $bonusPenalty->approved_by = auth()->id();
+        $bonusPenalty->save();
+
+        return $bonusPenalty;
+    }
+
+    public function welcomeBonus($user)
+    {
+        $bonusPenalty = $this->store([
+            'user_id' => $user->id,
+            'points' => 50,
+            'type' => BonusPenaltyType::WELCOME_BONUS,
+            'reason' => _('messages.Welcome points'),
+            'status' => BonusPenaltyStatus::APPLIED,
+        ]);
+
+        PointHistory::addRecord($bonusPenalty);
+        // Update user points
+        $this->userRepository->bonusAndPenalty($bonusPenalty);
+        // Fire event to send notification
+        event(new BonusPenaltyCreated($bonusPenalty));
     }
 }
