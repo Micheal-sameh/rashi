@@ -105,8 +105,8 @@ class AuthController extends BaseController
         $membership_code = "E1C1F{$membershipPart}NR{$NR}";
         $name = explode('|', $qr_code)[1];
         $group = explode('|', $qr_code)[2] ?? '';
+        $groups = [];
         if ($group) {
-            dd($group);
             $groups = explode(',', $group);
         }
 
