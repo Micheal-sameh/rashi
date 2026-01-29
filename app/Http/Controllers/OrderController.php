@@ -20,6 +20,19 @@ class OrderController extends Controller
 
     public function received($id)
     {
+        $validator = Validator::make(['id' => $id], [
+            'id' => [new CheckCanDeleteOrderRule],
+        ]);
+        if ($validator->fails()) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()->first(),
+                ], 422);
+            }
+
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
         $order = $this->orderService->received($id);
 
         if (request()->expectsJson()) {
