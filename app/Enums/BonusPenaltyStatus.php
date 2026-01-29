@@ -11,6 +11,8 @@ class BonusPenaltyStatus
 
     public const APPLIED = 2;
 
+    public const REJECTED = 3;
+
     private static array $translations = [
         self::PENDING_APPROVAL => [
             'en' => 'Pending Approval',
@@ -19,6 +21,10 @@ class BonusPenaltyStatus
         self::APPLIED => [
             'en' => 'Applied',
             'ar' => 'تم التطبيق',
+        ],
+        self::REJECTED => [
+            'en' => 'Rejected',
+            'ar' => 'مرفوض',
         ],
     ];
 
