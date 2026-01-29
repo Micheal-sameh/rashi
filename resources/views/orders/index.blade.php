@@ -4,6 +4,9 @@
     <div class="container-fluid px-3 px-lg-4 py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="fw-bold text-primary">{{ __('messages.orders') }}</h1>
+            {{-- <button id="testBroadcast" class="btn btn-info btn-sm">
+                <i class="fa fa-broadcast-tower me-1"></i>Test WebSocket
+            </button> --}}
         </div>
 
         <!-- Search Filter Form -->
@@ -320,10 +323,57 @@
         </div>
     </div>
 
+    <!-- New Order Notification Modal -->
+    <div class="modal fade" id="newOrderModal" tabindex="-1" aria-labelledby="newOrderModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 shadow-lg">
+                <div class="modal-header bg-success text-white border-0">
+                    <h5 class="modal-title" id="newOrderModalLabel">
+                        <i class="fa fa-bell me-2"></i>{{ __('messages.new_order_created') }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <i class="fa fa-shopping-cart fa-4x text-success mb-3"></i>
+                    <h5 class="mb-3" id="newOrderTitle">{{ __('New Order Received!') }}</h5>
+                    <div class="text-start">
+                        <p class="mb-2"><strong>{{ __('messages.order') }} ID:</strong> <span id="newOrderId"></span></p>
+                        <p class="mb-2"><strong>{{ __('messages.user_name') }}:</strong> <span id="newOrderCustomer"></span></p>
+                        <p class="mb-2"><strong>{{ __('messages.reward') }}:</strong> <span id="newOrderReward"></span></p>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-success px-4" onclick="window.location.reload()">
+                        <i class="fa fa-refresh me-1"></i>{{ __('Refresh Page') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 let orderIdToCancel = null;
+
+                // Test WebSocket broadcast button
+                document.getElementById('testBroadcast')?.addEventListener('click', function() {
+                    console.log('🧪 Testing WebSocket broadcast...');
+                    fetch('/orders/test-broadcast')
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('✅ Test broadcast response:', data);
+                            if (data.success) {
+                                alert('Test event sent! Check console for WebSocket messages.');
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('❌ Test broadcast error:', error);
+                            alert('Error sending test event: ' + error.message);
+                        });
+                });
 
                 // Handle receive button
                 document.querySelectorAll('.receive-order').forEach(button => {
@@ -443,6 +493,71 @@
                         modal.show();
                     });
                 });
+
+                // Real-time order updates via WebSocket
+                console.log('📡 Setting up real-time order updates...');
+
+                if (typeof Echo !== 'undefined') {
+                    console.log('✅ Echo is available');
+                    console.log('🔌 Subscribing to orders channel...');
+
+                    const ordersChannel = Echo.channel('orders');
+
+                    ordersChannel.listen('.order.created', (e) => {
+                        console.log('✅ New order received via WebSocket:', e);
+
+                        // Play notification sound
+                        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuAze/aiTYIGGS44tyYSAoOVKzn77BdGAg+ltf0xnElBSl+zPLaiDcIF2W56t2XSAoPU6vl76tZFgo8lNT0wnMoCDqPzu7fjhwMOqPU8sxxJQUpfsvy2og3CBhlueuel0YLDBKq5fCtXhkHPJLZ88JxJQUsd8zz24k4CBZgtOrclkgKDlOr5e+rWRYKPJPU9MJxKAg5js/u3I0bCzug0fPMcSYFKX7L8tmJNwgXZLjp3JdICw0Sq+XwrF4ZBzyR2fPCcSUFLHfM89uJOAgVYLPq3JZICg5Tq+XvqlkWCjyS1PTBcSgINY7P7tyNGws7otDzzHEmBSl+zO/aiTcIF2S46dqYSAoNEqrl8KxeGQc8kdnzwnElBSx3zPPbiTgIFWCz6tyWSAoOU6rl76pZFgo8kdTzwXEoCDaOzu7cjhsLO6HP88txJgUpfsvy2YgyB');
+                        audio.play().catch(e => console.log('⚠️ Audio play failed:', e));
+
+                        // Show browser notification
+                        if ('Notification' in window && Notification.permission === 'granted') {
+                            new Notification('New Order!', {
+                                body: `Order #${e.order.id} created by ${e.order.user_name}`,
+                                icon: '/favicon.ico'
+                            });
+                        }
+
+                        // Update modal content
+                        document.getElementById('newOrderId').textContent = e.order.id;
+                        document.getElementById('newOrderCustomer').textContent = e.order.user_name;
+                        document.getElementById('newOrderReward').textContent = e.order.reward_name;
+
+                        // Show popup modal
+                        const newOrderModal = new bootstrap.Modal(document.getElementById('newOrderModal'));
+                        newOrderModal.show();
+
+                        console.log('🔔 New order popup displayed');
+                    });
+
+                    // Subscribe success handler
+                    ordersChannel.subscribed(() => {
+                        console.log('✅ Successfully subscribed to orders channel');
+                    });
+
+                    // Error handler
+                    ordersChannel.error((error) => {
+                        console.error('❌ Orders channel error:', error);
+                    });
+
+                    // Listen for all events on this channel for debugging
+                    ordersChannel.listenForWhisper('*', (e) => {
+                        console.log('👂 Whisper event received:', e);
+                    });
+
+                    // Request notification permission
+                    if ('Notification' in window && Notification.permission === 'default') {
+                        Notification.requestPermission().then(permission => {
+                            console.log('🔔 Notification permission:', permission);
+                        });
+                    }
+                } else {
+                    console.error('❌ Echo is not defined. WebSocket connection failed.');
+                    console.log('Please check:');
+                    console.log('1. Is Soketi running? (npx soketi start)');
+                    console.log('2. Are Echo scripts loaded?');
+                    console.log('3. Check browser console for errors');
+                }
             });
         </script>
     @endpush
