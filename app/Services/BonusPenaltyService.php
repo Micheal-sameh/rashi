@@ -88,12 +88,13 @@ class BonusPenaltyService
 
     public function welcomeBonus($user)
     {
-        $bonusPenalty = $this->store([
+        $bonusPenalty = $this->bonusPenaltyRepository->store([
             'user_id' => $user->id,
             'points' => 50,
             'type' => BonusPenaltyType::WELCOME_BONUS,
             'reason' => _('messages.Welcome points'),
             'status' => BonusPenaltyStatus::APPLIED,
+            'created_by' => 1,
         ]);
 
         PointHistory::addRecord($bonusPenalty);

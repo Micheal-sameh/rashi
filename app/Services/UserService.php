@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\DB;
 
 class UserService
 {
@@ -13,6 +14,7 @@ class UserService
 
     public function updateOrcreate($input)
     {
+        DB::beginTransaction();
         $user = $this->userRepository->updateOrcreate($input);
         $user->load('roles', 'groups', 'media');
 
@@ -20,6 +22,7 @@ class UserService
         if ($user->wasRecentlyCreated) {
             $this->bonusPenaltyService->welcomeBonus($user);
         }
+        DB::commit();
 
         return $user;
     }
