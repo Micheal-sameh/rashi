@@ -17,7 +17,6 @@ class UserService
         $user->load('roles', 'groups', 'media');
 
         // Award welcome bonus if user is newly created
-        dd($user->wasRecentlyCreated);
         if ($user->wasRecentlyCreated) {
             $this->bonusPenaltyService->welcomeBonus($user);
         }
