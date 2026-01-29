@@ -2,96 +2,43 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Log;
-use Kreait\Firebase\Factory;
-use Kreait\Firebase\Messaging\CloudMessage;
-use Kreait\Firebase\Messaging\Notification;
+use App\Jobs\SendFcmNotification;
+use App\Jobs\SendFcmNotificationToMultipleDevices;
+use App\Jobs\SendFcmNotificationToTopic;
 
 class FirebaseService
 {
-    protected $messaging;
-
-    public function __construct()
-    {
-        $factory = (new Factory)->withServiceAccount(base_path(env('FIREBASE_CREDENTIALS')));
-        $this->messaging = $factory->createMessaging();
-    }
-
     /**
-     * Send push notification to a single device using Kreait Firebase SDK
+     * Queue push notification to a single device
      */
     public function sendToDevice(string $token, string $title, string $body, array $data = []): bool
     {
-        try {
-            $notification = Notification::create($title, $body);
+        SendFcmNotification::dispatch($token, $title, $body, $data);
 
-            $message = CloudMessage::new()
-                ->toToken($token)
-                ->withNotification($notification)
-                ->withData($data);
-
-            $result = $this->messaging->send($message);
-
-            Log::info('Firebase notification sent successfully', [
-                'message_id' => $result,
-                'token' => $token,
-            ]);
-
-            return true;
-        } catch (\Exception $e) {
-            Log::error('Firebase notification failed', [
-                'error' => $e->getMessage(),
-                'token' => $token,
-            ]);
-
-            return false;
-        }
+        return true;
     }
 
     /**
-     * Send push notification to multiple devices using Kreait Firebase SDK
+     * Queue push notification to multiple devices
      */
     public function sendToDevices(array $tokens, string $title, string $body, array $data = []): bool
     {
-        $successCount = 0;
-
-        foreach ($tokens as $token) {
-            if ($this->sendToDevice($token, $title, $body, $data)) {
-                $successCount++;
-            }
+        if (empty($tokens)) {
+            return false;
         }
 
-        return $successCount > 0;
+        SendFcmNotificationToMultipleDevices::dispatch($tokens, $title, $body, $data);
+
+        return true;
     }
 
     /**
-     * Send push notification to a topic using Kreait Firebase SDK
+     * Queue push notification to a topic
      */
     public function sendToTopic(string $topic, string $title, string $body, array $data = []): bool
     {
-        try {
-            $notification = Notification::create($title, $body);
+        SendFcmNotificationToTopic::dispatch($topic, $title, $body, $data);
 
-            $message = CloudMessage::new()
-                ->toTopic($topic)
-                ->withNotification($notification)
-                ->withData($data);
-
-            $result = $this->messaging->send($message);
-
-            Log::info('Firebase topic notification sent successfully', [
-                'message_id' => $result,
-                'topic' => $topic,
-            ]);
-
-            return true;
-        } catch (\Exception $e) {
-            Log::error('Firebase topic notification failed', [
-                'error' => $e->getMessage(),
-                'topic' => $topic,
-            ]);
-
-            return false;
-        }
+        return true;
     }
 }
