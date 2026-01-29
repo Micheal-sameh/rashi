@@ -720,6 +720,55 @@
     </script>
 
     @stack('scripts')
+
+    <!-- Pusher & Laravel Echo for Real-time Updates -->
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.1/dist/echo.iife.js"></script>
+    <script>
+        // Enable Pusher logging for debugging
+        Pusher.logToConsole = true;
+
+        window.Echo = new Echo({
+            broadcaster: 'pusher',
+            key: '{{ config('broadcasting.connections.pusher.key') }}',
+            wsHost: '{{ config('broadcasting.connections.pusher.options.host') }}',
+            wsPort: {{ config('broadcasting.connections.pusher.options.port') }},
+            wssPort: {{ config('broadcasting.connections.pusher.options.port') }},
+            forceTLS: false,
+            encrypted: false,
+            disableStats: true,
+            enabledTransports: ['ws', 'wss'],
+            cluster: 'mt1', // Required by Pusher but not used by Soketi
+        });
+
+        console.log('🔌 WebSocket Config:', {
+            key: '{{ config('broadcasting.connections.pusher.key') }}',
+            host: '{{ config('broadcasting.connections.pusher.options.host') }}',
+            port: {{ config('broadcasting.connections.pusher.options.port') }},
+            scheme: '{{ config('broadcasting.connections.pusher.options.scheme') }}'
+        });
+
+        // Debug connection events
+        window.Echo.connector.pusher.connection.bind('connected', function() {
+            console.log('✅ WebSocket Connected Successfully');
+        });
+
+        window.Echo.connector.pusher.connection.bind('connecting', function() {
+            console.log('🔄 WebSocket Connecting...');
+        });
+
+        window.Echo.connector.pusher.connection.bind('disconnected', function() {
+            console.log('⚠️ WebSocket Disconnected');
+        });
+
+        window.Echo.connector.pusher.connection.bind('error', function(err) {
+            console.error('❌ WebSocket Connection Error:', err);
+        });
+
+        window.Echo.connector.pusher.connection.bind('state_change', function(states) {
+            console.log('🔄 Connection State Changed:', states.previous, '->', states.current);
+        });
+    </script>
 </body>
 
 </html>

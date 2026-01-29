@@ -128,6 +128,26 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/', [OrderController::class, 'index'])->name('orders.index');
             Route::put('/received/{id}', [OrderController::class, 'received'])->name('orders.received');
             Route::put('/cancel/{id}', [OrderController::class, 'cancel'])->name('orders.cancel');
+
+            // Test route for broadcasting
+            Route::get('/test-broadcast', function () {
+                $order = \App\Models\Order::with(['user', 'reward'])->latest()->first();
+                if ($order) {
+                    event(new \App\Events\OrderCreated($order));
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Order event broadcast successfully',
+                        'order' => $order->id,
+                    ]);
+                }
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No orders found',
+                ], 404);
+            })->name('orders.test-broadcast');
+
             // Route::get('/create', [RewardController::class, 'create'])->name('rewards.create');
             // Route::get('/edit/{id}', [RewardController::class, 'edit'])->name('rewards.edit');
             // Route::put('/{id}/add-quantity', [RewardController::class, 'addQuantity'])->name('rewards.addQuantity');
