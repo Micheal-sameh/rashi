@@ -16,6 +16,7 @@ class Quiz extends Model
         'name',
         'date',
         'competition_id',
+        'help',
     ];
 
     public function competition()

@@ -33,6 +33,7 @@ class QuizImport implements ToCollection, WithHeadingRow, WithValidation
                 // Get quiz name from row
                 $quizName = trim($row['quiz_name']);
                 $quizDate = isset($row['date']) ? $row['date'] : null;
+                $helpUrl = isset($row['help']) ? trim($row['help']) : null;
 
                 // If quiz name changed or first row, handle quiz creation/retrieval
                 if ($quizName !== $currentQuizName && ! empty($quizName)) {
@@ -63,6 +64,7 @@ class QuizImport implements ToCollection, WithHeadingRow, WithValidation
                             'name' => $quizName,
                             'date' => $parsedDate,
                             'competition_id' => $this->competitionId,
+                            'help' => $helpUrl,
                         ]);
                     }
 

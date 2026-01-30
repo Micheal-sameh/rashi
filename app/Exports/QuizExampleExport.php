@@ -16,6 +16,7 @@ class QuizExampleExport implements FromArray, WithColumnWidths, WithHeadings, Wi
             [
                 'Math Quiz',
                 '2025-01-15',
+                'https://example.com/math-help',
                 'What is 2 + 2?',
                 10,
                 '3',
@@ -27,6 +28,7 @@ class QuizExampleExport implements FromArray, WithColumnWidths, WithHeadings, Wi
             [
                 'Math Quiz',
                 '2025-01-15',
+                '',
                 'What is 5 x 3?',
                 10,
                 '8',
@@ -38,6 +40,7 @@ class QuizExampleExport implements FromArray, WithColumnWidths, WithHeadings, Wi
             [
                 'Science Quiz',
                 '2025-01-20',
+                'https://example.com/science-help',
                 'What is the chemical symbol for water?',
                 15,
                 'H2O',
@@ -49,6 +52,7 @@ class QuizExampleExport implements FromArray, WithColumnWidths, WithHeadings, Wi
             [
                 'Science Quiz',
                 '2025-01-20',
+                '',
                 'What planet is closest to the sun?',
                 15,
                 'Mercury',
@@ -65,6 +69,7 @@ class QuizExampleExport implements FromArray, WithColumnWidths, WithHeadings, Wi
         return [
             'quiz_name',
             'date',
+            'help',
             'question',
             'points',
             'answer_1',
@@ -94,15 +99,16 @@ class QuizExampleExport implements FromArray, WithColumnWidths, WithHeadings, Wi
     public function columnWidths(): array
     {
         return [
-            'A' => 20,
-            'B' => 15,
-            'C' => 40,
-            'D' => 10,
-            'E' => 15,
-            'F' => 15,
-            'G' => 15,
-            'H' => 15,
-            'I' => 10,
+            'A' => 20,  // quiz_name
+            'B' => 15,  // date
+            'C' => 35,  // help
+            'D' => 40,  // question
+            'E' => 10,  // points
+            'F' => 15,  // answer_1
+            'G' => 15,  // answer_2
+            'H' => 15,  // answer_3
+            'I' => 15,  // answer_4
+            'J' => 10,  // correct
         ];
     }
 }

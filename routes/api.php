@@ -88,13 +88,13 @@ Route::group(['middleware' => ['auth:sanctum', 'check.competition', 'cache.auth.
         Route::get('/{id}', [BonusPenaltyController::class, 'show']);
     });
 
-    // Route::group(['prefix' => 'point-transfers'], function () {
-    //     Route::get('/my-transfers', [PointTransferController::class, 'myTransfers']);
-    //     Route::get('/family-members', [PointTransferController::class, 'getFamilyMembers']);
-    //     Route::post('/request', [PointTransferController::class, 'requestTransfer']);
-    //     Route::post('/validate', [PointTransferController::class, 'validateTransfer']);
-    //     Route::get('/{id}', [PointTransferController::class, 'show']);
-    // });
+    Route::group(['prefix' => 'point-transfers'], function () {
+        Route::get('/my-transfers', [PointTransferController::class, 'myTransfers']);
+        Route::get('/family-members', [PointTransferController::class, 'getFamilyMembers']);
+        Route::post('/request', [PointTransferController::class, 'requestTransfer']);
+        Route::post('/validate', [PointTransferController::class, 'validateTransfer']);
+        Route::get('/{id}', [PointTransferController::class, 'show']);
+    });
 
     Route::group(['prefix' => 'fcm-tokens'], function () {
         Route::post('/', [FcmTokenController::class, 'store']);

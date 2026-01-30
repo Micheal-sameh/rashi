@@ -52,6 +52,7 @@ class QuizRepository extends BaseRepository
             'name' => $input->name,
             'date' => Carbon::parse($input->date),
             'competition_id' => $input->competition_id,
+            'help' => $input->help,
         ]);
     }
 
@@ -61,6 +62,7 @@ class QuizRepository extends BaseRepository
         $quiz->update([
             'name' => $input->name,
             'date' => Carbon::parse($input->date),
+            'help' => $input->help,
         ]);
 
         return $quiz;

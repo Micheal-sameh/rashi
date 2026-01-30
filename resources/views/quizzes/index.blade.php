@@ -79,6 +79,7 @@
                                 <th>{{ __('messages.name') }}</th>
                                 <th>{{ __('messages.competition') }}</th>
                                 <th>{{ __('messages.date') }}</th>
+                                <th>{{ __('messages.help') }}</th>
                                 <th class="text-center">{{ __('messages.actions') }}</th>
                             </tr>
                         </thead>
@@ -87,6 +88,7 @@
                                 <tr>
                                     <td class="fw-semibold">{{ $quiz->name }}</td>
                                     <td>{{ $quiz->competition->name ?? '-' }}</td>
+                                    <td><a href="{{ $quiz->help }}"> {{ $quiz->help ?? '-' }} </a></td>
                                     <td>{{ \Carbon\Carbon::parse($quiz->date)->format('d M Y') }}</td>
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
