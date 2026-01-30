@@ -31,6 +31,7 @@ class CreateQuizRequest extends FormRequest
                 },
             ],
             'competition_id' => 'required|integer|exists:competitions,id',
+            'help' => 'nullable|url',
             'questions' => 'required|array',
             'questions.*.question' => 'required|string',
             'questions.*.points' => 'required|integer',

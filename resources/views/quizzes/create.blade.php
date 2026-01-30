@@ -77,6 +77,18 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <div class="col-md-12">
+                            <label for="help" class="form-label fw-bold">Help URL <span class="text-muted">(Optional)</span></label>
+                            <input type="url" name="help" id="help"
+                                class="form-control @error('help') is-invalid @enderror"
+                                value="{{ old('help') }}"
+                                placeholder="https://example.com/help">
+                            <small class="text-muted">Enter a help URL for this quiz (optional)</small>
+                            @error('help')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
 
                     {{-- Questions Section --}}

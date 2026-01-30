@@ -1450,6 +1450,402 @@
         }
       }
     },
+    "/point-transfers/my-transfers": {
+      "get": {
+        "tags": [
+          "Point Transfers"
+        ],
+        "summary": "Get My Point Transfers",
+        "description": "Get all point transfers for the authenticated user (both sent and received).",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Transfers retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "sender": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "membership_code": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "receiver": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "membership_code": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "points": {
+                        "type": "integer",
+                        "example": 100
+                      },
+                      "family_code": {
+                        "type": "string",
+                        "example": "E1C1F001"
+                      },
+                      "reason": {
+                        "type": "string",
+                        "example": "Transfer reason"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "example": "2025-01-30 12:00:00"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/point-transfers/family-members": {
+      "get": {
+        "tags": [
+          "Point Transfers"
+        ],
+        "summary": "Get Family Members",
+        "description": "Get all members of the user's family.",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Family members retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                      },
+                      "membership_code": {
+                        "type": "string",
+                        "example": "E1C1F001NR1"
+                      },
+                      "points": {
+                        "type": "integer",
+                        "example": 500
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/point-transfers/request": {
+      "post": {
+        "tags": [
+          "Point Transfers"
+        ],
+        "summary": "Request Point Transfer",
+        "description": "Request a point transfer between family members.",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["receiver_id", "points", "reason"],
+              "properties": {
+                "receiver_id": {
+                  "type": "integer",
+                  "description": "ID of the receiver user",
+                  "example": 2
+                },
+                "points": {
+                  "type": "integer",
+                  "description": "Number of points to transfer",
+                  "example": 100
+                },
+                "reason": {
+                  "type": "string",
+                  "description": "Reason for the transfer",
+                  "example": "Gift"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transfer request successful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Point transfer completed successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Transfer error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Insufficient points or users not in same family"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/point-transfers/validate": {
+      "post": {
+        "tags": [
+          "Point Transfers"
+        ],
+        "summary": "Validate Point Transfer",
+        "description": "Validate if a point transfer is possible before requesting it.",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": ["receiver_id", "points"],
+              "properties": {
+                "receiver_id": {
+                  "type": "integer",
+                  "description": "ID of the receiver user",
+                  "example": 2
+                },
+                "points": {
+                  "type": "integer",
+                  "description": "Number of points to transfer",
+                  "example": 100
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Validation successful",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Transfer is valid"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "is_valid": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "sender_points": {
+                      "type": "integer",
+                      "example": 500
+                    },
+                    "receiver_points": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Insufficient points"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/point-transfers/{id}": {
+      "get": {
+        "tags": [
+          "Point Transfers"
+        ],
+        "summary": "Get Point Transfer by ID",
+        "description": "Get details of a specific point transfer.",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Point transfer ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transfer retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "sender": {
+                      "type": "object"
+                    },
+                    "receiver": {
+                      "type": "object"
+                    },
+                    "points": {
+                      "type": "integer",
+                      "example": 100
+                    },
+                    "family_code": {
+                      "type": "string",
+                      "example": "E1C1F001"
+                    },
+                    "reason": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transfer not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/info-videos": {
       "get": {
         "tags": [

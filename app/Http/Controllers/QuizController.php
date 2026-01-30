@@ -39,7 +39,7 @@ class QuizController extends Controller
     public function store(CreateQuizRequest $request)
     {
         $input = new QuizCreateDTO(...$request->only(
-            'name', 'date', 'competition_id', 'questions'
+            'name', 'date', 'competition_id', 'questions', 'help'
         ));
         $this->quizService->store($input);
 
@@ -57,7 +57,7 @@ class QuizController extends Controller
     public function update($id, UpdateQuizRequest $request)
     {
         $input = new quizCreateDTO(...$request->only(
-            'name', 'date',
+            'name', 'date', 'help'
         ));
 
         $this->quizService->update($id, $input);

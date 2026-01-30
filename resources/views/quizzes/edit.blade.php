@@ -56,6 +56,18 @@
                             <input type="text" name="competition" id="competition" class="form-control"
                                 value="{{ $quiz->competition->name ?? '-' }}" disabled>
                         </div>
+
+                        <div class="col-md-12">
+                            <label for="help" class="form-label fw-bold">Help URL <span class="text-muted">(Optional)</span></label>
+                            <input type="url" name="help" id="help"
+                                class="form-control @error('help') is-invalid @enderror"
+                                value="{{ old('help', $quiz->help) }}"
+                                placeholder="https://example.com/help">
+                            <small class="text-muted">Enter a help URL for this quiz (optional)</small>
+                            @error('help')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="d-flex justify-content-end mt-4">
