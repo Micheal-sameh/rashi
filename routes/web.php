@@ -10,6 +10,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\InfoVideoController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PointTransferController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuizQuestionController;
 use App\Http\Controllers\RewardController;
@@ -162,6 +163,15 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/create', [BonusPenaltyController::class, 'create'])->name('bonus-penalties.create');
             Route::post('/', [BonusPenaltyController::class, 'store'])->name('bonus-penalties.store');
             Route::get('/{id}', [BonusPenaltyController::class, 'show'])->name('bonus-penalties.show');
+        });
+
+        Route::prefix('point-transfers')->group(function () {
+            Route::get('/', [PointTransferController::class, 'index'])->name('point-transfers.index');
+            Route::get('/create', [PointTransferController::class, 'create'])->name('point-transfers.create');
+            Route::post('/', [PointTransferController::class, 'store'])->name('point-transfers.store');
+            Route::get('/{id}', [PointTransferController::class, 'show'])->name('point-transfers.show');
+            Route::post('/get-family-members', [PointTransferController::class, 'getFamilyMembers'])->name('point-transfers.getFamilyMembers');
+            Route::post('/validate', [PointTransferController::class, 'validateTransfer'])->name('point-transfers.validate');
         });
 
         Route::prefix('notifications')->group(function () {

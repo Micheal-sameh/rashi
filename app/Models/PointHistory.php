@@ -69,6 +69,7 @@ class PointHistory extends Model
             Order::class => 'Redeem',
             Quiz::class => 'Quiz',
             Returns::class => 'Return',
+            PointTransfer::class => $this->user_id == $this->subject->sender_id ? 'Transfer Out' : 'Transfer In',
             default => 'debit',
         };
     }
