@@ -78,8 +78,8 @@
                             <tr>
                                 <th>{{ __('messages.name') }}</th>
                                 <th>{{ __('messages.competition') }}</th>
-                                <th>{{ __('messages.date') }}</th>
                                 <th>{{ __('messages.help') }}</th>
+                                <th>{{ __('messages.date') }}</th>
                                 <th class="text-center">{{ __('messages.actions') }}</th>
                             </tr>
                         </thead>
