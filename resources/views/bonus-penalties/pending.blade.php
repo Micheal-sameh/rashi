@@ -59,8 +59,7 @@
                                     <span class="text-primary user-detail" style="cursor:pointer;"
                                         data-name="{{ $bonusPenalty->user->name ?? '' }}"
                                         data-membership_code="{{ $bonusPenalty->user->membership_code ?? '' }}"
-                                        data-phone="{{ $bonusPenalty->user->phone ?? '' }}"
-                                        data-image="{{ $bonusPenalty->user?->getFirstMediaUrl('profile_images') ?: asset('images/default.png') }}">
+                                        data-phone="{{ $bonusPenalty->user->phone ?? '' }}">
                                         {{ $bonusPenalty->user->name ?? '' }}
                                     </span>
                                 </td>
@@ -123,8 +122,7 @@
                             <span class="text-primary user-detail fw-semibold" style="cursor:pointer;"
                                 data-name="{{ $bonusPenalty->user->name ?? '' }}"
                                 data-membership_code="{{ $bonusPenalty->user->membership_code ?? '' }}"
-                                data-phone="{{ $bonusPenalty->user->phone ?? '' }}"
-                                data-image="{{ $bonusPenalty->user?->getFirstMediaUrl('profile_images') ?: asset('images/default.png') }}">
+                                data-phone="{{ $bonusPenalty->user->phone ?? '' }}">
                                 {{ $bonusPenalty->user->name ?? '' }}
                             </span>
                             <span

@@ -12,35 +12,28 @@ class BonusPenaltyController extends Controller
 {
     public function __construct(protected BonusPenaltyService $bonusPenaltyService) {}
 
+    /**
+     * Display applied bonus/penalties
+     */
     public function index(Request $request)
     {
-        $query = BonusPenalty::with(['user', 'creator', 'approver'])
-            ->where('status', BonusPenaltyStatus::APPLIED);
+        $filters = [
+            'search' => $request->search,
+            'created_by' => $request->created_by,
+            'user_id' => $request->user_id,
+            'type' => $request->type,
+            'date_from' => $request->date_from,
+            'date_to' => $request->date_to,
+        ];
 
-        // Search by name or membership_code
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('membership_code', 'like', "%{$search}%");
-            });
-        }
-
-        // Filter by created_by
-        if ($request->filled('created_by')) {
-            $query->where('created_by', $request->created_by);
-        }
-
-        // Filter by user_id
-        if ($request->filled('user_id')) {
-            $query->where('user_id', $request->user_id);
-        }
-
-        $bonusPenalties = $query->orderBy('created_at', 'desc')->paginate(15);
+        $bonusPenalties = $this->bonusPenaltyService->getApplied($filters);
 
         return view('bonus-penalties.index', compact('bonusPenalties'));
     }
 
+    /**
+     * Display pending bonus/penalties for approval
+     */
     public function pendingList(Request $request)
     {
         // Check if user is admin
@@ -48,28 +41,19 @@ class BonusPenaltyController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $query = BonusPenalty::with(['user', 'creator'])
-            ->where('status', BonusPenaltyStatus::PENDING_APPROVAL);
+        $filters = [
+            'search' => $request->search,
+            'created_by' => $request->created_by,
+        ];
 
-        // Search by name or membership_code
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('membership_code', 'like', "%{$search}%");
-            });
-        }
-
-        // Filter by created_by
-        if ($request->filled('created_by')) {
-            $query->where('created_by', $request->created_by);
-        }
-
-        $bonusPenalties = $query->orderBy('created_at', 'desc')->paginate(15);
+        $bonusPenalties = $this->bonusPenaltyService->getPending($filters);
 
         return view('bonus-penalties.pending', compact('bonusPenalties'));
     }
 
+    /**
+     * Approve a bonus/penalty
+     */
     public function approve($id)
     {
         // Check if user is admin
@@ -88,6 +72,9 @@ class BonusPenaltyController extends Controller
         return redirect()->back()->with('success', 'Bonus/Penalty approved successfully.');
     }
 
+    /**
+     * Reject a bonus/penalty
+     */
     public function reject($id)
     {
         // Check if user is admin
@@ -106,25 +93,34 @@ class BonusPenaltyController extends Controller
         return redirect()->back()->with('success', 'Bonus/Penalty rejected and deleted successfully.');
     }
 
+    /**
+     * Show create form
+     */
     public function create()
     {
         return view('bonus-penalties.create');
     }
 
+    /**
+     * Store a new bonus/penalty
+     */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'type' => 'required|in:1,2',
             'points' => 'required|integer|min:1',
             'reason' => 'required|string|max:255',
         ]);
 
-        $this->bonusPenaltyService->store($request->all());
+        $this->bonusPenaltyService->store($validated);
 
         return redirect()->route('bonus-penalties.index')->with('success', 'Bonus/Penalty created successfully');
     }
 
+    /**
+     * Show a single bonus/penalty
+     */
     public function show($id)
     {
         $bonusPenalty = $this->bonusPenaltyService->show($id);

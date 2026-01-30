@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\FcmTokenController;
 use App\Http\Controllers\Api\InfoVideoController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\PointTransferController;
 use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\QuizQuestionController;
 use App\Http\Controllers\Api\RewardController;
@@ -86,6 +87,14 @@ Route::group(['middleware' => ['auth:sanctum', 'check.competition', 'cache.auth.
         Route::post('/', [BonusPenaltyController::class, 'store']);
         Route::get('/{id}', [BonusPenaltyController::class, 'show']);
     });
+
+    // Route::group(['prefix' => 'point-transfers'], function () {
+    //     Route::get('/my-transfers', [PointTransferController::class, 'myTransfers']);
+    //     Route::get('/family-members', [PointTransferController::class, 'getFamilyMembers']);
+    //     Route::post('/request', [PointTransferController::class, 'requestTransfer']);
+    //     Route::post('/validate', [PointTransferController::class, 'validateTransfer']);
+    //     Route::get('/{id}', [PointTransferController::class, 'show']);
+    // });
 
     Route::group(['prefix' => 'fcm-tokens'], function () {
         Route::post('/', [FcmTokenController::class, 'store']);
