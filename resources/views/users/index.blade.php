@@ -4,9 +4,14 @@
     <div class="container-fluid px-3 px-lg-4 py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="fw-bold text-primary mb-0">{{ __('messages.users') }}</h1>
-            <a href="{{ route('users.admins') }}" class="btn btn-outline-primary">
-                <i class="fas fa-user-shield me-2"></i>{{ __('messages.admin_users') }}
-            </a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('users.admins') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-user-shield me-2"></i>{{ __('messages.admin_users') }}
+                </a>
+                <a href="{{ route('users.export', request()->query()) }}" class="btn btn-success">
+                    <i class="fa fa-file-excel me-2"></i>Export to Excel
+                </a>
+            </div>
         </div>
 
         <!-- Filter Bar -->

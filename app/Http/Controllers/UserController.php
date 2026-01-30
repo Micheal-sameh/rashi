@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\UsersFilterDTO;
+use App\Exports\UsersExport;
 use App\Http\Requests\LeaderBoardRequest;
 use App\Http\Requests\UpdateUserGroupRequest;
 use App\Http\Resources\UserResource;
@@ -10,6 +11,7 @@ use App\Repositories\GroupRepository;
 use App\Repositories\PointHistoryRepository;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use Mpdf\Mpdf;
 
 class UserController extends Controller
@@ -83,5 +85,14 @@ class UserController extends Controller
         $mpdf->WriteHTML($html);
 
         return $mpdf->Output('leaderboard.pdf', 'D');
+    }
+
+    public function exportUsers(Request $request)
+    {
+        $input = new UsersFilterDTO(...$request->only(
+            'name', 'group_id', 'sort_by', 'direction'
+        ));
+
+        return Excel::download(new UsersExport($input), 'users_'.date('Y-m-d_H-i-s').'.xlsx');
     }
 }
