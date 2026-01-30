@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('app:check-competitions')->dailyAt('17:00');
         $schedule->command('app:check-todays-quiz-answers')->dailyAt('17:00');
+        $schedule->command('notifications:delete-old')->daily();
     }
 
     /**

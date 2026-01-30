@@ -71,6 +71,7 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/{id}/show', [UserController::class, 'show'])->name('users.show');
             Route::get('/leaderboard', [UserController::class, 'leaderboard'])->name('users.leaderboard');
             Route::get('/leaderboard/export', [UserController::class, 'exportLeaderboard'])->name('users.leaderboard.export');
+            Route::get('/export', [UserController::class, 'exportUsers'])->name('users.export');
             Route::put('/{id}/update-groups', [UserController::class, 'updateGroups'])->name('users.updateGroups');
         });
 
@@ -81,6 +82,7 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/{id}/edit', [CompetitionController::class, 'edit'])->name('competitions.edit');
             Route::get('/{id}/user-answers', [CompetitionController::class, 'userAnswers'])->name('competitions.userAnswers');
             Route::get('/{id}/leaderboard/export', [CompetitionController::class, 'exportLeaderboard'])->name('competitions.leaderboard.export');
+            Route::get('/{id}/export', [CompetitionController::class, 'exportCompetition'])->name('competitions.export');
             // Route::post('/change-status', [CompetitionController::class, 'changeStatus'])->name('competitions.changeStatus');
             Route::post('/', [CompetitionController::class, 'store'])->name('competitions.store');
             Route::post('/{id}/upload-quizzes', [CompetitionController::class, 'uploadQuizzes'])->name('competitions.uploadQuizzes');
@@ -224,6 +226,7 @@ Route::group(['middleware' => ['setlocale']], function () {
         Route::prefix('families')->group(function () {
             Route::get('/', [FamilyController::class, 'index'])->name('families.index');
             Route::get('/{familyCode}', [FamilyController::class, 'show'])->name('families.show');
+            Route::get('/{familyCode}/export', [FamilyController::class, 'export'])->name('families.export');
         });
 
         Route::prefix('user-history')->group(function () {

@@ -86,6 +86,11 @@
                                                 title="{{ __('messages.edit') }}">
                                                 <i class="fa fa-edit"></i>
                                             </a>
+                                            <a href="{{ route('competitions.export', $competition->id) }}"
+                                                class="btn btn-sm btn-outline-info"
+                                                title="Export Competition">
+                                                <i class="fa fa-download"></i>
+                                            </a>
                                             <button type="button" class="btn btn-sm btn-outline-success"
                                                 title="{{ __('messages.upload_quizzes') }}"
                                                 onclick="openUploadModal({{ $competition->id }}, '{{ $competition->name }}')">
@@ -352,6 +357,13 @@
             currentCompetitionId = id;
             $('#competitionName').text(name);
             $('#uploadQuizzesModal').modal('show');
+        }
+
+        function openCloneModal(competitionId, competitionName) {
+            document.getElementById('cloneCompetitionName').textContent = competitionName;
+            document.getElementById('cloneCompetitionForm').action = `/competitions/${competitionId}/clone`;
+            const modal = new bootstrap.Modal(document.getElementById('cloneCompetitionModal'));
+            modal.show();
         }
 
         // Handle Upload

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DTOs\CompetitionCreateDTO;
+use App\Exports\CompetitionExport;
 use App\Http\Requests\CreateCompetitionRequest;
 use App\Imports\QuizImport;
 use App\Repositories\GroupRepository;
@@ -214,5 +215,15 @@ class CompetitionController extends Controller
     public function downloadExampleExcel()
     {
         return Excel::download(new \App\Exports\QuizExampleExport, 'quiz_example.xlsx');
+    }
+
+    public function exportCompetition($id)
+    {
+        $competition = $this->competitionService->show($id);
+
+        return Excel::download(
+            new CompetitionExport($competition),
+            'competition_'.$competition->name.'_'.date('Y-m-d_H-i-s').'.xlsx'
+        );
     }
 }

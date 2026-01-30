@@ -11,9 +11,14 @@
             <h1 class="fw-bold text-primary">
                 <i class="fas fa-users me-2"></i>{{ __('messages.family') }}: {{ $familyCode }}
             </h1>
-            <a href="{{ route('families.index') }}" class="btn btn-secondary">
-                <i class="fa fa-arrow-left me-1"></i>{{ __('messages.back') }}
-            </a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('families.export', $familyCode) }}" class="btn btn-success">
+                    <i class="fa fa-file-excel me-1"></i>Export to Excel
+                </a>
+                <a href="{{ route('families.index') }}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left me-1"></i>{{ __('messages.back') }}
+                </a>
+            </div>
         </div>
 
         @foreach ($membersData as $memberData)

@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Enums\BonusPenaltyStatus;
 use App\Enums\BonusPenaltyType;
 use App\Enums\OrderStatus;
+use App\Exports\FamilyExport;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FamilyController extends Controller
 {
@@ -60,9 +62,9 @@ class FamilyController extends Controller
         })
             ->filter()
             ->map(fn ($members, $code) => [
-            'code' => $code,
-            'members' => $members,
-        ])
+                'code' => $code,
+                'members' => $members,
+            ])
             ->values()
             ->all();
 
@@ -121,6 +123,60 @@ class FamilyController extends Controller
         })->all();
 
         return view('families.show', compact('membersData', 'familyCode'));
+    }
+
+    public function export($familyCode)
+    {
+        // Get all family members with groups in one query
+        $members = User::where('membership_code', 'like', $familyCode.'%')
+            ->with('groups:id,name')
+            ->orderByRaw("CAST(SUBSTRING_INDEX(membership_code, 'NR', -1) AS UNSIGNED)")
+            ->get(['id', 'name', 'membership_code', 'points', 'score']);
+
+        if ($members->isEmpty()) {
+            return redirect()->back()->with('error', 'No family members found');
+        }
+
+        $memberIds = $members->pluck('id')->all();
+        $memberIdsStr = implode(',', $memberIds);
+
+        // Get all data in parallel using a single comprehensive query
+        $aggregatedData = $this->getAggregatedMemberData($memberIdsStr);
+
+        // Get quiz counts per group
+        $groupQuizCounts = $this->getGroupQuizCounts($members);
+
+        // Build member data efficiently
+        $membersData = $members->map(function ($member) use ($aggregatedData, $groupQuizCounts) {
+            $userId = $member->id;
+            $userGroupIds = $member->groups->pluck('id')->all();
+
+            // Calculate total quizzes for user's groups
+            $totalQuizzes = collect($userGroupIds)
+                ->sum(fn ($gid) => $groupQuizCounts[$gid] ?? 0);
+
+            // Filter groups - exclude General
+            $groups = $member->groups->filter(fn ($g) => $g->name !== 'General');
+
+            return [
+                'user' => $member,
+                'final_score' => $member->score ?? 0,
+                'final_points' => $member->points ?? 0,
+                'quizzes_solved' => $aggregatedData['quizzes_solved'][$userId] ?? 0,
+                'total_quizzes' => $totalQuizzes,
+                'last_quiz' => $aggregatedData['last_quiz'][$userId] ?? null,
+                'last_order' => $aggregatedData['last_order'][$userId] ?? null,
+                'last_bonus' => $aggregatedData['last_bonus'][$userId] ?? null,
+                'last_penalty' => $aggregatedData['last_penalty'][$userId] ?? null,
+                'last_competition' => $aggregatedData['last_competition'][$userId] ?? null,
+                'groups' => $groups,
+            ];
+        })->all();
+
+        return Excel::download(
+            new FamilyExport($membersData, $familyCode),
+            'family_'.$familyCode.'_'.date('Y-m-d_H-i-s').'.xlsx'
+        );
     }
 
     /**
