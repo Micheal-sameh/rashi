@@ -553,4 +553,5 @@ return [
     'points_rewards' => 'النقاط والمكافآت',
     'system_settings' => 'إعدادات النظام',
     'content_management' => 'إدارة المحتوى',
+    'help' => 'مساعد',
 ];

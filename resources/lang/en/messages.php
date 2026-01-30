@@ -530,4 +530,5 @@ return [
     'points_rewards' => 'Points & Rewards',
     'system_settings' => 'System Settings',
     'content_management' => 'Content Management',
+    'help' => 'Help',
 ];
