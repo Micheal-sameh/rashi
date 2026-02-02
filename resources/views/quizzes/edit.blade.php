@@ -81,4 +81,17 @@
             </div>
         </div>
     </div>
+
+<script>
+    const originalDate = "{{ \Carbon\Carbon::parse($quiz->date)->format('Y-m-d') }}";
+    
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const dateInput = document.querySelector('input[name="date"]');
+        
+        // Remove date input if it hasn't changed
+        if (dateInput.value === originalDate) {
+            dateInput.removeAttribute('name');
+        }
+    });
+</script>
 @endsection

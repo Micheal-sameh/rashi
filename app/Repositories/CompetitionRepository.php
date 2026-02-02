@@ -84,11 +84,19 @@ class CompetitionRepository extends BaseRepository
     public function update($id, $input, $image)
     {
         $competition = $this->findById($id);
-        $competition->update([
-            'name' => $input->name,
-            'start_at' => Carbon::parse($input->start_at),
-            'end_at' => Carbon::parse($input->end_at),
-        ]);
+
+        $updateData = ['name' => $input->name];
+
+        // Only update dates if they are provided
+        if ($input->has('start_at')) {
+            $updateData['start_at'] = Carbon::parse($input->start_at);
+        }
+        if ($input->has('end_at')) {
+            $updateData['end_at'] = Carbon::parse($input->end_at);
+        }
+
+        $competition->update($updateData);
+
         if ($image) {
             $competition->clearMediaCollection('competitions_images');
             $competition->addMedia($image)->toMediaCollection('competitions_images');

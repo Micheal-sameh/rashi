@@ -1,11 +1,11 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container-fluid px-3 px-lg-4 py-4">
-        <div class="row justify-content-center">
-            <div class="col-12 col-xl-10">
-                <div class="card border-0 shadow-sm rounded-4 ">
-            <div class="card-body p-4">
+<div class="container-fluid px-3 px-lg-5 py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-10">
+    <div class="card shadow-soft border-0 rounded-4">
+        <div class="card-body p-4">
                 <!-- Title -->
                 <h3 class="fw-bold mb-4 text-primary">
                     <i class="fas fa-trophy me-2"></i>{{ __('messages.edit_competition') }}
@@ -100,6 +100,9 @@
                 </form>
             </div>
         </div>
+    </div>
+</div>
+</div>
 
 @push('scripts')
     <script>
@@ -108,8 +111,24 @@
             preview.src = URL.createObjectURL(event.target.files[0]);
             preview.classList.remove('d-none');
         }
+
+        // Handle date change detection
+        const originalStartDate = "{{ \Carbon\Carbon::parse($competition->start_at)->format('Y-m-d') }}";
+        const originalEndDate = "{{ \Carbon\Carbon::parse($competition->end_at)->format('Y-m-d') }}";
+        
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const startDateInput = document.querySelector('input[name="start_at"]');
+            const endDateInput = document.querySelector('input[name="end_at"]');
+            
+            // Remove date inputs if they haven't changed
+            if (startDateInput.value === originalStartDate) {
+                startDateInput.removeAttribute('name');
+            }
+            if (endDateInput.value === originalEndDate) {
+                endDateInput.removeAttribute('name');
+            }
+        });
     </script>
-            </div>
-        </div>
-    </div>
 @endpush
+
+@endsection
