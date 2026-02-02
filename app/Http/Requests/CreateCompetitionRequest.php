@@ -8,11 +8,13 @@ class CreateCompetitionRequest extends FormRequest
 {
     public function rules(): array
     {
+        $isUpdate = $this->route('id') !== null;
+
         return [
             'name' => 'required|string',
-            'start_at' => 'required|date|after_or_equal:today',
-            'end_at' => 'required|date|after_or_equal:start_at',
-            'image' => 'image|mimes:png,jpg'.($this->route('id') == null ? '|required' : ''),
+            'start_at' => ($isUpdate ? 'nullable' : 'required').'|date|after_or_equal:today',
+            'end_at' => ($isUpdate ? 'nullable' : 'required').'|date|after_or_equal:start_at',
+            'image' => 'image|mimes:png,jpg'.(! $isUpdate ? '|required' : ''),
             'groups' => 'required|array|min:1',
             'groups.*' => 'required|integer|exists:groups,id',
         ];
