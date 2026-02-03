@@ -60,16 +60,16 @@ class QuizRepository extends BaseRepository
     {
         $quiz = $this->findById($id);
 
-        $updateData = ['name' => $input->name];
+        $updateData = ['name' => $input['name']];
 
         // Only update date if it is provided
-        if ($input->has('date')) {
-            $updateData['date'] = Carbon::parse($input->date);
+        if (! is_null($input['date'])) {
+            $updateData['date'] = Carbon::parse($input['date']);
         }
 
         // Update help if provided
-        if ($input->has('help')) {
-            $updateData['help'] = $input->help;
+        if (! is_null($input['help'])) {
+            $updateData['help'] = $input['help'];
         }
 
         $quiz->update($updateData);
