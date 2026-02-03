@@ -83,14 +83,24 @@
     </div>
 
 <script>
-    const originalDate = "{{ \Carbon\Carbon::parse($quiz->date)->format('Y-m-d') }}";
-    
-    document.querySelector('form').addEventListener('submit', function(e) {
-        const dateInput = document.querySelector('input[name="date"]');
-        
-        // Remove date input if it hasn't changed
-        if (dateInput.value === originalDate) {
-            dateInput.removeAttribute('name');
+    document.addEventListener('DOMContentLoaded', function() {
+        const originalDate = "{{ \Carbon\Carbon::parse($quiz->date)->format('Y-m-d') }}";
+
+        const form = document.querySelector('form[action="{{ route('quizzes.update', $quiz->id) }}"]');
+
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const dateInput = document.querySelector('input[name="date"]');
+
+                console.log('Original Date:', originalDate);
+                console.log('Current Date:', dateInput ? dateInput.value : 'not found');
+
+                // Remove date input if it hasn't changed
+                if (dateInput && dateInput.value === originalDate) {
+                    console.log('Removing date from submission');
+                    dateInput.removeAttribute('name');
+                }
+            });
         }
     });
 </script>

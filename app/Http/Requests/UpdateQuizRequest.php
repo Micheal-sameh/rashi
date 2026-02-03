@@ -10,7 +10,7 @@ class UpdateQuizRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'date' => 'nullable|date|after_or_equal:today',
+            'date' => 'date|after_or_equal:today',
             'help' => 'nullable|url',
         ];
     }

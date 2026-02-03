@@ -104,31 +104,41 @@
 </div>
 </div>
 
-@push('scripts')
-    <script>
-        function previewImage(event) {
-            const preview = document.getElementById('imagePreview');
-            preview.src = URL.createObjectURL(event.target.files[0]);
-            preview.classList.remove('d-none');
-        }
+<script>
+    function previewImage(event) {
+        const preview = document.getElementById('imagePreview');
+        preview.src = URL.createObjectURL(event.target.files[0]);
+        preview.classList.remove('d-none');
+    }
 
-        // Handle date change detection
+    // Handle date change detection
+    document.addEventListener('DOMContentLoaded', function() {
         const originalStartDate = "{{ \Carbon\Carbon::parse($competition->start_at)->format('Y-m-d') }}";
         const originalEndDate = "{{ \Carbon\Carbon::parse($competition->end_at)->format('Y-m-d') }}";
-        
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const startDateInput = document.querySelector('input[name="start_at"]');
-            const endDateInput = document.querySelector('input[name="end_at"]');
-            
-            // Remove date inputs if they haven't changed
-            if (startDateInput.value === originalStartDate) {
-                startDateInput.removeAttribute('name');
-            }
-            if (endDateInput.value === originalEndDate) {
-                endDateInput.removeAttribute('name');
-            }
-        });
-    </script>
-@endpush
 
+        const form = document.querySelector('form[action="{{ route('competitions.update', $competition->id) }}"]');
+
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const startDateInput = document.querySelector('input[name="start_at"]');
+                const endDateInput = document.querySelector('input[name="end_at"]');
+
+                console.log('Original Start Date:', originalStartDate);
+                console.log('Current Start Date:', startDateInput ? startDateInput.value : 'not found');
+                console.log('Original End Date:', originalEndDate);
+                console.log('Current End Date:', endDateInput ? endDateInput.value : 'not found');
+
+                // Remove date inputs if they haven't changed
+                if (startDateInput && startDateInput.value === originalStartDate) {
+                    console.log('Removing start_at from submission');
+                    startDateInput.removeAttribute('name');
+                }
+                if (endDateInput && endDateInput.value === originalEndDate) {
+                    console.log('Removing end_at from submission');
+                    endDateInput.removeAttribute('name');
+                }
+            });
+        }
+    });
+</script>
 @endsection

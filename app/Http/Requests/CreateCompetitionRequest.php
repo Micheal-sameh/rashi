@@ -12,8 +12,8 @@ class CreateCompetitionRequest extends FormRequest
 
         return [
             'name' => 'required|string',
-            'start_at' => ($isUpdate ? 'nullable' : 'required').'|date|after_or_equal:today',
-            'end_at' => ($isUpdate ? 'nullable' : 'required').'|date|after_or_equal:start_at',
+            'start_at' => ($isUpdate ? '' : 'required').'|date|after_or_equal:today',
+            'end_at' => ($isUpdate ? '' : 'required').'|date|after_or_equal:start_at',
             'image' => 'image|mimes:png,jpg'.(! $isUpdate ? '|required' : ''),
             'groups' => 'required|array|min:1',
             'groups.*' => 'required|integer|exists:groups,id',
