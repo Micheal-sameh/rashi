@@ -56,11 +56,7 @@ class QuizController extends Controller
 
     public function update($id, UpdateQuizRequest $request)
     {
-        $input = new quizCreateDTO(...$request->only(
-            'name', 'date', 'help'
-        ));
-
-        $this->quizService->update($id, $input);
+        $this->quizService->update($id, $request->validated());
 
         return redirect()->route('quizzes.index')->with('success', 'quiz updated successfully');
     }
