@@ -31,6 +31,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/oauth2callback', function () {
+    $code = request('code');
+    if ($code) {
+        return view('google-drive-callback', ['code' => $code]);
+    }
+
+    return 'No authorization code received';
+});
+
 Route::get('/', function () {
     return redirect()->route('competitions.index');
 });
@@ -174,6 +183,7 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/{id}', [PointTransferController::class, 'show'])->name('point-transfers.show');
             Route::post('/get-family-members', [PointTransferController::class, 'getFamilyMembers'])->name('point-transfers.getFamilyMembers');
             Route::post('/validate', [PointTransferController::class, 'validateTransfer'])->name('point-transfers.validate');
+            Route::post('/max-transferable', [PointTransferController::class, 'getMaxTransferablePoints'])->name('point-transfers.maxTransferable');
         });
 
         Route::prefix('notifications')->group(function () {

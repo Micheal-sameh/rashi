@@ -517,6 +517,12 @@ return [
     'to_date' => 'To Date',
     'membership_code' => 'Membership Code',
     'current_points' => 'Current Points',
+    'points_gained_last_month' => 'Points Gained Last Month',
+    'max_transferable_points' => 'Maximum Transferable Points',
+    'transfer_limit_exceeded' => 'Transfer limit exceeded. You can only transfer up to 30% of points gained in the last month.',
+    'transfer_fee' => 'Transfer Fee (10%)',
+    'total_deduction' => 'Total Deduction',
+    'transfer_fee_notice' => 'A 10% fee will be deducted from your points',
 
     // Point Transfer Notifications
     'points_sent' => 'Points Sent',
