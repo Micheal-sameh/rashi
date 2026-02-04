@@ -135,4 +135,17 @@ class PointTransferController extends Controller
 
         return response()->json($validation);
     }
+
+    /**
+     * Get maximum transferable points for the authenticated user
+     */
+    public function getMaxTransferablePoints()
+    {
+        $maxTransferable = $this->pointTransferService->getMaxTransferablePoints(Auth::id());
+
+        return response()->json([
+            'success' => true,
+            'data' => $maxTransferable,
+        ]);
+    }
 }

@@ -540,6 +540,12 @@ return [
     'to_date' => 'إلى تاريخ',
     'membership_code' => 'كود العضوية',
     'current_points' => 'النقاط الحالية',
+    'points_gained_last_month' => 'النقاط المكتسبة الشهر الماضي',
+    'max_transferable_points' => 'الحد الأقصى للنقاط القابلة للتحويل',
+    'transfer_limit_exceeded' => 'تم تجاوز حد التحويل. يمكنك فقط تحويل ما يصل إلى 30٪ من النقاط المكتسبة في الشهر الماضي.',
+    'transfer_fee' => 'رسوم التحويل (10٪)',
+    'total_deduction' => 'إجمالي الخصم',
+    'transfer_fee_notice' => 'سيتم خصم رسوم 10٪ من نقاطك',
 
     // Point Transfer Notifications
     'points_sent' => 'تم إرسال النقاط',

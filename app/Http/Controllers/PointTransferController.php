@@ -166,4 +166,26 @@ class PointTransferController extends Controller
 
         return response()->json($validation);
     }
+
+    /**
+     * Get maximum transferable points for a user (AJAX)
+     */
+    public function getMaxTransferablePoints(Request $request)
+    {
+        // Check if user is admin
+        if (! Auth::user()->hasRole('admin')) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $maxTransferable = $this->pointTransferService->getMaxTransferablePoints($request->user_id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $maxTransferable,
+        ]);
+    }
 }
