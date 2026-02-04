@@ -65,7 +65,7 @@ Route::group(['middleware' => ['auth:sanctum', 'check.competition', 'cache.auth.
     });
 
     Route::group(['prefix' => 'questions'], function () {
-        Route::get('/', [QuizQuestionController::class, 'index']);
+        Route::get('/', [QuizQuestionController::class, 'index'])->name('api.questions.index');
     });
 
     Route::group(['prefix' => 'user-answers'], function () {

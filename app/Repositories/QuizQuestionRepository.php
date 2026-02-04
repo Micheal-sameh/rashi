@@ -39,7 +39,7 @@ class QuizQuestionRepository extends BaseRepository
                 });
             })
             ->when(isset($input['archive']), fn ($q) => $q->whereHas('quiz', fn ($q) => $q->whereDate('date', '<', now())))
-            ->when(! isset($input['archive']), fn ($q) => $q->whereHas('quiz', fn ($q) => $q->whereDate('date', '>=', now())));
+            ->when(! isset($input['archive']) && request()->is('api/*'), fn ($q) => $q->whereHas('quiz', fn ($q) => $q->whereDate('date', '>=', now())));
 
         return $this->execute($query);
     }
