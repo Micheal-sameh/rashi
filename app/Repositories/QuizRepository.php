@@ -63,12 +63,12 @@ class QuizRepository extends BaseRepository
         $updateData = ['name' => $input['name']];
 
         // Only update date if it is provided
-        if (! is_null($input['date'])) {
+        if (isset($input['date'])) {
             $updateData['date'] = Carbon::parse($input['date']);
         }
 
         // Update help if provided
-        if (! is_null($input['help'])) {
+        if (isset($input['help'])) {
             $updateData['help'] = $input['help'];
         }
 
