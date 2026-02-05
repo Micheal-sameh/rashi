@@ -156,9 +156,11 @@ class PointTransferService
     protected function validateTransferLimit(int $senderId, int $points): void
     {
         $transferLimit = $this->getMaxTransferablePoints($senderId);
+        $transfersSentThisMonth = $this->getTransfersSentThisMonth($senderId);
+        $totalTransferAmount = $transfersSentThisMonth + $points;
 
-        if ($points > $transferLimit['max_transferable']) {
-            throw new \Exception("You can only transfer up to 30% of points gained in the last month. Maximum allowed: {$transferLimit['max_transferable']} points (30% of {$transferLimit['points_gained_last_month']} points gained).");
+        if ($totalTransferAmount > $transferLimit['max_transferable']) {
+            throw new \Exception("Transfer limit exceeded. You have already sent {$transfersSentThisMonth} points this month. Maximum allowed for the month: {$transferLimit['max_transferable']} points (30% of {$transferLimit['points_gained_last_month']} points gained last month).");
         }
     }
 
@@ -260,10 +262,11 @@ class PointTransferService
 
         $quizPoints = $this->calculateQuizPoints($userId, $startDate, $endDate);
         $bonusPoints = $this->calculateBonusPoints($userId, $startDate, $endDate);
-        dd($bonusPoints);
         $transfersReceived = $this->calculateTransfersReceived($userId, $startDate, $endDate);
+        $penaltyPoints = $this->calculatePenaltyPoints($userId, $startDate, $endDate);
+        $transfersSent = $this->calculateTransfersSent($userId, $startDate, $endDate);
 
-        return (int) ($quizPoints + $bonusPoints + $transfersReceived);
+        return (int) max(0, $quizPoints + $bonusPoints + $transfersReceived - $penaltyPoints - $transfersSent);
     }
 
     /**
@@ -303,6 +306,19 @@ class PointTransferService
     }
 
     /**
+     * Calculate penalty points
+     */
+    protected function calculatePenaltyPoints(int $userId, $startDate, $endDate): int
+    {
+        return PointHistory::where('point_histories.user_id', $userId)
+            ->whereBetween('point_histories.created_at', [$startDate, $endDate])
+            ->where('point_histories.subject_type', 'App\\Models\\BonusPenalty')
+            ->join('bonuses_penalties', 'point_histories.subject_id', '=', 'bonuses_penalties.id')
+            ->where('bonuses_penalties.type', BonusPenaltyType::PENALTY)
+            ->sum('point_histories.amount');
+    }
+
+    /**
      * Calculate transfers received by user
      */
     protected function calculateTransfersReceived(int $userId, $startDate, $endDate): int
@@ -313,6 +329,39 @@ class PointTransferService
             ->join('point_transfers', function ($join) use ($userId) {
                 $join->on('point_histories.subject_id', '=', 'point_transfers.id')
                     ->where('point_transfers.receiver_id', '=', $userId);
+            })
+            ->sum('point_histories.amount');
+    }
+
+    /**
+     * Calculate transfers sent by user (including fees)
+     */
+    protected function calculateTransfersSent(int $userId, $startDate, $endDate): int
+    {
+        return PointHistory::where('point_histories.user_id', $userId)
+            ->where('point_histories.subject_type', PointTransfer::class)
+            ->whereBetween('point_histories.created_at', [$startDate, $endDate])
+            ->join('point_transfers', function ($join) use ($userId) {
+                $join->on('point_histories.subject_id', '=', 'point_transfers.id')
+                    ->where('point_transfers.sender_id', '=', $userId);
+            })
+            ->sum('point_histories.amount');
+    }
+
+    /**
+     * Get transfers sent by user in current month
+     */
+    protected function getTransfersSentThisMonth(int $userId): int
+    {
+        $startOfMonth = now()->startOfMonth();
+        $now = now();
+
+        return PointHistory::where('point_histories.user_id', $userId)
+            ->where('point_histories.subject_type', PointTransfer::class)
+            ->whereBetween('point_histories.created_at', [$startOfMonth, $now])
+            ->join('point_transfers', function ($join) use ($userId) {
+                $join->on('point_histories.subject_id', '=', 'point_transfers.id')
+                    ->where('point_transfers.sender_id', '=', $userId);
             })
             ->sum('point_histories.amount');
     }
@@ -395,8 +444,11 @@ class PointTransferService
         }
 
         $transferLimit = $this->getMaxTransferablePoints($senderId);
-        if ($points > $transferLimit['max_transferable']) {
-            $errors[] = "You can only transfer up to 30% of points gained in the last month. Maximum allowed: {$transferLimit['max_transferable']} points (30% of {$transferLimit['points_gained_last_month']} points gained).";
+        $transfersSentThisMonth = $this->getTransfersSentThisMonth($senderId);
+        $totalTransferAmount = $transfersSentThisMonth + $points;
+
+        if ($totalTransferAmount > $transferLimit['max_transferable']) {
+            $errors[] = "Transfer limit exceeded. You have already sent {$transfersSentThisMonth} points this month. Maximum allowed for the month: {$transferLimit['max_transferable']} points (30% of {$transferLimit['points_gained_last_month']} points gained last month).";
         }
 
         return $errors;
