@@ -98,18 +98,18 @@
                             <span class="text-danger">*</span>
                         </label>
                         <div class="card border-0 bg-light">
-                            <div class="card-body p-3" style="max-height: 300px; overflow-y: auto;">
+                            <div class="card-body p-3" style="max-height: 300px; overflow-y: auto;" id="groupsContainer">
                                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
                                     @foreach ($groups as $group)
                                         <div class="col">
-                                            <div class="form-check p-0">
-                                                <input class="btn-check"
+                                            <div class="group-checkbox-wrapper">
+                                                <input class="btn-check group-checkbox"
                                                     type="checkbox"
                                                     name="groups[]"
                                                     value="{{ $group->id }}"
                                                     id="group_{{ $group->id }}"
                                                     {{ in_array($group->id, old('groups', [])) ? 'checked' : '' }}>
-                                                <label class="btn btn-outline-primary w-100 text-start"
+                                                <label class="btn btn-outline-primary w-100 text-start group-label"
                                                     for="group_{{ $group->id }}">
                                                     <i class="fas fa-users me-2"></i>{{ $group->name }}
                                                 </label>
@@ -150,45 +150,142 @@
 </div>
 
 <script>
-    // Image Preview
-    function previewImage(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('preview').src = e.target.result;
-                document.getElementById('imagePreview').style.display = 'block';
+    // Wrap everything in try-catch to prevent white screen errors
+    (function() {
+        'use strict';
+
+        // Image Preview
+        window.previewImage = function(event) {
+            try {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = document.getElementById('preview');
+                        const imagePreview = document.getElementById('imagePreview');
+                        if (preview && imagePreview) {
+                            preview.src = e.target.result;
+                            imagePreview.style.display = 'block';
+                        }
+                    }
+                    reader.onerror = function() {
+                        console.error('Error reading file');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            } catch (error) {
+                console.error('Image preview error:', error);
             }
-            reader.readAsDataURL(file);
-        }
-    }
-
-    // Form Validation
-    document.getElementById('competitionForm').addEventListener('submit', function(e) {
-        const startDate = new Date(document.getElementById('start_at').value);
-        const endDate = new Date(document.getElementById('end_at').value);
-
-        if (endDate <= startDate) {
-            e.preventDefault();
-            alert('{{ __("messages.end_date_must_be_after_start") }}');
-            return false;
         }
 
-        // Check if at least one group is selected
-        const checkedGroups = document.querySelectorAll('input[name="groups[]"]:checked');
-        if (checkedGroups.length === 0) {
-            e.preventDefault();
-            alert('{{ __("messages.select_at_least_one_group") }}');
-            return false;
-        }
-    });
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Prevent event propagation issues with group checkboxes
+                const groupLabels = document.querySelectorAll('.group-label');
+                groupLabels.forEach(label => {
+                    label.addEventListener('click', function(e) {
+                        // Prevent any potential bubbling issues
+                        e.stopPropagation();
+                    });
+                });
+
+                // Prevent scroll issues when checking boxes at bottom
+                const groupsContainer = document.getElementById('groupsContainer');
+                if (groupsContainer) {
+                    groupsContainer.addEventListener('click', function(e) {
+                        // Prevent container click from interfering
+                        if (e.target === this) {
+                            e.stopPropagation();
+                        }
+                    });
+                }
+
+                // Form Validation
+                const competitionForm = document.getElementById('competitionForm');
+                if (competitionForm) {
+                    competitionForm.addEventListener('submit', function(e) {
+                        try {
+                            const startDateInput = document.getElementById('start_at');
+                            const endDateInput = document.getElementById('end_at');
+
+                            if (startDateInput && endDateInput) {
+                                const startDate = new Date(startDateInput.value);
+                                const endDate = new Date(endDateInput.value);
+
+                                if (endDate <= startDate) {
+                                    e.preventDefault();
+                                    alert('{{ __("messages.end_date_must_be_after_start") }}');
+                                    return false;
+                                }
+                            }
+
+                            // Check if at least one group is selected
+                            const checkedGroups = document.querySelectorAll('input[name="groups[]"]:checked');
+                            if (checkedGroups.length === 0) {
+                                e.preventDefault();
+                                alert('{{ __("messages.select_at_least_one_group") }}');
+                                return false;
+                            }
+                        } catch (error) {
+                            console.error('Form validation error:', error);
+                            e.preventDefault();
+                            return false;
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Initialization error:', error);
+            }
+        });
+    })();
 </script>
 
 <style>
+    /* Group checkbox styling */
+    .group-checkbox-wrapper {
+        position: relative;
+    }
+
+    .group-checkbox {
+        position: absolute;
+        clip: rect(0, 0, 0, 0);
+        pointer-events: none;
+    }
+
+    .group-label {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+
     .btn-check:checked + .btn-outline-primary {
         background: var(--primary-gradient);
         border-color: transparent;
         color: white;
+    }
+
+    .btn-check:focus + .btn-outline-primary {
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+    }
+
+    /* Prevent layout shift on click */
+    .group-label:active {
+        transform: scale(0.98);
+    }
+
+    /* Smooth scrolling for groups container */
+    #groupsContainer {
+        scroll-behavior: smooth;
+    }
+
+    /* Ensure overflow works properly */
+    #groupsContainer .card-body {
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 
     .form-control:focus,
@@ -200,6 +297,21 @@
     .form-control-lg {
         padding: 0.75rem 1rem;
         font-size: 1rem;
+    }
+
+    /* Hover effects */
+    .hover-lift {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Prevent white screen on errors */
+    body {
+        background-color: #f8f9fa;
     }
 </style>
 @endsection

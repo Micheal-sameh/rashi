@@ -741,49 +741,67 @@
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.1/dist/echo.iife.js"></script>
     <script>
-        // Enable Pusher logging for debugging
-        Pusher.logToConsole = true;
+        // Wrap in try-catch to prevent errors from breaking the page
+        try {
+            // Enable Pusher logging for debugging (only in development)
+            Pusher.logToConsole = {{ config('app.debug') ? 'true' : 'false' }};
 
-        window.Echo = new Echo({
-            broadcaster: 'pusher',
-            key: '{{ config('broadcasting.connections.pusher.key') }}',
-            wsHost: '{{ config('broadcasting.connections.pusher.options.host') }}',
-            wsPort: {{ config('broadcasting.connections.pusher.options.port') }},
-            wssPort: {{ config('broadcasting.connections.pusher.options.port') }},
-            forceTLS: false,
-            encrypted: false,
-            disableStats: true,
-            enabledTransports: ['ws', 'wss'],
-            cluster: 'mt1', // Required by Pusher but not used by Soketi
-        });
+            window.Echo = new Echo({
+                broadcaster: 'pusher',
+                key: '{{ config('broadcasting.connections.pusher.key') }}',
+                wsHost: '{{ config('broadcasting.connections.pusher.options.host') }}',
+                wsPort: {{ config('broadcasting.connections.pusher.options.port') }},
+                wssPort: {{ config('broadcasting.connections.pusher.options.port') }},
+                forceTLS: false,
+                encrypted: false,
+                disableStats: true,
+                enabledTransports: ['ws', 'wss'],
+                cluster: 'mt1', // Required by Pusher but not used by Soketi
+            });
 
-        console.log('🔌 WebSocket Config:', {
-            key: '{{ config('broadcasting.connections.pusher.key') }}',
-            host: '{{ config('broadcasting.connections.pusher.options.host') }}',
-            port: {{ config('broadcasting.connections.pusher.options.port') }},
-            scheme: '{{ config('broadcasting.connections.pusher.options.scheme') }}'
-        });
+            console.log('🔌 WebSocket Config:', {
+                key: '{{ config('broadcasting.connections.pusher.key') }}',
+                host: '{{ config('broadcasting.connections.pusher.options.host') }}',
+                port: {{ config('broadcasting.connections.pusher.options.port') }},
+                scheme: '{{ config('broadcasting.connections.pusher.options.scheme') }}'
+            });
 
-        // Debug connection events
-        window.Echo.connector.pusher.connection.bind('connected', function() {
-            console.log('✅ WebSocket Connected Successfully');
-        });
+            // Debug connection events - wrapped in try-catch
+            if (window.Echo && window.Echo.connector && window.Echo.connector.pusher) {
+                window.Echo.connector.pusher.connection.bind('connected', function() {
+                    console.log('✅ WebSocket Connected Successfully');
+                });
 
-        window.Echo.connector.pusher.connection.bind('connecting', function() {
-            console.log('🔄 WebSocket Connecting...');
-        });
+                window.Echo.connector.pusher.connection.bind('connecting', function() {
+                    console.log('🔄 WebSocket Connecting...');
+                });
 
-        window.Echo.connector.pusher.connection.bind('disconnected', function() {
-            console.log('⚠️ WebSocket Disconnected');
-        });
+                window.Echo.connector.pusher.connection.bind('disconnected', function() {
+                    console.log('⚠️ WebSocket Disconnected');
+                });
 
-        window.Echo.connector.pusher.connection.bind('error', function(err) {
-            console.error('❌ WebSocket Connection Error:', err);
-        });
+                window.Echo.connector.pusher.connection.bind('error', function(err) {
+                    console.error('❌ WebSocket Connection Error:', err);
+                    // Don't throw - just log
+                });
 
-        window.Echo.connector.pusher.connection.bind('state_change', function(states) {
-            console.log('🔄 Connection State Changed:', states.previous, '->', states.current);
-        });
+                window.Echo.connector.pusher.connection.bind('state_change', function(states) {
+                    console.log('🔄 Connection State Changed:', states.previous, '->', states.current);
+                });
+            }
+        } catch (error) {
+            // Log error but don't break the page
+            console.error('WebSocket initialization failed:', error);
+            console.warn('The application will continue without real-time features');
+            // Create a dummy Echo object to prevent "Echo is not defined" errors
+            window.Echo = {
+                channel: function() { return this; },
+                private: function() { return this; },
+                listen: function() { return this; },
+                notification: function() { return this; },
+                connector: null
+            };
+        }
     </script>
 </body>
 
