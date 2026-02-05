@@ -21,6 +21,11 @@ class Competition extends Model implements HasMedia
         'image',
     ];
 
+    protected $casts = [
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
+    ];
+
     protected $mediaAttributes = [
         'image',
     ];
