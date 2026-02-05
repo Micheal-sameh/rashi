@@ -84,4 +84,15 @@ class RewardController extends Controller
             'status_text' => \App\Enums\RewardStatus::getStringValue($reward->status),
         ]);
     }
+
+    public function activate($id)
+    {
+        $reward = $this->rewardService->activate($id);
+
+        return response()->json([
+            'success' => true,
+            'reward' => $reward,
+            'status_text' => \App\Enums\RewardStatus::getStringValue($reward->status),
+        ]);
+    }
 }

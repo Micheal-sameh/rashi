@@ -40,4 +40,9 @@ class RewardService
     {
         return $this->rewardRepository->cancel($id);
     }
+
+    public function activate($id)
+    {
+        return $this->rewardRepository->activate($id);
+    }
 }
