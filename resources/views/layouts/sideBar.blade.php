@@ -5,6 +5,8 @@
         $logo = \App\Models\Setting::where('name', 'logo')->first();
         return $logo?->getFirstMediaUrl('app_logo') ?? asset('default-logo.png');
     });
+    // Ensure absolute URL for social media sharing
+    $absoluteLogoUrl = filter_var($faviconUrl, FILTER_VALIDATE_URL) ? $faviconUrl : url($faviconUrl);
 @endphp
 
 <head>
@@ -19,7 +21,10 @@
     <!-- Open Graph Meta Tags for Social Media Sharing -->
     <meta property="og:title" content="@yield('title', config('app.name'))">
     <meta property="og:description" content="@yield('description', config('app.name') . ' - نظام إدارة المسابقات والنقاط')">
-    <meta property="og:image" content="{{ $faviconUrl }}">
+    <meta property="og:image" content="{{ $absoluteLogoUrl }}">
+    <meta property="og:image:secure_url" content="{{ $absoluteLogoUrl }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="{{ config('app.name') }}">
@@ -28,7 +33,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('title', config('app.name'))">
     <meta name="twitter:description" content="@yield('description', config('app.name') . ' - نظام إدارة المسابقات والنقاط')">
-    <meta name="twitter:image" content="{{ $faviconUrl }}">
+    <meta name="twitter:image" content="{{ $absoluteLogoUrl }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
