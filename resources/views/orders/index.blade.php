@@ -9,6 +9,25 @@
             </button> --}}
         </div>
 
+        <!-- Pending Orders Card -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-12">
+                <div class="card shadow-sm border-0 bg-danger text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 opacity-75">{{ __('messages.pending_orders') }}</h6>
+                                <h2 class="mb-0 fw-bold">{{ number_format($pendingOrdersCount) }}</h2>
+                            </div>
+                            <div class="fs-1 opacity-50">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Search Filter Form -->
         <form method="GET" action="{{ route('orders.index') }}" class="row g-3 mb-4">
             <div class="col-md-3">

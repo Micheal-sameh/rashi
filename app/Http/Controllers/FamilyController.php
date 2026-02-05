@@ -18,8 +18,15 @@ class FamilyController extends Controller
         $search = $request->search;
         $families = [];
 
+        // Get total families count
+        $totalFamilies = User::select(DB::raw('SUBSTRING_INDEX(membership_code, "F", 1) as family_prefix'))
+            ->where('membership_code', 'REGEXP', '^E[0-9]+C[0-9]+F[0-9]+')
+            ->groupBy('family_prefix')
+            ->get()
+            ->count();
+
         if (! $search) {
-            return view('families.index', compact('families', 'search'));
+            return view('families.index', compact('families', 'search', 'totalFamilies'));
         }
 
         // Extract family codes using a single optimized query
@@ -40,7 +47,7 @@ class FamilyController extends Controller
             ->values();
 
         if ($familyCodes->isEmpty()) {
-            return view('families.index', compact('families', 'search'));
+            return view('families.index', compact('families', 'search', 'totalFamilies'));
         }
 
         // Get all family members in a single query using REGEXP
@@ -68,7 +75,7 @@ class FamilyController extends Controller
             ->values()
             ->all();
 
-        return view('families.index', compact('families', 'search'));
+        return view('families.index', compact('families', 'search', 'totalFamilies'));
     }
 
     public function show($familyCode)

@@ -14,6 +14,40 @@
             </div>
         </div>
 
+        <!-- Stats Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 opacity-75">{{ __('messages.total_users') }}</h6>
+                                <h2 class="mb-0 fw-bold">{{ number_format($totalUsers) }}</h2>
+                            </div>
+                            <div class="fs-1 opacity-50">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 opacity-75">{{ __('messages.total_families') }}</h6>
+                                <h2 class="mb-0 fw-bold">{{ number_format($totalFamilies) }}</h2>
+                            </div>
+                            <div class="fs-1 opacity-50">
+                                <i class="fas fa-home"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Filter Bar -->
         <div class="row g-3 mb-4">
             <div class="col-md-6">

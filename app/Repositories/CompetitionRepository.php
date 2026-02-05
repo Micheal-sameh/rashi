@@ -46,7 +46,7 @@ class CompetitionRepository extends BaseRepository
                 }
                 $query->where('status', '!=', CompetitionStatus::FINISHED)->orderBy('start_at', 'asc');
             })
-            ->when(request()->is('api/*'), fn ($q) => $q->orderByRaw('
+            ->when(true, fn ($q) => $q->orderByRaw('
                 CASE
                     WHEN status = ? THEN 1
                     WHEN status = ? THEN 2
@@ -198,5 +198,24 @@ class CompetitionRepository extends BaseRepository
         }
 
         return $query->orderBy('users.name')->get();
+    }
+
+    public function getCompetitionCounts()
+    {
+        $today = now()->toDateString();
+
+        return [
+            'active' => $this->model->where('status', CompetitionStatus::ACTIVE)->count(),
+            'pending' => $this->model->where('status', CompetitionStatus::PENDING)
+                ->whereDate('start_at', '>', $today)
+                ->count(),
+            'finished' => $this->model->where('status', CompetitionStatus::FINISHED)->count(),
+        ];
+    }
+
+    public function getByGroup($groupId)
+    {
+        return $this->model->query()
+            ->whereHas('groups', fn ($q) => $q->where('groups.id', $groupId));
     }
 }

@@ -11,6 +11,25 @@
             </a>
         </div>
 
+        <!-- Total Groups Card -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-12">
+                <div class="card shadow-sm border-0 bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 opacity-75">{{ __('messages.total_groups') }}</h6>
+                                <h2 class="mb-0 fw-bold">{{ number_format($totalGroups) }}</h2>
+                            </div>
+                            <div class="fs-1 opacity-50">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Alerts -->
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show">

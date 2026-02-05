@@ -87,4 +87,9 @@ class OrderService
             throw $e;
         }
     }
+
+    public function getPendingOrdersCount()
+    {
+        return $this->orderRepository->getPendingOrdersCount();
+    }
 }

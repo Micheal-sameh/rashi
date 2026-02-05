@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserRepository extends BaseRepository
@@ -229,5 +230,19 @@ class UserRepository extends BaseRepository
             ->latest();
 
         return $this->execute($query);
+    }
+
+    public function getTotalCount()
+    {
+        return $this->model->count();
+    }
+
+    public function getTotalFamilies()
+    {
+        return $this->model->select(DB::raw('SUBSTRING_INDEX(membership_code, "F", 1) as family_prefix'))
+            ->where('membership_code', 'REGEXP', '^E[0-9]+C[0-9]+F[0-9]+')
+            ->groupBy('family_prefix')
+            ->get()
+            ->count();
     }
 }

@@ -562,7 +562,14 @@
                     @if(Auth::user()->hasRole('admin'))
                         <li><a href="{{ route('bonus-penalties.pending') }}"
                                 class="{{ request()->routeIs('bonus-penalties.pending') ? 'active' : '' }}">
-                                <i class="fas fa-clock"></i>{{ __('messages.pending_approvals') }}</a></li>
+                                <i class="fas fa-clock"></i>{{ __('messages.pending_approvals') }}
+                                @php
+                                    $pendingApprovals = \App\Models\BonusPenalty::where('status', \App\Enums\BonusPenaltyStatus::PENDING_APPROVAL)->count();
+                                @endphp
+                                @if($pendingApprovals > 0)
+                                    <span class="badge bg-danger ms-2">{{ $pendingApprovals }}</span>
+                                @endif
+                        </a></li>
                     @endif
                     @if(Auth::user()->hasRole('admin'))
                         <li><a href="{{ route('point-transfers.index') }}"
@@ -584,6 +591,9 @@
                     <li><a href="{{ route('groups.index') }}"
                             class="{{ $activeRoutes['groups'] ? 'active' : '' }}">
                             <i class="fas fa-layer-group"></i>{{ __('messages.groups') }}</a></li>
+                    <li><a href="{{ route('groups.competitions') }}"
+                            class="{{ request()->routeIs('groups.competitions') ? 'active' : '' }}">
+                            <i class="fas fa-trophy"></i>{{ __('messages.groups_competitions') }}</a></li>
                     <li><a href="{{ route('notifications.index') }}"
                             class="{{ $activeRoutes['notifications'] ? 'active' : '' }}">
                             <i class="fas fa-bell"></i>{{ __('messages.notifications') }}</a></li>

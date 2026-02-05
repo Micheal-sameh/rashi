@@ -120,6 +120,7 @@ Route::group(['middleware' => ['setlocale']], function () {
 
         Route::prefix('groups')->group(function () {
             Route::get('/', [GroupController::class, 'index'])->name('groups.index');
+            Route::get('/competitions', [GroupController::class, 'competitions'])->name('groups.competitions');
             Route::get('/create', [GroupController::class, 'create'])->name('groups.create');
             Route::get('/{id}/edit', [GroupController::class, 'edit'])->name('groups.edit');
             Route::get('/{id}/users-edit', [GroupController::class, 'usersedit'])->name('groups.usersedit');

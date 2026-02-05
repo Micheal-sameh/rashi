@@ -537,4 +537,25 @@ return [
     'system_settings' => 'System Settings',
     'content_management' => 'Content Management',
     'help' => 'Help',
+
+    // Statistics
+    'total_users' => 'Total Users',
+    'total_families' => 'Total Families',
+    'total_groups' => 'Total Groups',
+    'active_competitions' => 'Active Competitions',
+    'pending_competitions' => 'Pending Competitions',
+    'finished_competitions' => 'Finished Competitions',
+    'pending_orders' => 'Pending Orders',
+    'pending_approvals' => 'Pending Approvals',
+
+    // Groups Competitions
+    'groups_competitions' => 'Groups & Competitions',
+    'last_finished_competition' => 'Last Finished Competition',
+    'next_pending_competition' => 'Next Pending Competition',
+    'no_finished_competitions' => 'No finished competitions',
+    'no_active_competitions' => 'No active competitions',
+    'no_pending_competitions' => 'No pending competitions',
+    'no_groups_found' => 'No groups found',
+    'ended' => 'Ended',
+    'starts' => 'Starts',
 ];

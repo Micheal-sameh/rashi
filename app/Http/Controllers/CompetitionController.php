@@ -23,8 +23,9 @@ class CompetitionController extends Controller
     public function index()
     {
         $competitions = $this->competitionService->index();
+        $competitionCounts = $this->competitionService->getCompetitionCounts();
 
-        return view('competitions.index', compact('competitions'));
+        return view('competitions.index', compact('competitions', 'competitionCounts'));
     }
 
     public function create()

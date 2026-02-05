@@ -88,4 +88,14 @@ class GroupRepository extends BaseRepository
     {
         return $this->model->all();
     }
+
+    public function getTotalCount()
+    {
+        return $this->model->count();
+    }
+
+    public function all()
+    {
+        return $this->model->orderBy('name')->get();
+    }
 }

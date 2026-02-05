@@ -99,4 +99,9 @@ class CompetitionService
 
         return $userStats;
     }
+
+    public function getCompetitionCounts()
+    {
+        return $this->competitionRepository->getCompetitionCounts();
+    }
 }

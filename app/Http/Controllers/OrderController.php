@@ -14,8 +14,9 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $orders = $this->orderService->index($request->user_id, $request->status, $request->membership_code);
+        $pendingOrdersCount = $this->orderService->getPendingOrdersCount();
 
-        return view('orders.index', compact('orders'));
+        return view('orders.index', compact('orders', 'pendingOrdersCount'));
     }
 
     public function received($id)
