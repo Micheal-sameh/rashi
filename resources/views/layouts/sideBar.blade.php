@@ -581,7 +581,14 @@
                             <i class="fas fa-gift"></i>{{ __('messages.rewards') }}</a></li>
                     <li><a href="{{ route('orders.index') }}"
                             class="{{ $activeRoutes['orders'] ? 'active' : '' }}">
-                            <i class="fas fa-shopping-cart"></i>{{ __('messages.orders') }}</a></li>
+                            <i class="fas fa-shopping-cart"></i>{{ __('messages.orders') }}
+                            @php
+                                $pendingOrdersCount = \App\Models\Order::where('status', \App\Enums\OrderStatus::PENDING)->count();
+                            @endphp
+                            @if($pendingOrdersCount > 0)
+                                <span class="badge bg-warning text-dark ms-2">{{ $pendingOrdersCount }}</span>
+                            @endif
+                    </a></li>
 
                     <!-- System Section -->
                     <li class="menu-section-title"><i class="fas fa-cogs me-2"></i>{{ __('messages.system_settings') }}</li>
