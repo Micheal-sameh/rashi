@@ -37,6 +37,7 @@ class RewardRepository extends BaseRepository
         $query = $this->model->query()->with(['media', 'group']);
 
         if (request()->is('api/*')) {
+            $this->pagination = false;
             $user = auth()->user();
             // Eager load groups to prevent N+1
             $user->loadMissing('groups');
@@ -45,6 +46,7 @@ class RewardRepository extends BaseRepository
                 $query->whereIn('group_id', $groupIds);
             }
             $query->where('status', RewardStatus::ACTIVE);
+
         }
         $query->orderBy('status');
 
