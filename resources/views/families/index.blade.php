@@ -6,6 +6,25 @@
             <h1 class="fw-bold text-primary">{{ __('messages.families') }}</h1>
         </div>
 
+        <!-- Total Families Card -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-12">
+                <div class="card shadow-sm border-0 bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 opacity-75">{{ __('messages.total_families') }}</h6>
+                                <h2 class="mb-0 fw-bold">{{ number_format($totalFamilies) }}</h2>
+                            </div>
+                            <div class="fs-1 opacity-50">
+                                <i class="fas fa-home"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Search Form -->
         <form method="GET" action="{{ route('families.index') }}" class="row g-3 mb-4">
             <div class="col-md-8">

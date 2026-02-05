@@ -69,4 +69,14 @@ class UserService
     {
         return $this->userRepository->getAdmins($search);
     }
+
+    public function getTotalCount()
+    {
+        return $this->userRepository->getTotalCount();
+    }
+
+    public function getTotalFamilies()
+    {
+        return $this->userRepository->getTotalFamilies();
+    }
 }

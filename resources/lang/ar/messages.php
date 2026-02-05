@@ -161,6 +161,10 @@ return [
     'confirm_cancel_reward' => 'هل أنت متأكد من إلغاء هذه الجائزة؟',
     'reward_cancelled_successfully' => 'تم إلغاء الجائزة بنجاح',
     'failed_cancel_reward' => 'فشل في إلغاء الجائزة',
+    'activate' => 'تفعيل',
+    'confirm_activate_reward' => 'هل أنت متأكد من تفعيل هذه الجائزة؟',
+    'reward_activated_successfully' => 'تم تفعيل الجائزة بنجاح',
+    'failed_activate_reward' => 'فشل في تفعيل الجائزة',
     'points_not_enough' => 'النقاط غير كافية',
     'quantity_not_enough' => 'الكمية غير كافية',
     'orders' => 'الطلبات',
@@ -560,4 +564,25 @@ return [
     'system_settings' => 'إعدادات النظام',
     'content_management' => 'إدارة المحتوى',
     'help' => 'مساعد',
+
+    // Statistics
+    'total_users' => 'إجمالي المستخدمين',
+    'total_families' => 'إجمالي العائلات',
+    'total_groups' => 'إجمالي المجموعات',
+    'active_competitions' => 'المسابقات النشطة',
+    'pending_competitions' => 'المسابقات القادمة',
+    'finished_competitions' => 'المسابقات المنتهية',
+    'pending_orders' => 'الطلبات المعلقة',
+    'pending_approvals' => 'الموافقات المعلقة',
+
+    // Groups Competitions
+    'groups_competitions' => 'المجموعات والمسابقات',
+    'last_finished_competition' => 'آخر مسابقة منتهية',
+    'next_pending_competition' => 'المسابقة القادمة',
+    'no_finished_competitions' => 'لا توجد مسابقات منتهية',
+    'no_active_competitions' => 'لا توجد مسابقات نشطة',
+    'no_pending_competitions' => 'لا توجد مسابقات قادمة',
+    'no_groups_found' => 'لم يتم العثور على مجموعات',
+    'ended' => 'انتهى',
+    'starts' => 'يبدأ',
 ];

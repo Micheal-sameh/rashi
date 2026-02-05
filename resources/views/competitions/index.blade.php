@@ -15,6 +15,55 @@
             </a>
         </div>
 
+        <!-- Competition Stats Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 opacity-75">{{ __('messages.active_competitions') }}</h6>
+                                <h2 class="mb-0 fw-bold">{{ $competitionCounts['active'] }}</h2>
+                            </div>
+                            <div class="fs-1 opacity-50">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 opacity-75">{{ __('messages.pending_competitions') }}</h6>
+                                <h2 class="mb-0 fw-bold">{{ $competitionCounts['pending'] }}</h2>
+                            </div>
+                            <div class="fs-1 opacity-50">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 opacity-75">{{ __('messages.finished_competitions') }}</h6>
+                                <h2 class="mb-0 fw-bold">{{ $competitionCounts['finished'] }}</h2>
+                            </div>
+                            <div class="fs-1 opacity-50">
+                                <i class="fas fa-flag-checkered"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @if ($competitions->count())
             <!-- Desktop Table View -->
             <div class="card shadow-soft rounded-4 border-0 d-none d-md-block mb-4">

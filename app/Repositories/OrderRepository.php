@@ -98,4 +98,9 @@ class OrderRepository extends BaseRepository
 
         return $order;
     }
+
+    public function getPendingOrdersCount()
+    {
+        return $this->model->where('status', OrderStatus::PENDING)->count();
+    }
 }

@@ -96,6 +96,18 @@ class RewardRepository extends BaseRepository
         return $reward;
     }
 
+    public function activate($id)
+    {
+        $reward = $this->findById($id);
+        $reward->update([
+            'status' => RewardStatus::ACTIVE,
+        ]);
+
+        RewardHistory::addRecord($reward);
+
+        return $reward;
+    }
+
     public function redeemPoints($reward, $quantity)
     {
         $status = $reward->quantity - $quantity <= 0

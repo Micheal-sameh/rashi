@@ -29,12 +29,15 @@ class UserController extends Controller
         ));
         $users = $this->userService->index($input);
         $groups = $this->groupRepository->dropdown();
+        $totalUsers = $this->userService->getTotalCount();
+        $totalFamilies = $this->userService->getTotalFamilies();
+
         // $users = UserResource::collection($this->userService->index($input));
         if ($request->is_filter) {
             return view('users.user-table', compact('users'))->render();
         }
 
-        return view('users.index', compact('users', 'groups'));
+        return view('users.index', compact('users', 'groups', 'totalUsers', 'totalFamilies'));
     }
 
     public function admins(Request $request)

@@ -120,6 +120,7 @@ Route::group(['middleware' => ['setlocale']], function () {
 
         Route::prefix('groups')->group(function () {
             Route::get('/', [GroupController::class, 'index'])->name('groups.index');
+            Route::get('/competitions', [GroupController::class, 'competitions'])->name('groups.competitions');
             Route::get('/create', [GroupController::class, 'create'])->name('groups.create');
             Route::get('/{id}/edit', [GroupController::class, 'edit'])->name('groups.edit');
             Route::get('/{id}/users-edit', [GroupController::class, 'usersedit'])->name('groups.usersedit');
@@ -133,6 +134,7 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/edit/{id}', [RewardController::class, 'edit'])->name('rewards.edit');
             Route::put('/{id}/add-quantity', [RewardController::class, 'addQuantity'])->name('rewards.addQuantity');
             Route::put('/{id}/cancel', [RewardController::class, 'cancel'])->name('rewards.cancel');
+            Route::put('/{id}/activate', [RewardController::class, 'activate'])->name('rewards.activate');
             Route::post('/', [RewardController::class, 'store'])->name('rewards.store');
         });
 

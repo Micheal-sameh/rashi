@@ -230,4 +230,56 @@ class UserRepository extends BaseRepository
 
         return $this->execute($query);
     }
+
+    public function getTotalCount()
+    {
+        return $this->model->count();
+    }
+
+    public function getTotalFamilies()
+    {
+        $this->pagination = false;
+        $users = $this->index([]);
+
+        $familyCodes = $users->map(function ($user) {
+            if (preg_match('/^(E\d+C\d+F\d+)/', $user->membership_code, $matches)) {
+                return $matches[1];
+            }
+
+            return null;
+        })
+            ->filter()
+            ->unique()
+            ->values();
+
+        return count($familyCodes);
+    }
+
+    public function searchFamilies(string $search)
+    {
+        return $this->model->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+                ->orWhere('membership_code', 'like', "%{$search}%");
+        })
+            ->get(['membership_code']);
+    }
+
+    public function getFamilyMembers(array $familyCodes)
+    {
+        return $this->model->where(function ($query) use ($familyCodes) {
+            foreach ($familyCodes as $code) {
+                $query->orWhere('membership_code', 'like', $code.'%');
+            }
+        })
+            ->orderByRaw("SUBSTRING_INDEX(membership_code, 'F', 1), CAST(SUBSTRING_INDEX(membership_code, 'NR', -1) AS UNSIGNED)")
+            ->get(['id', 'name', 'membership_code']);
+    }
+
+    public function getFamilyMembersWithGroups(string $familyCode)
+    {
+        return $this->model->where('membership_code', 'like', $familyCode.'%')
+            ->with('groups:id,name')
+            ->orderByRaw("CAST(SUBSTRING_INDEX(membership_code, 'NR', -1) AS UNSIGNED)")
+            ->get(['id', 'name', 'membership_code', 'points', 'score']);
+    }
 }

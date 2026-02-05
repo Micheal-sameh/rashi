@@ -237,6 +237,15 @@
                                                             <span>{{ __('messages.add') }}</span>
                                                         </button>
                                                     </div>
+                                                @elseif($reward->status == \App\Enums\RewardStatus::INACTIVE)
+                                                    <div class="d-flex justify-content-end gap-2">
+                                                        <button
+                                                            class="btn btn-sm btn-outline-success rounded-pill px-3 d-flex align-items-center gap-1"
+                                                            onclick="activateReward({{ $reward->id }})">
+                                                            <i class="fa fa-check"></i>
+                                                            <span>{{ __('messages.activate') }}</span>
+                                                        </button>
+                                                    </div>
                                                 @endif
                                             </td>
                                         </tr>
@@ -339,6 +348,24 @@
                                                         onclick="cancelReward({{ $reward->id }})">
                                                         <i class="fa fa-times"></i>
                                                         <span>{{ __('messages.cancel') }}</span>
+                                                    </button>
+                                                </div>
+                                            @elseif($reward->status == \App\Enums\RewardStatus::CANCELLED)
+                                                <div class="d-flex gap-2">
+                                                    <button
+                                                        class="btn btn-sm btn-primary rounded-pill flex-fill d-flex align-items-center justify-content-center gap-1 py-2"
+                                                        onclick="addQuantity({{ $reward->id }})">
+                                                        <i class="fa fa-plus"></i>
+                                                        <span>{{ __('messages.add_quantity') }}</span>
+                                                    </button>
+                                                </div>
+                                            @elseif($reward->status == \App\Enums\RewardStatus::INACTIVE)
+                                                <div class="d-flex gap-2">
+                                                    <button
+                                                        class="btn btn-sm btn-success rounded-pill flex-fill d-flex align-items-center justify-content-center gap-1 py-2"
+                                                        onclick="activateReward({{ $reward->id }})">
+                                                        <i class="fa fa-check"></i>
+                                                        <span>{{ __('messages.activate') }}</span>
                                                     </button>
                                                 </div>
                                             @else
@@ -669,6 +696,47 @@
                 });
         }
 
+        function activateReward(rewardId) {
+            const rewardName = document.querySelector(`#reward-row-${rewardId} h6`)?.textContent ||
+                document.querySelector(`#reward-card-${rewardId} h6`)?.textContent;
+
+            showConfirmModal(
+                `{{ __('messages.confirm_activate_reward') }}<br><strong>"${rewardName}"</strong>?`,
+                () => {
+                    fetch(`/rewards/${rewardId}/activate`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content'),
+                            }
+                        })
+                        .then(res => {
+                            if (!res.ok) throw new Error('Network response was not ok');
+                            return res.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                // Update status badges
+                                updateStatusBadges(rewardId, data.reward.status, data.status_text);
+
+                                // Enable action buttons for ACTIVE status
+                                enableActionButtons(rewardId);
+
+                                showSuccessMessage('{{ __('messages.reward_activated_successfully') }}', null,
+                                    'success');
+                            } else {
+                                showToast(data.message || '{{ __('messages.failed_activate_reward') }}', 'danger');
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            showToast('{{ __('messages.error_occurred') }}', 'danger');
+                        });
+                }
+            );
+        }
+
         function cancelReward(rewardId) {
             const rewardName = document.querySelector(`#reward-row-${rewardId} h6`)?.textContent ||
                 document.querySelector(`#reward-card-${rewardId} h6`)?.textContent;
@@ -767,6 +835,57 @@
                             <span class="text-muted">{{ __('messages.no_actions_available') }}</span>
                         </div>
                     `;
+                }
+            }
+        }
+
+        function enableActionButtons(rewardId) {
+            // Desktop
+            const desktopRow = document.getElementById(`reward-row-${rewardId}`);
+            if (desktopRow) {
+                const actionsCell = desktopRow.querySelector('td:last-child');
+                if (actionsCell) {
+                    actionsCell.innerHTML = `
+                        <div class="d-flex justify-content-end gap-2">
+                            <button
+                                class="btn btn-sm btn-outline-primary rounded-pill px-3 d-flex align-items-center gap-1"
+                                onclick="addQuantity(${rewardId})">
+                                <i class="fa fa-plus"></i>
+                                <span>{{ __('messages.add') }}</span>
+                            </button>
+                            <button
+                                class="btn btn-sm btn-outline-danger rounded-pill px-3 d-flex align-items-center gap-1"
+                                onclick="cancelReward(${rewardId})">
+                                <i class="fa fa-times"></i>
+                                <span>{{ __('messages.cancel') }}</span>
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            // Mobile
+            const mobileCard = document.getElementById(`reward-card-${rewardId}`);
+            if (mobileCard) {
+                const actionsContainer = mobileCard.querySelector('.flex-grow-1');
+                if (actionsContainer) {
+                    const existingActions = actionsContainer.querySelector('.d-flex.gap-2:last-child');
+                    if (existingActions) {
+                        existingActions.innerHTML = `
+                            <button
+                                class="btn btn-sm btn-primary rounded-pill flex-fill d-flex align-items-center justify-content-center gap-1 py-2"
+                                onclick="addQuantity(${rewardId})">
+                                <i class="fa fa-plus"></i>
+                                <span>{{ __('messages.add_quantity') }}</span>
+                            </button>
+                            <button
+                                class="btn btn-sm btn-outline-danger rounded-pill flex-fill d-flex align-items-center justify-content-center gap-1 py-2"
+                                onclick="cancelReward(${rewardId})">
+                                <i class="fa fa-times"></i>
+                                <span>{{ __('messages.cancel') }}</span>
+                            </button>
+                        `;
+                    }
                 }
             }
         }
