@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserRepository extends BaseRepository
@@ -170,49 +171,153 @@ class UserRepository extends BaseRepository
     {
         $userGroupIds = auth()->user()->groups->pluck('id')->toArray();
         $isApi = request()->is('api/*');
+        $authUserId = auth()->id();
 
-        return $this->model->query()
+        // Build the WHERE clause based on mode and group
+        $whereClause = '';
+        $bindings = [];
+
+        if ($isApi) {
+            if (isset($groupId)) {
+                // API + specific group
+                $whereClause = 'WHERE ug.group_id = ?';
+                $bindings[] = $groupId;
+            } else {
+                // API + user groups except 1
+                $placeholders = implode(',', array_fill(0, count($userGroupIds), '?'));
+                $whereClause = "WHERE ug.group_id != 1 AND ug.group_id IN ($placeholders)";
+                $bindings = $userGroupIds;
+            }
+        } else {
+            if (isset($groupId)) {
+                // Web + specific group
+                $whereClause = 'WHERE ug.group_id = ?';
+                $bindings[] = $groupId;
+            } else {
+                // Web + no group → group 1 only
+                $whereClause = 'WHERE ug.group_id = 1';
+            }
+        }
+
+        if ($isApi) {
+            // For API mode, get top 10 users + auth user if not in top 10
+            $usersTable = 'users';
+            $groupsTable = 'user_groups';
+
+            // Get top 10 users with their rank
+            $top10Query = "
+            SELECT DISTINCT
+                u.id,
+                u.name,
+                u.email,
+                u.score,
+                u.points,
+                u.membership_code,
+                u.phone
+            FROM {$usersTable} u
+            INNER JOIN {$groupsTable} ug ON u.id = ug.user_id
+            {$whereClause}
+            ORDER BY u.score DESC
+            LIMIT 10
+        ";
+
+            $top10 = DB::select($top10Query, $bindings);
+            $top10Ids = collect($top10)->pluck('id')->toArray();
+
+            // Check if auth user is in top 10
+            if (! in_array($authUserId, $top10Ids)) {
+                // Get auth user data
+                $authUserQuery = "
+                SELECT DISTINCT
+                    u.id,
+                    u.name,
+                    u.email,
+                    u.score,
+                    u.points,
+                    u.membership_code,
+                    u.phone
+                FROM {$usersTable} u
+                INNER JOIN {$groupsTable} ug ON u.id = ug.user_id
+                {$whereClause}
+                AND u.id = ?
+            ";
+
+                $authBindings = array_merge($bindings, [$authUserId]);
+                $authUser = DB::select($authUserQuery, $authBindings);
+
+                if (! empty($authUser)) {
+                    $results = array_merge($top10, $authUser);
+                } else {
+                    $results = $top10;
+                }
+            } else {
+                $results = $top10;
+            }
+
+            // Calculate ranks for all users in the group
+            $allUsersQuery = "
+            SELECT DISTINCT
+                u.id,
+                u.score
+            FROM {$usersTable} u
+            INNER JOIN {$groupsTable} ug ON u.id = ug.user_id
+            {$whereClause}
+            ORDER BY u.score DESC
+        ";
+
+            $allUsers = DB::select($allUsersQuery, $bindings);
+            $ranks = [];
+            foreach ($allUsers as $index => $user) {
+                $ranks[$user->id] = $index + 1;
+            }
+
+            // Convert to actual User models with relationships
+            $userIds = collect($results)->pluck('id')->toArray();
+
+            // Load actual User models with media relationship
+            $users = $this->model->whereIn('id', $userIds)
+                ->with('media')
+                ->get()
+                ->keyBy('id');
+
+            // Return users in the same order as the results with ranks
+            $orderedUsers = collect($userIds)->map(function ($id) use ($users, $ranks) {
+                $user = $users->get($id);
+                if ($user) {
+                    $user->rank = $ranks[$id] ?? null;
+                }
+
+                return $user;
+            })->filter();
+
+            return $orderedUsers;
+        }
+
+        // Web mode: use your existing execute method
+        $query = $this->model->query()
             ->with('media')
-            ->select('id', 'name', 'score', 'points')
-
-            // API mode
-            ->when($isApi, function ($query) use ($groupId, $userGroupIds) {
-                $query
-                    // API + specific group
-                    ->when(isset($groupId), function ($q) use ($groupId) {
-                        $q->whereHas('groups', function ($g) use ($groupId) {
-                            $g->where('group_id', $groupId);
-                        });
-                    })
-                    // API + no group → user groups except 1
-                    ->when(! isset($groupId), function ($q) use ($userGroupIds) {
-                        $q->whereHas('groups', function ($g) use ($userGroupIds) {
-                            $g->where('group_id', '!=', 1)
-                                ->whereIn('group_id', $userGroupIds);
-                        });
-                    });
+            ->select('id', 'name', 'email', 'membership_code', 'score', 'points')
+            ->when(isset($groupId), function ($q) use ($groupId) {
+                $q->whereHas('groups', function ($g) use ($groupId) {
+                    $g->where('group_id', $groupId);
+                });
             })
-
-            // Web mode
-            ->when(! $isApi, function ($query) use ($groupId) {
-                $query
-                    // Web + specific group
-                    ->when(isset($groupId), function ($q) use ($groupId) {
-                        $q->whereHas('groups', function ($g) use ($groupId) {
-                            $g->where('group_id', $groupId);
-                        });
-                    })
-                    // Web + no group → exclude group 1
-                    ->when(! isset($groupId), function ($q) {
-                        $q->whereHas('groups', function ($g) {
-                            $g->where('group_id', '=', 1);
-                        });
-                    });
+            ->when(! isset($groupId), function ($q) {
+                $q->whereHas('groups', function ($g) {
+                    $g->where('group_id', '=', 1);
+                });
             })
+            ->orderBy('score', 'desc');
 
-            ->orderBy('score', 'desc')
-            ->limit(10)
-            ->get();
+        $users = $this->execute($query);
+
+        // Add rank to each user
+        $users->each(function ($user, $index) {
+            $user->rank = $index + 1;
+        });
+
+        return $users;
+
     }
 
     public function getAdmins(?string $search = null)

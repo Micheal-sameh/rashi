@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\CreateProfilePicRequest;
 use App\Http\Requests\LeaderBoardRequest;
+use App\Http\Resources\LeaderBoardResource;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
 
@@ -50,6 +51,6 @@ class UserController extends BaseController
     {
         $users = $this->userService->leaderboard($request->group_id);
 
-        return $this->respondResource(UserResource::collection($users));
+        return $this->respondResource(LeaderBoardResource::collection($users));
     }
 }
