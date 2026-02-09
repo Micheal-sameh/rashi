@@ -699,8 +699,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" style="z-index: 1070;">
-        <div class="modal-dialog">
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-danger" id="deleteModalLabel">
@@ -719,9 +719,6 @@
         </div>
     </div>
 
-    <!-- Modal Backdrop -->
-    <div class="modal-backdrop fade" id="deleteModalBackdrop" style="z-index: 1060; display: none;"></div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const sidebar = document.getElementById('sidebar');
@@ -739,10 +736,9 @@
 
             // Delete confirmation modal
             const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'), {
-                backdrop: 'static',
-                keyboard: false
+                backdrop: true,
+                keyboard: true
             });
-            const deleteModalBackdrop = document.getElementById('deleteModalBackdrop');
             const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
             let deleteForm = null;
 
@@ -753,7 +749,6 @@
                     const message = btn.getAttribute('data-message') || '{{ __('messages.confirm_delete_message') }}';
                     document.getElementById('deleteModalMessage').textContent = message;
                     deleteForm = btn.closest('form');
-                    deleteModalBackdrop.style.display = 'block';
                     deleteModal.show();
                 }
             });
@@ -763,11 +758,6 @@
                     deleteForm.submit();
                 }
                 deleteModal.hide();
-                deleteModalBackdrop.style.display = 'none';
-            });
-
-            document.getElementById('deleteModal').addEventListener('hidden.bs.modal', function() {
-                deleteModalBackdrop.style.display = 'none';
             });
         });
     </script>

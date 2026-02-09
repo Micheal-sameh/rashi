@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\DTOs\quizCreateDTO;
 use App\Http\Requests\CreateQuizRequest;
 use App\Http\Requests\UpdateQuizRequest;
 use App\Models\Quiz;
@@ -38,10 +37,8 @@ class QuizController extends Controller
 
     public function store(CreateQuizRequest $request)
     {
-        $input = new QuizCreateDTO(...$request->only(
-            'name', 'date', 'competition_id', 'questions', 'help'
-        ));
-        $this->quizService->store($input);
+
+        $this->quizService->store($request->validated());
 
         return redirect()->route('quizzes.index')->with('success', 'quiz created successfully');
 

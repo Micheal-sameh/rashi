@@ -173,13 +173,13 @@
     </div>
 
     {{-- Image Modal (if you need for future previewing images in quizzes) --}}
-    <div id="imageModal" class="modal" onclick="closeModal()">
-        <span class="close">&times;</span>
-        <img class="modal-content" id="modalImage">
+    <div id="imageModal" class="image-modal" onclick="closeModal()">
+        <span class="image-close">&times;</span>
+        <img class="image-modal-content" id="modalImage">
     </div>
 
     <style>
-        .modal {
+        .image-modal {
             display: none;
             position: fixed;
             z-index: 1050;
@@ -192,14 +192,14 @@
             align-items: center;
         }
 
-        .modal-content {
+        .image-modal-content {
             max-width: 90%;
             max-height: 80%;
             border-radius: 8px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
         }
 
-        .close {
+        .image-close {
             position: absolute;
             top: 15px;
             right: 25px;
@@ -208,7 +208,7 @@
             cursor: pointer;
         }
 
-        .close:hover {
+        .image-close:hover {
             color: #bbb;
         }
     </style>

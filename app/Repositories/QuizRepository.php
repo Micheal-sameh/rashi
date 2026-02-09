@@ -49,10 +49,10 @@ class QuizRepository extends BaseRepository
     public function store($input)
     {
         return $this->model->create([
-            'name' => $input->name,
-            'date' => Carbon::parse($input->date),
-            'competition_id' => $input->competition_id,
-            'help' => $input->help,
+            'name' => $input['name'],
+            'date' => Carbon::parse($input['date']),
+            'competition_id' => $input['competition_id'],
+            'help' => $input['help'],
         ]);
     }
 

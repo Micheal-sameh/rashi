@@ -40,7 +40,7 @@ class QuizService
     {
         DB::beginTransaction();
         $quiz = $this->quizRepository->store($input);
-        foreach ($input->questions as $question) {
+        foreach ($input['questions'] as $question) {
             $question_id = $this->quizQuestionRepository->store($quiz, $question);
             $i = 0;
             foreach (collect($question['answers']) as $answer) {

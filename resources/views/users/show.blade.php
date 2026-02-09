@@ -18,39 +18,12 @@
                     </div>
                     <div class="col-md-4">
                         <strong>{{ __('messages.groups') }}:</strong>
-                        <div class="dropdown d-inline">
-                            <span id="groupDropdownToggle" class="text-primary fw-semibold" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false" style="cursor:pointer;">
-                                <span id="userGroupsText">
-                                    {{ $user->groups->pluck('name')->join(', ') ?: __('messages.not_assigned') }}
-                                </span>
-                                <i class="fa fa-caret-down ms-1"></i>
-                            </span>
-
-                            <div class="dropdown-menu p-3 shadow-sm" style="min-width: 250px;"
-                                aria-labelledby="groupDropdownToggle">
-                                <!-- Standard HTML form submission -->
-                                <form method="POST" action="{{ route('users.updateGroups', $user->id) }}">
-                                    @csrf
-                                    @method('PUT')
-
-                                    @foreach ($groups as $group)
-                                        <div class="form-check mb-1">
-                                            <input class="form-check-input" type="checkbox" name="groups[]"
-                                                value="{{ $group->id }}" id="group_{{ $group->id }}"
-                                                {{ $user->groups->contains($group->id) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="group_{{ $group->id }}">
-                                                {{ $group->name }}
-                                            </label>
-                                        </div>
-                                    @endforeach
-
-                                    <button type="submit" class="btn btn-sm btn-primary mt-2">
-                                        <i class="fa fa-save me-1"></i>{{ __('messages.update') }}
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
+                        <span id="userGroupsText">
+                            {{ $user->groups->pluck('name')->join(', ') ?: __('messages.not_assigned') }}
+                        </span>
+                        <button type="button" class="btn btn-sm btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#updateGroupsModal">
+                            <i class="fa fa-edit me-1"></i>{{ __('messages.edit') }}
+                        </button>
                     </div>
                 </div>
 
@@ -131,6 +104,46 @@
                         </nav>
                     @endif
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Groups Modal -->
+    <div class="modal fade" id="updateGroupsModal" tabindex="-1" aria-labelledby="updateGroupsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateGroupsModalLabel">
+                        <i class="fa fa-users me-2"></i>{{ __('messages.update_user_groups') }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="{{ route('users.updateGroups', $user->id) }}">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            @foreach ($groups as $group)
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="groups[]"
+                                        value="{{ $group->id }}" id="modal_group_{{ $group->id }}"
+                                        {{ $user->groups->contains($group->id) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="modal_group_{{ $group->id }}">
+                                        {{ $group->name }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa fa-times me-1"></i>{{ __('messages.cancel') }}
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-save me-1"></i>{{ __('messages.update') }}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

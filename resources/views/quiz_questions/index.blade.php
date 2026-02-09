@@ -185,34 +185,34 @@
         @endif
     </div>
 
-    <!-- Modal HTML -->
-    <div id="imageModal" class="modal" onclick="closeModal()">
-        <span class="close">&times;</span>
-        <img class="modal-content" id="modalImage">
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal" onclick="closeModal()">
+        <span class="image-close">&times;</span>
+        <img class="image-modal-content" id="modalImage">
     </div>
 
     <style>
-        .modal {
+        .image-modal {
             display: none;
             position: fixed;
             z-index: 9999;
             padding-top: 60px;
             left: 0;
             top: 0;
-            width: 70%;
-            height: 70%;
+            width: 100%;
+            height: 100%;
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.9);
         }
 
-        .modal-content {
+        .image-modal-content {
             margin: auto;
             display: block;
             max-width: 80%;
             max-height: 80%;
         }
 
-        .close {
+        .image-close {
             position: absolute;
             top: 15px;
             right: 35px;
@@ -222,8 +222,8 @@
             cursor: pointer;
         }
 
-        .close:hover,
-        .close:focus {
+        .image-close:hover,
+        .image-close:focus {
             color: #bbb;
             text-decoration: none;
         }
