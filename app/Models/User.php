@@ -67,6 +67,11 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(FcmToken::class);
     }
 
+    public function refreshTokens()
+    {
+        return $this->hasMany(RefreshToken::class);
+    }
+
     public function notifications()
     {
         return $this->hasMany(UserNotification::class);

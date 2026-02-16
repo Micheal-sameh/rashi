@@ -96,6 +96,7 @@ return [
     'failed' => 'Failed',
     'Request was successful.' => 'Request was successful.',
     'login successfuly' => 'Login successfuly',
+    'token_refreshed' => 'Token refreshed successfully',
     'value for exists in users table' => 'The value for the en language already exists in the users table',
     'father assigned successfully' => 'Father assigned successfully',
     'servant assigned successfully' => 'Servant assigned successfully',

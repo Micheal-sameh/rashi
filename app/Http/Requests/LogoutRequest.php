@@ -10,6 +10,8 @@ class LogoutRequest extends FormRequest
     {
         return [
             'fcm_token' => 'nullable|string',
+            'device_type' => 'sometimes|string|in:ios,android,web',
+            'imei' => 'sometimes|string',
         ];
     }
 }

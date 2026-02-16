@@ -112,4 +112,18 @@ return [
 
     'password_timeout' => 10800,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Refresh Token Expiration
+    |--------------------------------------------------------------------------
+    |
+    | When an API client obtains a refresh token we only want that token to be
+    | valid for a limited amount of time. This value is expressed in minutes
+    | and can be overridden via the REFRESH_TOKEN_EXPIRATION environment
+    | variable. The service will issue a new refresh token every time the old
+    | one is used (rotating tokens) and revoke previous ones automatically.
+    |
+    */
+    'refresh_token_expiration' => env('REFRESH_TOKEN_EXPIRATION', 10080), // 7 days
+
 ];

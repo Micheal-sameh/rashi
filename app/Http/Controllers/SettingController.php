@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateSettingRequest;
+use App\Models\RefreshToken;
 use App\Services\SettingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -40,6 +41,8 @@ class SettingController extends Controller
         }
 
         PersonalAccessToken::query()->delete();
+        // also purge any issued refresh tokens
+        RefreshToken::query()->delete();
 
         return redirect()->back()->with('success', 'All API tokens have been deleted. All users are now logged out.');
     }

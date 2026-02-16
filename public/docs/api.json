@@ -89,6 +89,68 @@
         }
       }
     },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Refresh Access Token",
+        "description": "Exchange a valid refresh token for a new access token (and rotating refresh token).",
+        "parameters": [
+          {
+            "name": "refresh_token",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "The refresh token previously issued to the user."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token refreshed successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "token refreshed successfully"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "1|newaccess..."
+                    },
+                    "refresh_token": {
+                      "type": "string",
+                      "example": "rt_newrefresh..."
+                    },
+                    "user": {
+                      "$ref": "#/definitions/UserResource"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or expired refresh token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status_code": { "type": "integer", "example": 401 },
+                "message": { "type": "string", "example": "invalid refresh token" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/logout": {
       "post": {
         "tags": [
@@ -108,6 +170,20 @@
             "required": false,
             "type": "string",
             "description": "FCM token to delete"
+          },
+          {
+            "name": "device_type",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Optional device identifier (ios, android, web)"
+          },
+          {
+            "name": "imei",
+            "in": "formData",
+            "required": false,
+            "type": "string",
+            "description": "Optional device IMEI or unique id for revoking tokens"
           }
         ],
         "responses": {
