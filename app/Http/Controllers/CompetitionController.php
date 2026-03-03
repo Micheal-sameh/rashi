@@ -6,6 +6,7 @@ use App\DTOs\CompetitionCreateDTO;
 use App\Exports\CompetitionExport;
 use App\Http\Requests\CreateCompetitionRequest;
 use App\Imports\QuizImport;
+use App\Models\User;
 use App\Repositories\GroupRepository;
 use App\Services\CompetitionService;
 use Maatwebsite\Excel\Facades\Excel;
@@ -122,7 +123,15 @@ class CompetitionController extends Controller
         $userIds = request('user_ids', []);
         $groupId = request('group_id');
 
+        if (empty($userIds) && $groupId) {
+            $competitionForUsers = $this->competitionService->show($id);
+            $userIds = $this->competitionService->getUsersForCompetition($competitionForUsers, $groupId)
+                ->pluck('id')
+                ->toArray();
+        }
+
         $competition = $this->competitionService->show($id)->load([
+            'groups',
             'quizzes.questions.answers',
             'quizzes.questions.userAnswers' => function ($query) use ($userIds) {
                 if (! empty($userIds)) {
@@ -155,6 +164,42 @@ class CompetitionController extends Controller
             return $b['total_points'] <=> $a['total_points'];
         });
 
+        $competitionGroupIds = $competition->groups->pluck('id');
+        $usersWithGroups = User::query()
+            ->whereIn('id', array_keys($userStats))
+            ->with(['groups' => function ($query) use ($competitionGroupIds) {
+                $query->whereIn('groups.id', $competitionGroupIds);
+            }])
+            ->get()
+            ->keyBy('id');
+
+        foreach ($userStats as $userId => &$stats) {
+            $primaryGroup = optional($usersWithGroups->get($userId))->groups->first();
+            $stats['group_id'] = $primaryGroup?->id;
+            $stats['group_name'] = $primaryGroup?->name ?? 'غير محدد';
+        }
+        unset($stats);
+
+        $groupRankings = [];
+        foreach ($userStats as $userId => $stats) {
+            $groupKey = $stats['group_id'] ?? 'ungrouped';
+            if (! isset($groupRankings[$groupKey])) {
+                $groupRankings[$groupKey] = [
+                    'title' => $stats['group_name'],
+                    'users' => [],
+                ];
+            }
+
+            $groupRankings[$groupKey]['users'][] = array_merge($stats, ['user_id' => $userId]);
+        }
+
+        foreach ($groupRankings as &$groupData) {
+            usort($groupData['users'], function ($a, $b) {
+                return $b['total_points'] <=> $a['total_points'];
+            });
+        }
+        unset($groupData);
+
         $logo = \App\Models\Setting::where('name', 'logo')->first();
 
         $mpdf = new Mpdf([
@@ -163,7 +208,7 @@ class CompetitionController extends Controller
             'default_font' => 'arial',
         ]);
         // 'export'
-        $html = view('competitions.leaderboard_pdf', compact('competition', 'userStats', 'logo'))->render();
+        $html = view('competitions.leaderboard_pdf', compact('competition', 'userStats', 'groupRankings', 'logo'))->render();
 
         $mpdf->WriteHTML($html);
 

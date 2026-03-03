@@ -44,11 +44,14 @@
 <body>
     <h1>ترتيب المسابقة</h1>
     <h2>{{ $competition->name }}</h2>
+
+    <h2>الترتيب العام</h2>
     <table>
         <thead>
             <tr>
                 <th>الترتيب</th>
                 <th>الاسم</th>
+                <th>المجموعة</th>
                 <th>إجمالي النقاط</th>
                 <th>الإجابات الصحيحة</th>
                 <th>إجمالي الأسئلة</th>
@@ -59,6 +62,7 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $user['name'] }}</td>
+                    <td>{{ $user['group_name'] ?? 'غير محدد' }}</td>
                     <td>{{ $user['total_points'] }}</td>
                     <td>{{ $user['total_correct'] }}</td>
                     <td>{{ $user['total_questions'] }}</td>
@@ -66,5 +70,35 @@
             @endforeach
         </tbody>
     </table>
+
+    @if (!empty($groupRankings))
+        <h2 style="margin-top: 30px;">الترتيب حسب المجموعة</h2>
+
+        @foreach ($groupRankings as $groupRanking)
+            <h2>{{ $groupRanking['title'] }}</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الترتيب</th>
+                        <th>الاسم</th>
+                        <th>إجمالي النقاط</th>
+                        <th>الإجابات الصحيحة</th>
+                        <th>إجمالي الأسئلة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($groupRanking['users'] as $index => $user)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $user['name'] }}</td>
+                            <td>{{ $user['total_points'] }}</td>
+                            <td>{{ $user['total_correct'] }}</td>
+                            <td>{{ $user['total_questions'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endforeach
+    @endif
 </body>
 </html>
