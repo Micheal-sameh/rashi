@@ -68,6 +68,19 @@ class CompetitionRepository extends BaseRepository
         return $this->findById($id);
     }
 
+    public function getCompetitionWithUserAnswers($id, array $userIds = [])
+    {
+        return $this->findById($id)->load([
+            'quizzes.questions.answers',
+            'quizzes.questions.userAnswers' => function ($query) use ($userIds) {
+                if (! empty($userIds)) {
+                    $query->whereIn('user_id', $userIds);
+                }
+                $query->with(['user', 'answer']);
+            },
+        ]);
+    }
+
     public function store($input, $image)
     {
         $competition = $this->model->create([
@@ -209,6 +222,13 @@ class CompetitionRepository extends BaseRepository
         }
 
         return $query->orderBy('users.name')->get();
+    }
+
+    public function getUsersForCompetitionById($competitionId, $groupId = null)
+    {
+        $competition = $this->findById($competitionId);
+
+        return $this->getUsersForCompetition($competition, $groupId);
     }
 
     public function getCompetitionCounts()

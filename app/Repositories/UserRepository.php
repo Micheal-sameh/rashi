@@ -47,7 +47,6 @@ class UserRepository extends BaseRepository
             ],
             [
                 'name' => $input->name,
-                'email' => $input->email,
                 'phone' => $input->phone,
                 'password' => Hash::make($input->password),
             ]

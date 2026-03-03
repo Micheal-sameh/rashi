@@ -6,9 +6,10 @@ use App\DTOs\CompetitionCreateDTO;
 use App\Exports\CompetitionExport;
 use App\Http\Requests\CreateCompetitionRequest;
 use App\Imports\QuizImport;
-use App\Models\User;
+use App\Jobs\ProcessCompetitionLeaderboardExport;
 use App\Repositories\GroupRepository;
 use App\Services\CompetitionService;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Mpdf\Mpdf;
 
@@ -96,26 +97,9 @@ class CompetitionController extends Controller
         $userIds = request('user_ids', []);
         $groupId = request('group_id');
 
-        $competition = $this->competitionService->show($id)->load([
-            'quizzes.questions.answers',
-            'quizzes.questions.userAnswers' => function ($query) use ($userIds) {
-                if (! empty($userIds)) {
-                    $query->whereIn('user_id', $userIds);
-                }
-                $query->with(['user', 'answer']);
-            },
-        ]);
+        $viewData = $this->competitionService->getUserAnswersViewData($id, $userIds, $groupId);
 
-        // Get users based on group filter or all users
-        $users = $this->competitionService->getUsersForCompetition($competition, $groupId);
-
-        // Calculate user stats for each quiz, filtered by selected users
-        $quizStats = [];
-        foreach ($competition->quizzes as $quiz) {
-            $quizStats[$quiz->id] = $this->competitionService->getUserStatsForQuiz($quiz, $userIds);
-        }
-
-        return view('competitions.user-answers', compact('competition', 'users', 'quizStats'));
+        return view('competitions.user-answers', $viewData);
     }
 
     public function exportLeaderboard($id)
@@ -123,82 +107,12 @@ class CompetitionController extends Controller
         $userIds = request('user_ids', []);
         $groupId = request('group_id');
 
-        if (empty($userIds) && $groupId) {
-            $competitionForUsers = $this->competitionService->show($id);
-            $userIds = $this->competitionService->getUsersForCompetition($competitionForUsers, $groupId)
-                ->pluck('id')
-                ->toArray();
-        }
-
-        $competition = $this->competitionService->show($id)->load([
-            'groups',
-            'quizzes.questions.answers',
-            'quizzes.questions.userAnswers' => function ($query) use ($userIds) {
-                if (! empty($userIds)) {
-                    $query->whereIn('user_id', $userIds);
-                }
-                $query->with(['user', 'answer']);
-            },
-        ]);
-
-        $userStats = [];
-        foreach ($competition->quizzes as $quiz) {
-            $quizStats = $this->competitionService->getUserStatsForQuiz($quiz, $userIds);
-            foreach ($quizStats as $userId => $stats) {
-                if (! isset($userStats[$userId])) {
-                    $userStats[$userId] = [
-                        'name' => $stats['name'],
-                        'total_correct' => 0,
-                        'total_points' => 0,
-                        'total_questions' => 0,
-                    ];
-                }
-                $userStats[$userId]['total_correct'] += $stats['total_correct'];
-                $userStats[$userId]['total_points'] += $stats['total_points'];
-                $userStats[$userId]['total_questions'] += $stats['total_questions'];
-            }
-        }
-
-        // Sort by total_points descending
-        uasort($userStats, function ($a, $b) {
-            return $b['total_points'] <=> $a['total_points'];
-        });
-
-        $competitionGroupIds = $competition->groups->pluck('id');
-        $usersWithGroups = User::query()
-            ->whereIn('id', array_keys($userStats))
-            ->with(['groups' => function ($query) use ($competitionGroupIds) {
-                $query->whereIn('groups.id', $competitionGroupIds);
-            }])
-            ->get()
-            ->keyBy('id');
-
-        foreach ($userStats as $userId => &$stats) {
-            $primaryGroup = optional($usersWithGroups->get($userId))->groups->first();
-            $stats['group_id'] = $primaryGroup?->id;
-            $stats['group_name'] = $primaryGroup?->name ?? 'غير محدد';
-        }
-        unset($stats);
-
-        $groupRankings = [];
-        foreach ($userStats as $userId => $stats) {
-            $groupKey = $stats['group_id'] ?? 'ungrouped';
-            if (! isset($groupRankings[$groupKey])) {
-                $groupRankings[$groupKey] = [
-                    'title' => $stats['group_name'],
-                    'users' => [],
-                ];
-            }
-
-            $groupRankings[$groupKey]['users'][] = array_merge($stats, ['user_id' => $userId]);
-        }
-
-        foreach ($groupRankings as &$groupData) {
-            usort($groupData['users'], function ($a, $b) {
-                return $b['total_points'] <=> $a['total_points'];
-            });
-        }
-        unset($groupData);
+        $leaderboardData = $this->competitionService->getLeaderboardExportData($id, $userIds, $groupId);
+        $competition = $leaderboardData['competition'];
+        $userStats = $leaderboardData['userStats'];
+        $groupRankings = $leaderboardData['groupRankings'];
+        $baseFileName = $leaderboardData['baseFileName'];
+        $resolvedUserIds = $leaderboardData['userIds'];
 
         $logo = \App\Models\Setting::where('name', 'logo')->first();
 
@@ -207,12 +121,19 @@ class CompetitionController extends Controller
             'format' => 'A4',
             'default_font' => 'arial',
         ]);
-        // 'export'
         $html = view('competitions.leaderboard_pdf', compact('competition', 'userStats', 'groupRankings', 'logo'))->render();
-
         $mpdf->WriteHTML($html);
 
-        return $mpdf->Output("{$competition->name}.pdf", 'D');
+        $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+
+        ProcessCompetitionLeaderboardExport::dispatch($competition->id, $resolvedUserIds, $groupId);
+
+        $downloadName = Str::slug($baseFileName) ?: 'competition-'.$competition->id;
+
+        return response($pdfContent, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$downloadName.'-leaderboard.pdf"',
+        ]);
     }
 
     public function uploadQuizzes($id)
