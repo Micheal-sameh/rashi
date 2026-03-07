@@ -46,16 +46,16 @@ class AuthController extends BaseController
             $this->updateOrCreateFcmToken($request, $user);
 
             $token = $this->generateToken($user);
-            // create a refresh token pair, include device metadata if provided
-            $refreshToken = $this->refreshTokenService->createForUser(
-                $user,
-                $request->device_type ?? null,
-                $request->imei ?? null
-            );
+            // Refresh tokens are disabled for now.
+            // $refreshToken = $this->refreshTokenService->createForUser(
+            //     $user,
+            //     $request->device_type ?? null,
+            //     $request->imei ?? null
+            // );
 
             return $this->apiResponse([
                 'token' => $token,
-                'refresh_token' => $refreshToken,
+                // 'refresh_token' => $refreshToken,
                 'user' => new UserResource($user),
             ], trans('messages.login successfuly'));
 
@@ -80,17 +80,18 @@ class AuthController extends BaseController
         ]);
         $token->delete();
 
+        // Refresh tokens are disabled for now.
         // revoke refresh tokens for this device only (if identifiers present)
-        if ($request->has('device_type') || $request->has('imei')) {
-            $this->refreshTokenService->revokeForDevice(
-                $user->id,
-                $request->device_type,
-                $request->imei
-            );
-        } else {
-            // fallback: revoke everything
-            $this->refreshTokenService->revokeAllForUser($user->id);
-        }
+        // if ($request->has('device_type') || $request->has('imei')) {
+        //     $this->refreshTokenService->revokeForDevice(
+        //         $user->id,
+        //         $request->device_type,
+        //         $request->imei
+        //     );
+        // } else {
+        //     // fallback: revoke everything
+        //     $this->refreshTokenService->revokeAllForUser($user->id);
+        // }
 
         auth()->guard('web')->logout();
 
@@ -162,20 +163,7 @@ class AuthController extends BaseController
      */
     public function refresh(RefreshTokenRequest $request)
     {
-        $refresh = $this->refreshTokenService->findByPlain($request->refresh_token);
-
-        if (! $refresh || $refresh->isExpired() || $refresh->isRevoked()) {
-            return $this->apiErrorResponse('invalid refresh token', 401);
-        }
-
-        $user = $refresh->user;
-        $newAccessToken = $this->generateToken($user);
-        $newRefresh = $this->refreshTokenService->rotate($refresh);
-
-        return $this->apiResponse([
-            'token' => $newAccessToken,
-            'refresh_token' => $newRefresh,
-            'user' => new UserResource($user),
-        ], trans('messages.token_refreshed'));
+        // Refresh tokens are disabled for now.
+        return $this->apiErrorResponse('refresh token is disabled for now', 403);
     }
 }
