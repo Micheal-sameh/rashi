@@ -62,22 +62,41 @@ class GroupService
         $nodeHeight = 88;
         $gapX = 110;
         $gapY = 20;
+        $rowGap = 90;
         $paddingX = 30;
         $paddingY = 50;
+        $maxStagesPerRow = 4;
+
+        $stagesCount = count($stages);
+        $rowsCount = max((int) ceil($stagesCount / $maxStagesPerRow), 1);
 
         $stageHeights = $stages->map(fn ($stage) => (count($stage) * $nodeHeight) + (max(count($stage) - 1, 0) * $gapY));
         $maxStageHeight = max((int) ($stageHeights->max() ?? $nodeHeight), $nodeHeight);
 
-        $chartWidth = max((int) ((count($stages) * $nodeWidth) + (max(count($stages) - 1, 0) * $gapX) + ($paddingX * 2)), 1000);
-        $chartHeight = max((int) ($maxStageHeight + ($paddingY * 2)), 340);
+        $longestRowStages = min($maxStagesPerRow, $stagesCount ?: 1);
+        $chartWidth = max((int) (($longestRowStages * $nodeWidth) + (max($longestRowStages - 1, 0) * $gapX) + ($paddingX * 2)), 1000);
+        $chartHeight = max((int) (($rowsCount * $maxStageHeight) + (max($rowsCount - 1, 0) * $rowGap) + ($paddingY * 2)), 340);
 
         $nodes = [];
         $edges = [];
+        $stageAnchors = [];
 
         foreach ($stages as $stageIndex => $stage) {
+            $rowIndex = (int) floor($stageIndex / $maxStagesPerRow);
+            $offsetInRow = $stageIndex % $maxStagesPerRow;
+            $isReverseRow = $rowIndex % 2 === 1;
+            $colIndex = $isReverseRow ? ($maxStagesPerRow - 1 - $offsetInRow) : $offsetInRow;
+
             $stageHeight = $stageHeights[$stageIndex];
-            $startY = (int) ($paddingY + (($maxStageHeight - $stageHeight) / 2));
-            $x = (int) ($paddingX + ($stageIndex * ($nodeWidth + $gapX)));
+            $rowTop = $paddingY + ($rowIndex * ($maxStageHeight + $rowGap));
+            $startY = (int) ($rowTop + (($maxStageHeight - $stageHeight) / 2));
+            $x = (int) ($paddingX + ($colIndex * ($nodeWidth + $gapX)));
+
+            $stageAnchors[$stageIndex] = [
+                'row' => $rowIndex,
+                'col' => $colIndex,
+                'isReverse' => $isReverseRow,
+            ];
 
             foreach ($stage->values() as $nodeIndex => $competition) {
                 $y = (int) ($startY + ($nodeIndex * ($nodeHeight + $gapY)));
@@ -101,22 +120,53 @@ class GroupService
         }
 
         for ($stageIndex = 1; $stageIndex < count($nodes); $stageIndex++) {
+            $fromAnchor = $stageAnchors[$stageIndex - 1];
+            $toAnchor = $stageAnchors[$stageIndex];
+            $sameRow = $fromAnchor['row'] === $toAnchor['row'];
+
             foreach (($nodes[$stageIndex - 1] ?? []) as $from) {
                 foreach (($nodes[$stageIndex] ?? []) as $to) {
-                    $fromY = $from['y'] + ($nodeHeight / 2);
-                    $toY = $to['y'] + ($nodeHeight / 2);
-                    $fromX = $from['x'] + $nodeWidth;
-                    $toX = $to['x'];
+                    if ($sameRow) {
+                        $fromToRight = $to['x'] >= $from['x'];
+                        $fromX = $fromToRight ? ($from['x'] + $nodeWidth) : $from['x'];
+                        $toX = $fromToRight ? $to['x'] : ($to['x'] + $nodeWidth);
+                        $fromY = $from['y'] + ($nodeHeight / 2);
+                        $toY = $to['y'] + ($nodeHeight / 2);
+                        $curveOffset = 42;
+
+                        $edges[] = [
+                            'd' => sprintf(
+                                'M%s,%s C%s,%s %s,%s %s,%s',
+                                $fromX,
+                                $fromY,
+                                $fromToRight ? $fromX + $curveOffset : $fromX - $curveOffset,
+                                $fromY,
+                                $fromToRight ? $toX - $curveOffset : $toX + $curveOffset,
+                                $toY,
+                                $toX,
+                                $toY
+                            ),
+                        ];
+
+                        continue;
+                    }
+
+                    $fromX = $from['x'] + ($nodeWidth / 2);
+                    $fromY = $from['y'] + $nodeHeight;
+                    $toX = $to['x'] + ($nodeWidth / 2);
+                    $toY = $to['y'];
+                    $midYUp = $fromY + 28;
+                    $midYDown = $toY - 28;
 
                     $edges[] = [
                         'd' => sprintf(
                             'M%s,%s C%s,%s %s,%s %s,%s',
                             $fromX,
                             $fromY,
-                            $fromX + 40,
-                            $fromY,
-                            $toX - 40,
-                            $toY,
+                            $fromX,
+                            $midYUp,
+                            $toX,
+                            $midYDown,
                             $toX,
                             $toY
                         ),
@@ -126,7 +176,9 @@ class GroupService
         }
 
         return [
-            'stagesCount' => count($stages),
+            'stagesCount' => $stagesCount,
+            'rowsCount' => $rowsCount,
+            'maxStagesPerRow' => $maxStagesPerRow,
             'nodeWidth' => $nodeWidth,
             'nodeHeight' => $nodeHeight,
             'paddingX' => $paddingX,
