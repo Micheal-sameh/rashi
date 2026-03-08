@@ -138,6 +138,39 @@
                 .replace(/\s+/g, ' ')
                 .trim();
 
+            const wrapText = (value, maxCharsPerLine = 26, maxLines = 4) => {
+                const clean = safeLabel(value);
+                if (!clean) return '';
+
+                const words = clean.split(' ');
+                const lines = [];
+                let currentLine = '';
+
+                words.forEach((word) => {
+                    const candidate = currentLine ? `${currentLine} ${word}` : word;
+                    if (candidate.length <= maxCharsPerLine) {
+                        currentLine = candidate;
+                    } else {
+                        if (currentLine) {
+                            lines.push(currentLine);
+                        }
+                        currentLine = word;
+                    }
+                });
+
+                if (currentLine) {
+                    lines.push(currentLine);
+                }
+
+                if (lines.length > maxLines) {
+                    const visible = lines.slice(0, maxLines);
+                    visible[maxLines - 1] = `${visible[maxLines - 1]}...`;
+                    return visible.join('<br/>');
+                }
+
+                return lines.join('<br/>');
+            };
+
             charts.forEach((chartEl, chartIndex) => {
                 const competitions = JSON.parse(chartEl.dataset.competitions || '[]');
 
@@ -183,10 +216,12 @@
 
                         stage.forEach((competition) => {
                             const competitionNode = `GC${chartIndex}_${competition.id}`;
-                            const label = `${competition.name} (${competition.start_at} → ${competition.end_at})`;
+                            const wrappedName = wrapText(competition.name, 24, 3);
+                            const dateText = safeLabel(`${competition.start_at} → ${competition.end_at}`);
+                            const label = `${wrappedName}<br/>${dateText}`;
 
                             stageNodes.push(competitionNode);
-                            lines.push(`${competitionNode}["${safeLabel(label)}"]`);
+                            lines.push(`${competitionNode}["${label}"]`);
 
                             if (competition.status === STATUS.finished) {
                                 lines.push(`class ${competitionNode} finished`);

@@ -80,6 +80,39 @@
                 .replace(/\s+/g, ' ')
                 .trim();
 
+            const wrapText = (value, maxCharsPerLine = 26, maxLines = 4) => {
+                const clean = safeLabel(value);
+                if (!clean) return '';
+
+                const words = clean.split(' ');
+                const lines = [];
+                let currentLine = '';
+
+                words.forEach((word) => {
+                    const candidate = currentLine ? `${currentLine} ${word}` : word;
+                    if (candidate.length <= maxCharsPerLine) {
+                        currentLine = candidate;
+                    } else {
+                        if (currentLine) {
+                            lines.push(currentLine);
+                        }
+                        currentLine = word;
+                    }
+                });
+
+                if (currentLine) {
+                    lines.push(currentLine);
+                }
+
+                if (lines.length > maxLines) {
+                    const visible = lines.slice(0, maxLines);
+                    visible[maxLines - 1] = `${visible[maxLines - 1]}...`;
+                    return visible.join('<br/>');
+                }
+
+                return lines.join('<br/>');
+            };
+
             const rowBridgePoints = [];
 
             chunkedRows.forEach((rowStages, rowIndex) => {
@@ -93,10 +126,12 @@
 
                     stage.forEach((quiz) => {
                         const quizNode = `Q${quiz.id}`;
-                        const label = `${quiz.name} (${quiz.date})`;
+                        const wrappedName = wrapText(quiz.name, 24, 3);
+                        const dateText = safeLabel(quiz.date);
+                        const label = `${wrappedName}<br/>${dateText}`;
 
                         stageNodes.push(quizNode);
-                        lines.push(`${quizNode}["${safeLabel(label)}"]`);
+                        lines.push(`${quizNode}["${label}"]`);
                         lines.push(`class ${quizNode} ${statusClass[quiz.status] || 'future'}`);
                     });
 
