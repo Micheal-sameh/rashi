@@ -58,11 +58,19 @@
             }, {});
 
             const dates = Object.keys(byDate);
+            const groupedQuizzes = dates.map((date) => byDate[date]);
+            const stagesPerRow = 4;
+            const chunkedRows = [];
+            for (let i = 0; i < groupedQuizzes.length; i += stagesPerRow) {
+                chunkedRows.push(groupedQuizzes.slice(i, i + stagesPerRow));
+            }
+
             const lines = [
-                'flowchart LR',
+                'flowchart TB',
                 'classDef finished fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#111;',
                 'classDef active fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,color:#111;',
-                'classDef future fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#111;'
+                'classDef future fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#111;',
+                'classDef rowlink fill:transparent,stroke:transparent,color:transparent;'
             ];
 
             const safeLabel = (value) => String(value ?? '')
@@ -72,20 +80,54 @@
                 .replace(/\s+/g, ' ')
                 .trim();
 
-            dates.forEach((date, index) => {
-                const dateNode = `D${index}`;
-                lines.push(`${dateNode}["${safeLabel(date)}"]`);
+            const rowBridgePoints = [];
 
-                if (index > 0) {
-                    lines.push(`D${index - 1} --> ${dateNode}`);
+            chunkedRows.forEach((rowStages, rowIndex) => {
+                lines.push(`subgraph QROW_${rowIndex}[" "]`);
+                lines.push('direction LR');
+
+                const rowStageNodeGroups = [];
+
+                rowStages.forEach((stage) => {
+                    const stageNodes = [];
+
+                    stage.forEach((quiz) => {
+                        const quizNode = `Q${quiz.id}`;
+                        const label = `${quiz.name} (${quiz.date})`;
+
+                        stageNodes.push(quizNode);
+                        lines.push(`${quizNode}["${safeLabel(label)}"]`);
+                        lines.push(`class ${quizNode} ${statusClass[quiz.status] || 'future'}`);
+                    });
+
+                    rowStageNodeGroups.push(stageNodes);
+                });
+
+                for (let i = 1; i < rowStageNodeGroups.length; i++) {
+                    const previousStage = rowStageNodeGroups[i - 1];
+                    const currentStage = rowStageNodeGroups[i];
+                    previousStage.forEach((fromNode) => {
+                        currentStage.forEach((toNode) => {
+                            lines.push(`${fromNode} --> ${toNode}`);
+                        });
+                    });
                 }
 
-                byDate[date].forEach((quiz) => {
-                    const quizNode = `Q${quiz.id}`;
-                    lines.push(`${quizNode}["${safeLabel(quiz.name)}"]`);
-                    lines.push(`${dateNode} --> ${quizNode}`);
-                    lines.push(`class ${quizNode} ${statusClass[quiz.status] || 'future'}`);
-                });
+                lines.push('end');
+
+                if (rowStageNodeGroups.length) {
+                    rowBridgePoints.push({
+                        rowEnd: rowStageNodeGroups[rowStageNodeGroups.length - 1][0],
+                        rowStart: rowStageNodeGroups[0][0],
+                    });
+                }
+            });
+
+            for (let i = 1; i < rowBridgePoints.length; i++) {
+                const turnNode = `QTURN_${i}`;
+                lines.push(`${turnNode}(( ))`);
+                lines.push(`class ${turnNode} rowlink`);
+                lines.push(`${rowBridgePoints[i - 1].rowEnd} --> ${turnNode} --> ${rowBridgePoints[i].rowStart}`);
             });
 
             mermaid.initialize({

@@ -155,42 +155,78 @@
 
                 const dates = Object.keys(byDate);
                 const groupedCompetitions = dates.map((date) => byDate[date]);
+                const stagesPerRow = 4;
+                const chunkedRows = [];
+                for (let i = 0; i < groupedCompetitions.length; i += stagesPerRow) {
+                    chunkedRows.push(groupedCompetitions.slice(i, i + stagesPerRow));
+                }
+
                 const lines = [
-                    'flowchart LR',
+                    'flowchart TB',
                     'classDef finished fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#111;',
                     'classDef active fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,color:#111;',
                     'classDef cancelled fill:#fee2e2,stroke:#dc2626,stroke-width:2px,color:#111;',
-                    'classDef future fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#111;'
+                    'classDef future fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#111;',
+                    'classDef rowlink fill:transparent,stroke:transparent,color:transparent;'
                 ];
 
-                groupedCompetitions.forEach((group) => {
-                    group.forEach((competition) => {
-                        const competitionNode = `GC${chartIndex}_${competition.id}`;
-                        const label = `${competition.name} (${competition.start_at} → ${competition.end_at})`;
+                const rowBridgePoints = [];
 
-                        lines.push(`${competitionNode}["${safeLabel(label)}"]`);
+                chunkedRows.forEach((rowStages, rowIndex) => {
+                    lines.push(`subgraph ROW_${chartIndex}_${rowIndex}[" "]`);
+                    lines.push('direction LR');
 
-                        if (competition.status === STATUS.finished) {
-                            lines.push(`class ${competitionNode} finished`);
-                        } else if (competition.status === STATUS.active) {
-                            lines.push(`class ${competitionNode} active`);
-                        } else if (competition.status === STATUS.cancelled) {
-                            lines.push(`class ${competitionNode} cancelled`);
-                        } else {
-                            lines.push(`class ${competitionNode} future`);
-                        }
+                    const rowStageNodeGroups = [];
+
+                    rowStages.forEach((stage) => {
+                        const stageNodes = [];
+
+                        stage.forEach((competition) => {
+                            const competitionNode = `GC${chartIndex}_${competition.id}`;
+                            const label = `${competition.name} (${competition.start_at} → ${competition.end_at})`;
+
+                            stageNodes.push(competitionNode);
+                            lines.push(`${competitionNode}["${safeLabel(label)}"]`);
+
+                            if (competition.status === STATUS.finished) {
+                                lines.push(`class ${competitionNode} finished`);
+                            } else if (competition.status === STATUS.active) {
+                                lines.push(`class ${competitionNode} active`);
+                            } else if (competition.status === STATUS.cancelled) {
+                                lines.push(`class ${competitionNode} cancelled`);
+                            } else {
+                                lines.push(`class ${competitionNode} future`);
+                            }
+                        });
+
+                        rowStageNodeGroups.push(stageNodes);
                     });
+
+                    for (let i = 1; i < rowStageNodeGroups.length; i++) {
+                        const previousStage = rowStageNodeGroups[i - 1];
+                        const currentStage = rowStageNodeGroups[i];
+                        previousStage.forEach((fromNode) => {
+                            currentStage.forEach((toNode) => {
+                                lines.push(`${fromNode} --> ${toNode}`);
+                            });
+                        });
+                    }
+
+                    lines.push('end');
+
+                    if (rowStageNodeGroups.length) {
+                        rowBridgePoints.push({
+                            rowEnd: rowStageNodeGroups[rowStageNodeGroups.length - 1][0],
+                            rowStart: rowStageNodeGroups[0][0],
+                        });
+                    }
                 });
 
-                for (let i = 1; i < groupedCompetitions.length; i++) {
-                    const previousGroup = groupedCompetitions[i - 1];
-                    const currentGroup = groupedCompetitions[i];
-
-                    previousGroup.forEach((previousCompetition) => {
-                        currentGroup.forEach((currentCompetition) => {
-                            lines.push(`GC${chartIndex}_${previousCompetition.id} --> GC${chartIndex}_${currentCompetition.id}`);
-                        });
-                    });
+                for (let i = 1; i < rowBridgePoints.length; i++) {
+                    const turnNode = `TURN_${chartIndex}_${i}`;
+                    lines.push(`${turnNode}(( ))`);
+                    lines.push(`class ${turnNode} rowlink`);
+                    lines.push(`${rowBridgePoints[i - 1].rowEnd} --> ${turnNode} --> ${rowBridgePoints[i].rowStart}`);
                 }
 
                 chartEl.textContent = lines.join('\n');
