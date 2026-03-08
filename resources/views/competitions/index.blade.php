@@ -140,6 +140,11 @@
                                                 title="Export Competition">
                                                 <i class="fa fa-download"></i>
                                             </a>
+                                            <a href="{{ route('competitions.quizzesFlowchart', $competition->id) }}"
+                                                class="btn btn-sm btn-outline-primary"
+                                                title="{{ __('messages.quiz_flowchart_report') }}">
+                                                <i class="fa fa-project-diagram"></i>
+                                            </a>
                                             <button type="button" class="btn btn-sm btn-outline-success"
                                                 title="{{ __('messages.upload_quizzes') }}"
                                                 onclick="openUploadModal({{ $competition->id }}, '{{ $competition->name }}')">
@@ -247,6 +252,10 @@
                                     onclick="openUploadModal({{ $competition->id }}, '{{ $competition->name }}')">
                                     <i class="fa fa-file-excel me-1"></i>{{ __('messages.upload') }}
                                 </button>
+                                <a href="{{ route('competitions.quizzesFlowchart', $competition->id) }}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fa fa-project-diagram me-1"></i>{{ __('messages.report') }}
+                                </a>
                                 <a href="{{ route('competitions.userAnswers', $competition->id) }}"
                                     class="btn btn-sm btn-outline-info">
                                     <i class="fa fa-users me-1"></i>{{ __('messages.answers') }}

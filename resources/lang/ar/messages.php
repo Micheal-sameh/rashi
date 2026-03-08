@@ -585,4 +585,13 @@ return [
     'no_groups_found' => 'لم يتم العثور على مجموعات',
     'ended' => 'انتهى',
     'starts' => 'يبدأ',
+    'quiz_flowchart_report' => 'تقرير مخطط الاختبارات',
+    'flow_finished' => 'منتهي',
+    'flow_active' => 'نشط / حالي',
+    'flow_future' => 'قادم / معلق',
+    'flow_cancelled' => 'ملغى',
+    'select_group_for_flowchart' => 'اختر المجموعة',
+    'select_group_to_view_flowchart' => 'اختر مجموعة لعرض تقرير المخطط الخاص بها',
+    'show_flowchart' => 'عرض المخطط',
+    'export_pdf' => 'تصدير PDF',
 ];

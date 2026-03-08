@@ -563,4 +563,13 @@ return [
     'no_groups_found' => 'No groups found',
     'ended' => 'Ended',
     'starts' => 'Starts',
+    'quiz_flowchart_report' => 'Quiz Flowchart Report',
+    'flow_finished' => 'Finished',
+    'flow_active' => 'Active / Current',
+    'flow_future' => 'Future / Pending',
+    'flow_cancelled' => 'Cancelled',
+    'select_group_for_flowchart' => 'Select Group',
+    'select_group_to_view_flowchart' => 'Select a group to view its flowchart report',
+    'show_flowchart' => 'Show Flowchart',
+    'export_pdf' => 'Export PDF',
 ];

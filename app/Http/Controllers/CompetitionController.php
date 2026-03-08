@@ -102,6 +102,37 @@ class CompetitionController extends Controller
         return view('competitions.user-answers', $viewData);
     }
 
+    public function quizzesFlowchart($id)
+    {
+        $competition = $this->competitionService->show($id)
+            ->load(['quizzes' => fn ($query) => $query->orderBy('date', 'asc')]);
+
+        $today = now()->toDateString();
+
+        $quizTimeline = $competition->quizzes
+            ->map(function ($quiz) use ($today) {
+                $quizDate = \Carbon\Carbon::parse($quiz->date)->toDateString();
+
+                if ($quizDate < $today) {
+                    $status = 'finished';
+                } elseif ($quizDate === $today) {
+                    $status = 'active';
+                } else {
+                    $status = 'pending';
+                }
+
+                return [
+                    'id' => $quiz->id,
+                    'name' => $quiz->name,
+                    'date' => $quizDate,
+                    'status' => $status,
+                ];
+            })
+            ->values();
+
+        return view('competitions.quizzes-flowchart', compact('competition', 'quizTimeline'));
+    }
+
     public function exportLeaderboard($id)
     {
         $userIds = request('user_ids', []);

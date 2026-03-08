@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\CompetitionStatus;
 use App\Http\Requests\CreateGroupRequest;
 use App\Http\Requests\UpdateGroupUsers;
-use App\Repositories\CompetitionRepository;
 use App\Repositories\GroupRepository;
 use App\Repositories\UserRepository;
+use App\Services\GroupService;
+use Illuminate\Support\Str;
+use Mpdf\Mpdf;
 
 class GroupController extends Controller
 {
     public function __construct(
         protected GroupRepository $groupRepository,
         protected UserRepository $userRepository,
-        protected CompetitionRepository $competitionRepository,
+        protected GroupService $groupService,
     ) {}
 
     public function index()
@@ -71,35 +72,36 @@ class GroupController extends Controller
 
     public function competitions()
     {
-        $groups = $this->groupRepository->all();
+        $groupId = request()->integer('group_id');
+        $viewData = $this->groupService->getCompetitionsFlowchartData($groupId);
 
-        $groupsWithCompetitions = $groups->map(function ($group) {
-            // Get last finished competition
-            $lastFinished = $this->competitionRepository->getByGroup($group->id)
-                ->where('status', CompetitionStatus::FINISHED)
-                ->orderBy('end_at', 'desc')
-                ->first();
+        return view('groups.competitions', $viewData);
+    }
 
-            // Get active competitions
-            $activeCompetitions = $this->competitionRepository->getByGroup($group->id)
-                ->where('status', CompetitionStatus::ACTIVE)
-                ->orderBy('start_at', 'desc')
-                ->get();
+    public function competitionsExportPdf()
+    {
+        $groupId = request()->integer('group_id');
 
-            // Get next pending competition
-            $nextPending = $this->competitionRepository->getByGroup($group->id)
-                ->where('status', CompetitionStatus::PENDING)
-                ->orderBy('start_at', 'asc')
-                ->first();
+        abort_unless($groupId, 422, 'Group is required');
 
-            return [
-                'group' => $group,
-                'lastFinished' => $lastFinished,
-                'activeCompetitions' => $activeCompetitions,
-                'nextPending' => $nextPending,
-            ];
-        });
+        $viewData = $this->groupService->getCompetitionsFlowchartData($groupId);
+        $selectedGroup = $viewData['selectedGroup'];
 
-        return view('groups.competitions', compact('groupsWithCompetitions'));
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'default_font' => 'arial',
+        ]);
+
+        $html = view('groups.competitions-flowchart-pdf', $viewData)->render();
+        $mpdf->WriteHTML($html);
+
+        $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+        $downloadName = Str::slug(($selectedGroup?->name ?? 'group').'-competitions-flowchart');
+
+        return response($pdfContent, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$downloadName.'.pdf"',
+        ]);
     }
 }

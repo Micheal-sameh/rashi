@@ -619,8 +619,8 @@
                             class="{{ $activeRoutes['groups'] ? 'active' : '' }}">
                             <i class="fas fa-layer-group"></i>{{ __('messages.groups') }}</a></li>
                     <li><a href="{{ route('groups.competitions') }}"
-                            class="{{ request()->routeIs('groups.competitions') ? 'active' : '' }}">
-                            <i class="fas fa-trophy"></i>{{ __('messages.groups_competitions') }}</a></li>
+                            class="{{ request()->routeIs('groups.competitions*') ? 'active' : '' }}">
+                            <i class="fas fa-project-diagram"></i>{{ __('messages.groups_competitions') }}</a></li>
                     <li><a href="{{ route('notifications.index') }}"
                             class="{{ $activeRoutes['notifications'] ? 'active' : '' }}">
                             <i class="fas fa-bell"></i>{{ __('messages.notifications') }}</a></li>

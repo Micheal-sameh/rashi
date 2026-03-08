@@ -81,6 +81,7 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/create', [CompetitionController::class, 'create'])->name('competitions.create');
             Route::get('/download-example-excel', [CompetitionController::class, 'downloadExampleExcel'])->name('competitions.downloadExampleExcel');
             Route::get('/{id}/edit', [CompetitionController::class, 'edit'])->name('competitions.edit');
+            Route::get('/{id}/quizzes-flowchart', [CompetitionController::class, 'quizzesFlowchart'])->name('competitions.quizzesFlowchart');
             Route::get('/{id}/user-answers', [CompetitionController::class, 'userAnswers'])->name('competitions.userAnswers');
             Route::get('/{id}/leaderboard/export', [CompetitionController::class, 'exportLeaderboard'])->name('competitions.leaderboard.export');
             Route::get('/{id}/export', [CompetitionController::class, 'exportCompetition'])->name('competitions.export');
@@ -121,6 +122,7 @@ Route::group(['middleware' => ['setlocale']], function () {
         Route::prefix('groups')->group(function () {
             Route::get('/', [GroupController::class, 'index'])->name('groups.index');
             Route::get('/competitions', [GroupController::class, 'competitions'])->name('groups.competitions');
+            Route::get('/competitions/export-pdf', [GroupController::class, 'competitionsExportPdf'])->name('groups.competitions.exportPdf');
             Route::get('/create', [GroupController::class, 'create'])->name('groups.create');
             Route::get('/{id}/edit', [GroupController::class, 'edit'])->name('groups.edit');
             Route::get('/{id}/users-edit', [GroupController::class, 'usersedit'])->name('groups.usersedit');
