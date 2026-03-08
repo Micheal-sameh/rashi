@@ -84,7 +84,7 @@ class GroupController extends Controller
 
         abort_unless($groupId, 422, 'Group is required');
 
-        $viewData = $this->groupService->getCompetitionsFlowchartData($groupId);
+        $viewData = $this->groupService->getCompetitionsFlowchartPdfData($groupId);
         $selectedGroup = $viewData['selectedGroup'];
 
         $mpdf = new Mpdf([

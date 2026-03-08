@@ -228,7 +228,7 @@
                     <td style="text-align:right;">
                         <div class="header-badge">
                             <div class="header-badge-label">Generated</div>
-                            <div class="header-badge-date">{{ now()->format('Y-m-d  H:i') }}</div>
+                            <div class="header-badge-date">{{ $generatedAt }}</div>
                         </div>
                     </td>
                 </tr>
@@ -236,31 +236,24 @@
         </div>
     </div>
 
-    @php
-        $finishedCount  = $competitions->where('status', App\Enums\CompetitionStatus::FINISHED)->count();
-        $activeCount    = $competitions->where('status', App\Enums\CompetitionStatus::ACTIVE)->count();
-        $cancelledCount = $competitions->where('status', App\Enums\CompetitionStatus::CANCELLED)->count();
-        $futureCount    = $competitions->where('status', App\Enums\CompetitionStatus::PENDING)->count();
-    @endphp
-
     {{-- ── Summary Cards ────────────────────────────────────── --}}
     <div class="section-label">Overview</div>
     <table class="summary-table" cellpadding="0" cellspacing="0">
         <tr>
             <td class="card-finished">
-                <div class="card-value">{{ $finishedCount }}</div>
+                <div class="card-value">{{ $counts['finished'] }}</div>
                 <div class="card-label">{{ __('messages.flow_finished') }}</div>
             </td>
             <td class="card-active">
-                <div class="card-value">{{ $activeCount }}</div>
+                <div class="card-value">{{ $counts['active'] }}</div>
                 <div class="card-label">{{ __('messages.flow_active') }}</div>
             </td>
             <td class="card-cancelled">
-                <div class="card-value">{{ $cancelledCount }}</div>
+                <div class="card-value">{{ $counts['cancelled'] }}</div>
                 <div class="card-label">{{ __('messages.flow_cancelled') }}</div>
             </td>
             <td class="card-future">
-                <div class="card-value">{{ $futureCount }}</div>
+                <div class="card-value">{{ $counts['future'] }}</div>
                 <div class="card-label">{{ __('messages.flow_future') }}</div>
             </td>
         </tr>
@@ -277,59 +270,12 @@
     </table>
 
     {{-- ── Flowchart ────────────────────────────────────────── --}}
-    @php
-        $grouped = $competitions->groupBy(fn($c) => optional($c->start_at)->format('Y-m-d'));
-
-        $stages     = $grouped->values();
-        $nodeWidth  = 270;
-        $nodeHeight = 88;
-        $gapX       = 110;
-        $gapY       = 20;
-        $paddingX   = 30;
-        $paddingY   = 50;
-
-        $stageHeights   = $stages->map(fn($stage) => (count($stage) * $nodeHeight) + ((max(count($stage) - 1, 0)) * $gapY));
-        $maxStageHeight = max((int) ($stageHeights->max() ?? $nodeHeight), $nodeHeight);
-
-        $chartWidth  = max((int) ((count($stages) * $nodeWidth) + (max(count($stages) - 1, 0) * $gapX) + ($paddingX * 2)), 1000);
-        $chartHeight = max((int) ($maxStageHeight + ($paddingY * 2)), 340);
-
-        $statusStyle = function ($status) {
-            return match ($status) {
-                App\Enums\CompetitionStatus::FINISHED  => ['fill' => '#f0fdf4', 'stroke' => '#22c55e', 'hdr' => '#dcfce7', 'txt' => '#15803d'],
-                App\Enums\CompetitionStatus::ACTIVE    => ['fill' => '#fefce8', 'stroke' => '#eab308', 'hdr' => '#fef9c3', 'txt' => '#a16207'],
-                App\Enums\CompetitionStatus::CANCELLED => ['fill' => '#fff1f2', 'stroke' => '#f43f5e', 'hdr' => '#ffe4e6', 'txt' => '#be123c'],
-                default                                => ['fill' => '#eff6ff', 'stroke' => '#3b82f6', 'hdr' => '#dbeafe', 'txt' => '#1d4ed8'],
-            };
-        };
-
-        $nodes = [];
-        foreach ($stages as $stageIndex => $stage) {
-            $stageHeight = $stageHeights[$stageIndex];
-            $startY = (int) ($paddingY + (($maxStageHeight - $stageHeight) / 2));
-            $x      = (int) ($paddingX + ($stageIndex * ($nodeWidth + $gapX)));
-
-            foreach ($stage->values() as $nodeIndex => $competition) {
-                $y      = (int) ($startY + ($nodeIndex * ($nodeHeight + $gapY)));
-                $styles = $statusStyle($competition->status);
-                $nodes[$stageIndex][] = [
-                    'competition' => $competition,
-                    'x' => $x, 'y' => $y,
-                    'fill'   => $styles['fill'],
-                    'stroke' => $styles['stroke'],
-                    'hdr'    => $styles['hdr'],
-                    'txt'    => $styles['txt'],
-                ];
-            }
-        }
-    @endphp
-
-    @if($stages->isEmpty())
+    @if(empty($chartData['nodes']))
         <p style="color:#64748b; padding:20px; text-align:center;">{{ __('messages.no_competitions') }}</p>
     @else
         <div class="chart-section-label">Competition Flow</div>
         <div class="chart-wrap">
-            <svg class="flowchart-svg" viewBox="0 0 {{ $chartWidth }} {{ $chartHeight }}" xmlns="http://www.w3.org/2000/svg">
+            <svg class="flowchart-svg" viewBox="0 0 {{ $chartData['chartWidth'] }} {{ $chartData['chartHeight'] }}" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
                         <path d="M0,0 L8,3 L0,6 Z" fill="#94a3b8"/>
@@ -340,77 +286,43 @@
                 </defs>
 
                 {{-- Background --}}
-                <rect x="0" y="0" width="{{ $chartWidth }}" height="{{ $chartHeight }}" rx="10" ry="10" fill="#ffffff"/>
+                <rect x="0" y="0" width="{{ $chartData['chartWidth'] }}" height="{{ $chartData['chartHeight'] }}" rx="10" ry="10" fill="#ffffff"/>
 
                 {{-- Subtle dot grid --}}
-                @for($gx = 0; $gx < $chartWidth; $gx += 28)
-                    @for($gy = 0; $gy < $chartHeight; $gy += 28)
+                @for($gx = 0; $gx < $chartData['chartWidth']; $gx += 28)
+                    @for($gy = 0; $gy < $chartData['chartHeight']; $gy += 28)
                         <circle cx="{{ $gx }}" cy="{{ $gy }}" r="1" fill="#e2e8f0"/>
                     @endfor
                 @endfor
 
-                {{-- Stage labels --}}
-                {{-- @for ($si = 0; $si < count($nodes); $si++)
-                    @php $sx = $paddingX + ($si * ($nodeWidth + $gapX)); @endphp
-                    <rect x="{{ $sx }}" y="14" width="{{ $nodeWidth }}" height="20" rx="5" ry="5" fill="#f1f5f9"/>
-                    <text x="{{ $sx + $nodeWidth / 2 }}" y="28" font-size="10" font-weight="bold" fill="#64748b" text-anchor="middle" letter-spacing="0.5">STAGE {{ $si + 1 }}</text>
+                {{-- Stage labels (optional) --}}
+                {{-- @for ($si = 0; $si < $chartData['stagesCount']; $si++)
+                    @php $sx = $chartData['paddingX'] + ($si * ($chartData['nodeWidth'] + $chartData['gapX'])); @endphp
+                    <rect x="{{ $sx }}" y="14" width="{{ $chartData['nodeWidth'] }}" height="20" rx="5" ry="5" fill="#f1f5f9"/>
+                    <text x="{{ $sx + $chartData['nodeWidth'] / 2 }}" y="28" font-size="10" font-weight="bold" fill="#64748b" text-anchor="middle" letter-spacing="0.5">STAGE {{ $si + 1 }}</text>
                 @endfor --}}
 
                 {{-- Connector lines --}}
-                @for ($si = 1; $si < count($nodes); $si++)
-                    @foreach (($nodes[$si - 1] ?? []) as $from)
-                        @foreach (($nodes[$si] ?? []) as $to)
-                            <path
-                                d="M{{ $from['x'] + $nodeWidth }},{{ $from['y'] + ($nodeHeight / 2) }}
-                                   C{{ $from['x'] + $nodeWidth + 40 }},{{ $from['y'] + ($nodeHeight / 2) }}
-                                    {{ $to['x'] - 40 }},{{ $to['y'] + ($nodeHeight / 2) }}
-                                    {{ $to['x'] }},{{ $to['y'] + ($nodeHeight / 2) }}"
-                                stroke="#94a3b8"
-                                stroke-width="1.5"
-                                fill="none"
-                                stroke-dasharray="4 3"
-                                marker-end="url(#arrow)"
-                            />
-                        @endforeach
-                    @endforeach
-                @endfor
+                @foreach ($chartData['edges'] as $edge)
+                    <path
+                        d="{{ $edge['d'] }}"
+                        stroke="#94a3b8"
+                        stroke-width="1.5"
+                        fill="none"
+                        stroke-dasharray="4 3"
+                        marker-end="url(#arrow)"
+                    />
+                @endforeach
 
                 {{-- Nodes --}}
-                @foreach ($nodes as $stageNodes)
+                @foreach ($chartData['nodes'] as $stageNodes)
                     @foreach ($stageNodes as $node)
-                        @php
-                            $competition = $node['competition'];
-                            $name        = $competition->name;
-                            if (mb_strlen($name) > 28) { $name = mb_substr($name, 0, 28).'…'; }
-                            $dateText    = optional($competition->start_at)->format('Y-m-d').' → '.optional($competition->end_at)->format('Y-m-d');
-
-                            $nameWords = preg_split('/\s+/', trim((string) $name));
-                            $lineOne = ''; $lineTwo = '';
-                            foreach ($nameWords as $word) {
-                                if (mb_strlen(trim($lineOne.' '.$word)) <= 28) { $lineOne = trim($lineOne.' '.$word); }
-                                elseif (mb_strlen(trim($lineTwo.' '.$word)) <= 28) { $lineTwo = trim($lineTwo.' '.$word); }
-                            }
-                            if ($lineOne === '') { $lineOne = $name; }
-                            if ($lineTwo === '' && mb_strlen($name) > 28) {
-                                $lineOne = mb_substr($name, 0, 28);
-                                $lineTwo = mb_substr($name, 28, 26);
-                            }
-                            if (mb_strlen($lineTwo) > 26) { $lineTwo = mb_substr($lineTwo, 0, 26).'…'; }
-
-                            $statusLabel = match($competition->status) {
-                                App\Enums\CompetitionStatus::FINISHED  => 'Finished',
-                                App\Enums\CompetitionStatus::ACTIVE    => 'Active',
-                                App\Enums\CompetitionStatus::CANCELLED => 'Cancelled',
-                                default                                 => 'Upcoming',
-                            };
-                        @endphp
-
                         {{-- Card shadow --}}
                         <rect
                             x="{{ $node['x'] + 2 }}"
                             y="{{ $node['y'] + 3 }}"
-                            width="{{ $nodeWidth }}"
-                            height="{{ $nodeHeight }}"
+                            width="{{ $chartData['nodeWidth'] }}"
+                            height="{{ $chartData['nodeHeight'] }}"
                             rx="9" ry="9"
                             fill="#00000012"
                         />
@@ -418,8 +330,8 @@
                         <rect
                             x="{{ $node['x'] }}"
                             y="{{ $node['y'] }}"
-                            width="{{ $nodeWidth }}"
-                            height="{{ $nodeHeight }}"
+                            width="{{ $chartData['nodeWidth'] }}"
+                            height="{{ $chartData['nodeHeight'] }}"
                             rx="9" ry="9"
                             fill="{{ $node['fill'] }}"
                             stroke="{{ $node['stroke'] }}"
@@ -429,7 +341,7 @@
                         <rect
                             x="{{ $node['x'] }}"
                             y="{{ $node['y'] }}"
-                            width="{{ $nodeWidth }}"
+                            width="{{ $chartData['nodeWidth'] }}"
                             height="32"
                             rx="9" ry="9"
                             fill="{{ $node['hdr'] }}"
@@ -437,7 +349,7 @@
                         <rect
                             x="{{ $node['x'] }}"
                             y="{{ $node['y'] + 22 }}"
-                            width="{{ $nodeWidth }}"
+                            width="{{ $chartData['nodeWidth'] }}"
                             height="10"
                             fill="{{ $node['hdr'] }}"
                         />
@@ -445,7 +357,7 @@
                         <line
                             x1="{{ $node['x'] }}"
                             y1="{{ $node['y'] + 32 }}"
-                            x2="{{ $node['x'] + $nodeWidth }}"
+                            x2="{{ $node['x'] + $chartData['nodeWidth'] }}"
                             y2="{{ $node['y'] + 32 }}"
                             stroke="{{ $node['stroke'] }}"
                             stroke-width="1"
@@ -459,7 +371,7 @@
                             font-size="10"
                             font-weight="bold"
                             fill="{{ $node['txt'] }}"
-                        >{{ $statusLabel }}</text>
+                        >{{ $node['statusLabel'] }}</text>
 
                         {{-- Name lines --}}
                         <text
@@ -469,19 +381,19 @@
                             font-weight="bold"
                             fill="#111827"
                         >
-                            <tspan x="{{ $node['x'] + 10 }}" dy="0">{{ $lineOne }}</tspan>
-                            @if($lineTwo)
-                                <tspan x="{{ $node['x'] + 10 }}" dy="13">{{ $lineTwo }}</tspan>
+                            <tspan x="{{ $node['x'] + 10 }}" dy="0">{{ $node['lineOne'] }}</tspan>
+                            @if($node['lineTwo'])
+                                <tspan x="{{ $node['x'] + 10 }}" dy="13">{{ $node['lineTwo'] }}</tspan>
                             @endif
                         </text>
 
                         {{-- Date --}}
                         <text
                             x="{{ $node['x'] + 10 }}"
-                            y="{{ $node['y'] + $nodeHeight - 10 }}"
+                            y="{{ $node['y'] + $chartData['nodeHeight'] - 10 }}"
                             font-size="9"
                             fill="#64748b"
-                        >📅 {{ $dateText }}</text>
+                        >📅 {{ $node['dateText'] }}</text>
                     @endforeach
                 @endforeach
             </svg>
@@ -489,7 +401,7 @@
     @endif
 
     <div class="footer">
-        {{ __('messages.groups_competitions') }} &nbsp;·&nbsp; {{ $selectedGroup?->name }} &nbsp;·&nbsp; {{ now()->format('Y-m-d H:i') }}
+        {{ __('messages.groups_competitions') }} &nbsp;·&nbsp; {{ $selectedGroup?->name }} &nbsp;·&nbsp; {{ $generatedAt }}
     </div>
 
 </body>
