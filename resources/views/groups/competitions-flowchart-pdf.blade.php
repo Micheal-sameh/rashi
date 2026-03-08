@@ -350,11 +350,11 @@
                 @endfor
 
                 {{-- Stage labels --}}
-                @for ($si = 0; $si < count($nodes); $si++)
+                {{-- @for ($si = 0; $si < count($nodes); $si++)
                     @php $sx = $paddingX + ($si * ($nodeWidth + $gapX)); @endphp
                     <rect x="{{ $sx }}" y="14" width="{{ $nodeWidth }}" height="20" rx="5" ry="5" fill="#f1f5f9"/>
                     <text x="{{ $sx + $nodeWidth / 2 }}" y="28" font-size="10" font-weight="bold" fill="#64748b" text-anchor="middle" letter-spacing="0.5">STAGE {{ $si + 1 }}</text>
-                @endfor
+                @endfor --}}
 
                 {{-- Connector lines --}}
                 @for ($si = 1; $si < count($nodes); $si++)
