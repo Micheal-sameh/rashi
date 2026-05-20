@@ -45,7 +45,7 @@
         <!-- Stats Card -->
         <div class="row g-4 mb-4">
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card border-0 shadow-sm rounded-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card border-0 shadow-sm rounded-4 bg-gradient-primary">
                     <div class="card-body text-white p-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
@@ -65,7 +65,7 @@
         <div class="card shadow-sm border-0 rounded-4 overflow-hidden d-none d-lg-block">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <thead class="table-header-primary">
                         <tr>
                             <th class="py-3 px-4">#</th>
                             <th class="py-3">{{ __('messages.image') }}</th>

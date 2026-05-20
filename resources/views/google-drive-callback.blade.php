@@ -4,38 +4,38 @@
     <title>Google Drive Authorization</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', Arial, sans-serif;
             max-width: 800px;
             margin: 50px auto;
             padding: 20px;
-            background: #f5f5f5;
+            background: #f9fafb;
         }
         .container {
             background: white;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         h1 {
-            color: #4285f4;
+            color: #1e40af;
         }
         .code-box {
-            background: #f8f9fa;
+            background: #f3f4f6;
             padding: 15px;
-            border-radius: 5px;
-            border-left: 4px solid #4285f4;
+            border-radius: 8px;
+            border-left: 4px solid #1e40af;
             margin: 20px 0;
             font-family: monospace;
             word-break: break-all;
         }
         .success {
-            color: #0f9d58;
+            color: #059669;
         }
         .instruction {
-            background: #fff3cd;
+            background: #fef3c7;
             padding: 15px;
-            border-radius: 5px;
-            border-left: 4px solid #ffc107;
+            border-radius: 8px;
+            border-left: 4px solid #d97706;
             margin: 20px 0;
         }
     </style>

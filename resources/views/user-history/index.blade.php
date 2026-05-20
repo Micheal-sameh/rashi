@@ -71,7 +71,7 @@
 
             <!-- Point History Table -->
             <div class="card shadow-sm">
-                <div class="card-header bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-header card-header-primary">
                     <h5 class="mb-0 text-white">
                         <i class="fas fa-history me-2"></i>{{ __('messages.point_history') }}
                     </h5>

@@ -344,19 +344,24 @@
 
 <style>
     .bg-gradient-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: var(--primary-gradient) !important;
+        color: white;
     }
 
     .bg-gradient-success {
-        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        background: var(--success-gradient) !important;
+        color: white;
     }
 
     .card {
         transition: transform 0.2s ease;
+        border: none;
+        box-shadow: var(--card-shadow);
     }
 
     .card:hover {
         transform: translateY(-2px);
+        box-shadow: var(--hover-shadow);
     }
 
     .border-dashed {
@@ -364,21 +369,22 @@
     }
 
     .form-control:focus, .form-select:focus {
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        border-color: var(--primary-color);
     }
 
     .input-group-text {
         transition: all 0.2s ease;
+        background-color: #f3f4f6;
     }
 
     .input-group:focus-within .input-group-text {
-        background-color: rgba(102, 126, 234, 0.1);
-        border-color: #667eea;
+        background-color: rgba(30, 64, 175, 0.1);
+        border-color: var(--primary-color);
     }
 
     .text-purple {
-        color: #764ba2;
+        color: var(--primary-dark);
     }
 
     #imageUploadArea {
@@ -387,13 +393,13 @@
     }
 
     #imageUploadArea:hover {
-        border-color: #667eea !important;
-        background-color: rgba(102, 126, 234, 0.05);
+        border-color: var(--primary-color) !important;
+        background-color: rgba(30, 64, 175, 0.05);
     }
 
     #imageUploadArea.dragover {
-        border-color: #667eea !important;
-        background-color: rgba(102, 126, 234, 0.1);
+        border-color: var(--primary-color) !important;
+        background-color: rgba(30, 64, 175, 0.1);
     }
 </style>
 

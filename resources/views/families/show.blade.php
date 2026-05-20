@@ -23,7 +23,7 @@
 
         @foreach ($membersData as $memberData)
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-header card-header-primary">
                     <div class="d-flex align-items-center text-white">
                         <img src="{{ $memberData['user']->getFirstMediaUrl('profile_images') ?: asset('images/default.png') }}"
                             alt="{{ $memberData['user']->name }}" class="rounded-circle me-3"

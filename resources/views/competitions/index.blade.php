@@ -18,45 +18,45 @@
         <!-- Competition Stats Cards -->
         <div class="row g-3 mb-4">
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 bg-warning text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 opacity-75">{{ __('messages.active_competitions') }}</h6>
-                                <h2 class="mb-0 fw-bold">{{ $competitionCounts['active'] }}</h2>
+                <div class="card shadow-sm border-0 rounded-4 bg-gradient-warning">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-2 opacity-75">{{ __('messages.active_competitions') }}</h6>
+                                <h2 class="fw-bold display-6 mb-0">{{ $competitionCounts['active'] }}</h2>
                             </div>
-                            <div class="fs-1 opacity-50">
-                                <i class="fas fa-trophy"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0 bg-primary text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 opacity-75">{{ __('messages.pending_competitions') }}</h6>
-                                <h2 class="mb-0 fw-bold">{{ $competitionCounts['pending'] }}</h2>
-                            </div>
-                            <div class="fs-1 opacity-50">
-                                <i class="fas fa-clock"></i>
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="fas fa-trophy fa-2x"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 bg-info text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 opacity-75">{{ __('messages.finished_competitions') }}</h6>
-                                <h2 class="mb-0 fw-bold">{{ $competitionCounts['finished'] }}</h2>
+                <div class="card shadow-sm border-0 rounded-4 bg-gradient-primary">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-2 opacity-75">{{ __('messages.pending_competitions') }}</h6>
+                                <h2 class="fw-bold display-6 mb-0">{{ $competitionCounts['pending'] }}</h2>
                             </div>
-                            <div class="fs-1 opacity-50">
-                                <i class="fas fa-flag-checkered"></i>
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 rounded-4 bg-gradient-info">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-2 opacity-75">{{ __('messages.finished_competitions') }}</h6>
+                                <h2 class="fw-bold display-6 mb-0">{{ $competitionCounts['finished'] }}</h2>
+                            </div>
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="fas fa-flag-checkered fa-2x"></i>
                             </div>
                         </div>
                     </div>
