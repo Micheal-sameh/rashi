@@ -588,22 +588,6 @@
             font-weight: 500;
         }
 
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .bg-gradient-success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        }
-
-        .bg-gradient-warning {
-            background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
-        }
-
-        .bg-gradient-info {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
         .table> :not(caption)>*>* {
             padding: 1rem 0.5rem;
         }
@@ -990,7 +974,7 @@
             if (searchInput) {
                 searchInput.addEventListener('input', function(e) {
                     const searchTerm = e.target.value.toLowerCase();
-                    const rows = document.querySelectorAll('#reward-row-{{ $reward->id }}');
+                    const rows = document.querySelectorAll('[id^="reward-row-"]');
 
                     rows.forEach(row => {
                         const text = row.textContent.toLowerCase();

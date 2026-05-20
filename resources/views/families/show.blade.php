@@ -24,123 +24,140 @@
         @foreach ($membersData as $memberData)
             <div class="card shadow-sm mb-4">
                 <div class="card-header card-header-primary">
-                    <div class="d-flex align-items-center text-white">
+                    <div class="d-flex align-items-center gap-3 text-white">
                         <img src="{{ $memberData['user']->getFirstMediaUrl('profile_images') ?: asset('images/default.png') }}"
-                            alt="{{ $memberData['user']->name }}" class="rounded-circle me-3"
-                            style="width: 60px; height: 60px; object-fit: cover; border: 3px solid white;">
-                    </div>
-                    <div>
-                        <h4 class="mb-1">{{ $memberData['user']->name ?: $memberData['user']->membership_code }}</h4>
-                        <p class="mb-0">{{ $memberData['user']->membership_code }}</p>
+                            alt="{{ $memberData['user']->name }}" class="rounded-circle flex-shrink-0"
+                            style="width: 60px; height: 60px; object-fit: cover; border: 3px solid rgba(255,255,255,0.5);">
+                        <div>
+                            <h4 class="mb-1 fw-bold">{{ $memberData['user']->name ?: $memberData['user']->membership_code }}</h4>
+                            <p class="mb-0 opacity-75 small">{{ $memberData['user']->membership_code }}</p>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row g-3">
-                        <!-- Final Score and Points -->
+                    <!-- Score & Points Summary -->
+                    <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.final_score') }}</h6>
-                                <p class="h4 mb-0 text-primary">{{ $memberData['final_score'] }}</p>
+                            <div class="p-3 rounded-3 bg-gradient-primary text-white text-center">
+                                <div class="small opacity-75 mb-1">{{ __('messages.final_score') }}</div>
+                                <div class="h3 fw-bold mb-0">{{ $memberData['final_score'] }}</div>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.final_points') }}</h6>
-                                <p class="h4 mb-0 text-success">{{ $memberData['final_points'] }}</p>
+                            <div class="p-3 rounded-3 bg-gradient-success text-white text-center">
+                                <div class="small opacity-75 mb-1">{{ __('messages.final_points') }}</div>
+                                <div class="h3 fw-bold mb-0">{{ $memberData['final_points'] }}</div>
                             </div>
                         </div>
+                    </div>
 
+                    <div class="row g-3">
                         <!-- Quizzes -->
                         <div class="col-md-6">
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.quizzes_solved') }}</h6>
-                                <p class="h5 mb-0">{{ $memberData['quizzes_solved'] }} /
-                                    {{ $memberData['total_quizzes'] }}</p>
+                            <div class="p-3 border rounded-3">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <i class="fas fa-question-circle text-primary"></i>
+                                    <small class="text-muted fw-semibold">{{ __('messages.quizzes_solved') }}</small>
+                                </div>
+                                <div class="fw-bold">{{ $memberData['quizzes_solved'] }} / {{ $memberData['total_quizzes'] }}</div>
                             </div>
                         </div>
 
                         <!-- Last Quiz -->
                         <div class="col-md-6">
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.last_quiz') }}</h6>
+                            <div class="p-3 border rounded-3">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <i class="fas fa-clipboard-check text-info"></i>
+                                    <small class="text-muted fw-semibold">{{ __('messages.last_quiz') }}</small>
+                                </div>
                                 @if ($memberData['last_quiz'])
-                                    <p class="mb-1"><strong>{{ $memberData['last_quiz']['name'] }}</strong></p>
-                                    <small
-                                        class="text-muted">{{ $memberData['last_quiz']['date'] ? Carbon::parse($memberData['last_quiz']['date'])->format('Y-m-d H:i') : 'N/A' }}</small>
+                                    <div class="fw-semibold small">{{ $memberData['last_quiz']['name'] }}</div>
+                                    <small class="text-muted">{{ $memberData['last_quiz']['date'] ? Carbon::parse($memberData['last_quiz']['date'])->format('Y-m-d H:i') : 'N/A' }}</small>
                                 @else
-                                    <p class="mb-0 text-muted">{{ __('messages.no_data') }}</p>
+                                    <div class="text-muted small">{{ __('messages.no_data') }}</div>
                                 @endif
                             </div>
                         </div>
 
                         <!-- Last Redeem -->
                         <div class="col-md-6">
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.last_redeem') }}</h6>
+                            <div class="p-3 border rounded-3">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <i class="fas fa-gift text-warning"></i>
+                                    <small class="text-muted fw-semibold">{{ __('messages.last_redeem') }}</small>
+                                </div>
                                 @if ($memberData['last_order'])
-                                    <p class="mb-1"><strong>{{ $memberData['last_order']['reward'] }}</strong></p>
-                                    <small
-                                        class="text-muted">{{ Carbon::parse($memberData['last_order']['date'])->format('Y-m-d H:i') }}</small>
+                                    <div class="fw-semibold small">{{ $memberData['last_order']['reward'] }}</div>
+                                    <small class="text-muted">{{ Carbon::parse($memberData['last_order']['date'])->format('Y-m-d H:i') }}</small>
                                 @else
-                                    <p class="mb-0 text-muted">{{ __('messages.no_data') }}</p>
+                                    <div class="text-muted small">{{ __('messages.no_data') }}</div>
                                 @endif
                             </div>
                         </div>
 
                         <!-- Last Bonus -->
                         <div class="col-md-6">
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.last_bonus') }}</h6>
+                            <div class="p-3 border rounded-3">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <i class="fas fa-arrow-up text-success"></i>
+                                    <small class="text-muted fw-semibold">{{ __('messages.last_bonus') }}</small>
+                                </div>
                                 @if ($memberData['last_bonus'])
-                                    <p class="mb-1 text-success"><strong>+{{ $memberData['last_bonus']['value'] }}
-                                            {{ __('messages.points') }}</strong></p>
-                                    <small
-                                        class="text-muted">{{ Carbon::parse($memberData['last_bonus']['date'])->format('Y-m-d H:i') }}</small>
+                                    <div class="fw-bold text-success">+{{ $memberData['last_bonus']['value'] }} {{ __('messages.points') }}</div>
+                                    <small class="text-muted">{{ Carbon::parse($memberData['last_bonus']['date'])->format('Y-m-d H:i') }}</small>
                                 @else
-                                    <p class="mb-0 text-muted">{{ __('messages.no_data') }}</p>
+                                    <div class="text-muted small">{{ __('messages.no_data') }}</div>
                                 @endif
                             </div>
                         </div>
 
                         <!-- Last Penalty -->
                         <div class="col-md-6">
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.last_penalty') }}</h6>
+                            <div class="p-3 border rounded-3">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <i class="fas fa-arrow-down text-danger"></i>
+                                    <small class="text-muted fw-semibold">{{ __('messages.last_penalty') }}</small>
+                                </div>
                                 @if ($memberData['last_penalty'])
-                                    <p class="mb-1 text-danger"><strong>-{{ $memberData['last_penalty']['value'] }}
-                                            {{ __('messages.points') }}</strong></p>
-                                    <small
-                                        class="text-muted">{{ Carbon::parse($memberData['last_penalty']['date'])->format('Y-m-d H:i') }}</small>
+                                    <div class="fw-bold text-danger">-{{ $memberData['last_penalty']['value'] }} {{ __('messages.points') }}</div>
+                                    <small class="text-muted">{{ Carbon::parse($memberData['last_penalty']['date'])->format('Y-m-d H:i') }}</small>
                                 @else
-                                    <p class="mb-0 text-muted">{{ __('messages.no_data') }}</p>
+                                    <div class="text-muted small">{{ __('messages.no_data') }}</div>
                                 @endif
                             </div>
                         </div>
 
                         <!-- Last Competition -->
                         <div class="col-md-6">
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.last_competition') }}</h6>
+                            <div class="p-3 border rounded-3">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <i class="fas fa-trophy text-warning"></i>
+                                    <small class="text-muted fw-semibold">{{ __('messages.last_competition') }}</small>
+                                </div>
                                 @if ($memberData['last_competition'])
-                                    <p class="mb-1"><strong>{{ $memberData['last_competition']['name'] }}</strong></p>
-                                    <small
-                                        class="text-muted">{{ $memberData['last_competition']['date'] ? Carbon::parse($memberData['last_competition']['date'])->format('Y-m-d H:i') : 'N/A' }}</small>
+                                    <div class="fw-semibold small">{{ $memberData['last_competition']['name'] }}</div>
+                                    <small class="text-muted">{{ $memberData['last_competition']['date'] ? Carbon::parse($memberData['last_competition']['date'])->format('Y-m-d H:i') : 'N/A' }}</small>
                                 @else
-                                    <p class="mb-0 text-muted">{{ __('messages.no_data') }}</p>
+                                    <div class="text-muted small">{{ __('messages.no_data') }}</div>
                                 @endif
                             </div>
                         </div>
 
                         <!-- Groups -->
                         <div class="col-12">
-                            <div class="p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.groups') }}</h6>
+                            <div class="p-3 border rounded-3">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <i class="fas fa-layer-group text-primary"></i>
+                                    <small class="text-muted fw-semibold">{{ __('messages.groups') }}</small>
+                                </div>
                                 @if ($memberData['groups']->isNotEmpty())
-                                    @foreach ($memberData['groups'] as $group)
-                                        <span class="badge bg-info me-1">{{ $group->name }}</span>
-                                    @endforeach
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @foreach ($memberData['groups'] as $group)
+                                            <span class="badge badge-gradient-info">{{ $group->name }}</span>
+                                        @endforeach
+                                    </div>
                                 @else
-                                    <p class="mb-0 text-muted">{{ __('messages.no_groups') }}</p>
+                                    <div class="text-muted small">{{ __('messages.no_groups') }}</div>
                                 @endif
                             </div>
                         </div>

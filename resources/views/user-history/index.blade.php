@@ -7,62 +7,70 @@
         </div>
 
         <!-- Search Form -->
-        <form method="GET" action="{{ route('user-history.index') }}" class="row g-3 mb-4">
-            <div class="col-md-8">
-                <label for="search" class="form-label fw-semibold">{{ __('messages.search') }}</label>
-                <input type="text" name="search" id="search" class="form-control"
-                    placeholder="{{ __('messages.search_by_name_or_code') }}"
-                    value="{{ $search ?? '' }}" required>
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ route('user-history.index') }}">
+                    <div class="row g-3">
+                        <div class="col-md-9 col-lg-10">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" name="search" id="search" class="form-control border-start-0"
+                                    placeholder="{{ __('messages.search_by_name_or_code') }}"
+                                    value="{{ $search ?? '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-2">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fa fa-search me-1"></i>{{ __('messages.search') }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-
-            <div class="col-md-4 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary shadow-sm">
-                    <i class="fa fa-search me-1"></i>{{ __('messages.search') }}
-                </button>
-            </div>
-        </form>
+        </div>
 
         @if($search && $user)
             <!-- User Info Card -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <div class="d-flex align-items-center">
+            <div class="card shadow-sm mb-4 border-0 rounded-4">
+                <div class="card-header card-header-primary rounded-top-4">
+                    <div class="d-flex align-items-center gap-3 text-white">
                         <img src="{{ $user->getFirstMediaUrl('profile_images') ?: asset('images/default.png') }}"
                              alt="{{ $user->name }}"
-                             class="rounded-circle me-3"
-                             style="width: 50px; height: 50px; object-fit: cover; border: 2px solid white;">
+                             class="rounded-circle flex-shrink-0"
+                             style="width: 50px; height: 50px; object-fit: cover; border: 2px solid rgba(255,255,255,0.5);">
                         <div>
-                            <h5 class="mb-0">{{ $user->name }}</h5>
-                            <small>{{ $user->membership_code }}</small>
+                            <h5 class="mb-0 fw-bold">{{ $user->name }}</h5>
+                            <small class="opacity-75">{{ $user->membership_code }}</small>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="text-center p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.current_points') }}</h6>
-                                <h3 class="text-primary mb-0">{{ $user->points }}</h3>
+                    <div class="row g-3">
+                        <div class="col-6 col-md-3">
+                            <div class="text-center p-3 bg-gradient-primary rounded-3 text-white">
+                                <div class="small opacity-75 mb-1">{{ __('messages.current_points') }}</div>
+                                <div class="h4 fw-bold mb-0">{{ $user->points }}</div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="text-center p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.total_credit') }}</h6>
-                                <h3 class="text-success mb-0">+{{ $totalCredit }}</h3>
+                        <div class="col-6 col-md-3">
+                            <div class="text-center p-3 bg-gradient-success rounded-3 text-white">
+                                <div class="small opacity-75 mb-1">{{ __('messages.total_credit') }}</div>
+                                <div class="h4 fw-bold mb-0">+{{ $totalCredit }}</div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="text-center p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.total_debit') }}</h6>
-                                <h3 class="text-danger mb-0">-{{ $totalDebit }}</h3>
+                        <div class="col-6 col-md-3">
+                            <div class="text-center p-3 bg-gradient-danger rounded-3 text-white">
+                                <div class="small opacity-75 mb-1">{{ __('messages.total_debit') }}</div>
+                                <div class="h4 fw-bold mb-0">-{{ $totalDebit }}</div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="text-center p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.net_balance') }}</h6>
-                                <h3 class="mb-0" style="color: {{ ($totalCredit - $totalDebit) >= 0 ? '#10b981' : '#ef4444' }}">
-                                    {{ $totalCredit - $totalDebit }}
-                                </h3>
+                        <div class="col-6 col-md-3">
+                            @php $net = $totalCredit - $totalDebit; @endphp
+                            <div class="text-center p-3 rounded-3 text-white {{ $net >= 0 ? 'bg-gradient-success' : 'bg-gradient-danger' }}">
+                                <div class="small opacity-75 mb-1">{{ __('messages.net_balance') }}</div>
+                                <div class="h4 fw-bold mb-0">{{ $net }}</div>
                             </div>
                         </div>
                     </div>
@@ -81,7 +89,7 @@
                     <div class="d-none d-md-block">
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
-                                <thead class="table-light">
+                                <thead class="table-header-primary">
                                     <tr>
                                         <th>{{ __('messages.date') }}</th>
                                         <th>{{ __('messages.type') }}</th>

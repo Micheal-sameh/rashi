@@ -343,64 +343,13 @@
 </div>
 
 <style>
-    .bg-gradient-primary {
-        background: var(--primary-gradient) !important;
-        color: white;
-    }
-
-    .bg-gradient-success {
-        background: var(--success-gradient) !important;
-        color: white;
-    }
-
-    .card {
-        transition: transform 0.2s ease;
-        border: none;
-        box-shadow: var(--card-shadow);
-    }
-
-    .card:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--hover-shadow);
-    }
-
-    .border-dashed {
-        border-style: dashed !important;
-    }
-
-    .form-control:focus, .form-select:focus {
-        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
-        border-color: var(--primary-color);
-    }
-
-    .input-group-text {
-        transition: all 0.2s ease;
-        background-color: #f3f4f6;
-    }
-
-    .input-group:focus-within .input-group-text {
-        background-color: rgba(30, 64, 175, 0.1);
-        border-color: var(--primary-color);
-    }
-
-    .text-purple {
-        color: var(--primary-dark);
-    }
-
-    #imageUploadArea {
-        transition: all 0.3s ease;
-        border-color: #dee2e6;
-    }
-
-    #imageUploadArea:hover {
-        border-color: var(--primary-color) !important;
-        background-color: rgba(30, 64, 175, 0.05);
-    }
-
-    #imageUploadArea.dragover {
-        border-color: var(--primary-color) !important;
-        background-color: rgba(30, 64, 175, 0.1);
-    }
+    .border-dashed { border-style: dashed !important; }
+    .text-purple { color: var(--primary-dark); }
+    .input-group-text { background-color: #f3f4f6; transition: all 0.2s ease; }
+    .input-group:focus-within .input-group-text { background-color: rgba(30, 64, 175, 0.1); border-color: var(--primary-color); }
+    #imageUploadArea { transition: all 0.3s ease; border-color: #dee2e6; }
+    #imageUploadArea:hover { border-color: var(--primary-color) !important; background-color: rgba(30, 64, 175, 0.05); }
+    #imageUploadArea.dragover { border-color: var(--primary-color) !important; background-color: rgba(30, 64, 175, 0.1); }
 </style>
 
 <script>
