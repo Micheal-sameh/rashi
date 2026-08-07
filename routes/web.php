@@ -51,7 +51,7 @@ Route::group(['middleware' => ['setlocale']], function () {
         session(['lang' => $lang]);  // Store the language in session
 
         return redirect()->back();
-    });
+    })->whereIn('lang', ['en', 'ar'])->name('lang.switch');
 
     Route::prefix('auth')->group(function () {
         Route::get('/login', [AuthController::class, 'loginPage'])->name('loginPage');

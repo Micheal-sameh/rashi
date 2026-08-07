@@ -1,57 +1,77 @@
 @extends('layouts.sideBar')
 
 @section('content')
-    <div class="container-fluid px-3 px-lg-4 mt-4">
+    <div class="container-fluid px-3 px-lg-4 py-4">
+        <x-page-header icon="fa-user" :title="$user->name" subtitle="{{ __('messages.user_details') }}" />
+
+        <!-- Stats -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-lg-3">
+                <div class="rs-stat-card tone-success">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.points') }}</span>
+                        <div class="rs-stat-icon"><i class="fas fa-coins"></i></div>
+                    </div>
+                    <div class="rs-stat-value">{{ $user->points ?? '0' }}</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="rs-stat-card tone-warning">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.score') }}</span>
+                        <div class="rs-stat-icon"><i class="fas fa-star"></i></div>
+                    </div>
+                    <div class="rs-stat-value">{{ $user->score }}</div>
+                </div>
+            </div>
+        </div>
 
         <!-- User Details Card -->
-        <div class="card shadow-sm mb-4 rounded-4">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">{{ __('messages.user_details') }}</h4>
+        <div class="card rounded-4 shadow-soft mb-4">
+            <div class="card-header">
+                <h4 class="rs-title-lg mb-0">{{ __('messages.user_details') }}</h4>
             </div>
             <div class="card-body">
-                <div class="row gy-3">
+                <div class="row gy-4">
                     <div class="col-md-4">
-                        <strong>{{ __('messages.name') }}:</strong> {{ $user->name }}
+                        <p class="rs-label-md mb-1">{{ __('messages.name') }}</p>
+                        <div class="fw-semibold">{{ $user->name }}</div>
                     </div>
                     <div class="col-md-4">
-                        <strong>{{ __('messages.email') }}:</strong> {{ $user->email }}
+                        <p class="rs-label-md mb-1">{{ __('messages.email') }}</p>
+                        <div class="fw-semibold">{{ $user->email }}</div>
                     </div>
                     <div class="col-md-4">
-                        <strong>{{ __('messages.groups') }}:</strong>
-                        <span id="userGroupsText">
-                            {{ $user->groups->pluck('name')->join(', ') ?: __('messages.not_assigned') }}
-                        </span>
-                        <button type="button" class="btn btn-sm btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#updateGroupsModal">
-                            <i class="fa fa-edit me-1"></i>{{ __('messages.edit') }}
-                        </button>
+                        <p class="rs-label-md mb-1">{{ __('messages.groups') }}</p>
+                        <div class="fw-semibold">
+                            <span id="userGroupsText">
+                                {{ $user->groups->pluck('name')->join(', ') ?: __('messages.not_assigned') }}
+                            </span>
+                            <button type="button" class="btn btn-sm btn-secondary ms-2" data-bs-toggle="modal" data-bs-target="#updateGroupsModal">
+                                <i class="fa fa-edit me-1"></i>{{ __('messages.edit') }}
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="row gy-3 mt-3">
+                <div class="row gy-4 mt-1">
                     <div class="col-md-4">
-                        <strong>{{ __('messages.points') }}:</strong>
-                        <span class="badge bg-success">{{ $user->points ?? '0' }}</span>
-                    </div>
-                    <div class="col-md-4">
-                        <strong>{{ __('messages.score') }}:</strong>
-                        <span class="badge bg-warning text-dark">{{ $user->score }}</span>
-                    </div>
-                    <div class="col-md-4">
-                        <strong>{{ __('messages.created_at') }}:</strong> {{ $user->created_at->format('Y-m-d') }}
+                        <p class="rs-label-md mb-1">{{ __('messages.created_at') }}</p>
+                        <div class="fw-semibold">{{ $user->created_at->format('Y-m-d') }}</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Points History Table -->
-        <div class="card shadow-sm rounded-4">
-            <div class="card-header bg-secondary text-white">
-                <h4 class="mb-0">{{ __('messages.points_history') }}</h4>
+        <div class="card rounded-4 shadow-soft">
+            <div class="card-header">
+                <h4 class="rs-title-lg mb-0">{{ __('messages.points_history') }}</h4>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped mb-0">
-                        <thead class="table-light">
+                    <table class="table table-hover mb-0">
+                        <thead>
                             <tr>
                                 <th>{{ __('messages.date') }}</th>
                                 <th>{{ __('messages.amount') }}</th>
@@ -66,8 +86,8 @@
                                 <tr>
                                     <td>{{ $point->created_at->format('Y-m-d') }}</td>
                                     <td>{{ $point->amount }}</td>
-                                    <td><span class="badge bg-success">{{ $point->points }}</span></td>
-                                    <td><span class="badge bg-warning text-dark">{{ $point->score }}</span></td>
+                                    <td><span class="badge" style="background: var(--color-success-container); color: var(--color-on-success-container);">{{ $point->points }}</span></td>
+                                    <td><span class="badge" style="background: var(--color-warning-container); color: var(--color-warning);">{{ $point->score }}</span></td>
                                     <td>{{ optional($point->subject)->name ?? $point->subject_id }}</td>
                                     <td>{{ __('messages.' . class_basename($point->subject_type)) }}</td>
                                 </tr>

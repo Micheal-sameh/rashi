@@ -2,70 +2,63 @@
 
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="fw-bold text-primary mb-0">{{ __('messages.users') }}</h1>
-            <div class="d-flex gap-2">
-                <a href="{{ route('users.admins') }}" class="btn btn-outline-primary">
+        <x-page-header icon="fa-users" :title="__('messages.users')" :subtitle="__('messages.manage_admin_users')">
+            <x-slot:actions>
+                <a href="{{ route('users.admins') }}" class="btn btn-secondary">
                     <i class="fas fa-user-shield me-2"></i>{{ __('messages.admin_users') }}
                 </a>
                 <a href="{{ route('users.export', request()->query()) }}" class="btn btn-success">
                     <i class="fa fa-file-excel me-2"></i>Export to Excel
                 </a>
-            </div>
-        </div>
+            </x-slot>
+        </x-page-header>
 
         <!-- Stats Cards -->
         <div class="row g-3 mb-4">
-            <div class="col-md-6">
-                <div class="card shadow-sm border-0 bg-primary text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 opacity-75">{{ __('messages.total_users') }}</h6>
-                                <h2 class="mb-0 fw-bold">{{ number_format($totalUsers) }}</h2>
-                            </div>
-                            <div class="fs-1 opacity-50">
-                                <i class="fas fa-users"></i>
-                            </div>
-                        </div>
+            <div class="col-6 col-lg-3">
+                <div class="rs-stat-card tone-primary">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.total_users') }}</span>
+                        <div class="rs-stat-icon"><i class="fas fa-users"></i></div>
                     </div>
+                    <div class="rs-stat-value">{{ number_format($totalUsers) }}</div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card shadow-sm border-0 bg-success text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 opacity-75">{{ __('messages.total_families') }}</h6>
-                                <h2 class="mb-0 fw-bold">{{ number_format($totalFamilies) }}</h2>
-                            </div>
-                            <div class="fs-1 opacity-50">
-                                <i class="fas fa-home"></i>
-                            </div>
-                        </div>
+            <div class="col-6 col-lg-3">
+                <div class="rs-stat-card tone-success">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.total_families') }}</span>
+                        <div class="rs-stat-icon"><i class="fas fa-home"></i></div>
                     </div>
+                    <div class="rs-stat-value">{{ number_format($totalFamilies) }}</div>
                 </div>
             </div>
         </div>
 
         <!-- Filter Bar -->
-        <div class="row g-3 mb-4">
-            <div class="col-md-6">
-                <input type="text" id="nameFilter" class="form-control shadow-sm"
-                    placeholder="{{ __('messages.filter_by_name') }}">
-            </div>
-            <div class="col-md-6">
-                <select id="groupFilter" class="form-select shadow-sm">
-                    <option value="">{{ __('messages.groups') }}</option>
-                    @foreach ($groups as $group)
-                        <option value="{{ $group->id }}">{{ $group->name }}</option>
-                    @endforeach
-                </select>
+        <div class="card rounded-4 shadow-soft mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="rs-label-md">{{ __('messages.filter_by_name') }}</label>
+                        <input type="text" id="nameFilter" class="form-control"
+                            placeholder="{{ __('messages.filter_by_name') }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="rs-label-md">{{ __('messages.groups') }}</label>
+                        <select id="groupFilter" class="form-select">
+                            <option value="">{{ __('messages.groups') }}</option>
+                            @foreach ($groups as $group)
+                                <option value="{{ $group->id }}">{{ $group->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- User Table -->
-        <div id="userTableWrapper" class="table-responsive shadow-sm rounded-4 ">
+        <div id="userTableWrapper" class="rounded-4 shadow-soft overflow-hidden">
             @include('users.user-table', ['users' => $users])
         </div>
     </div>

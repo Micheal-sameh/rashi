@@ -15,11 +15,11 @@
         }
         h1 {
             text-align: center;
-            color: #333;
+            color: #191c1e;
         }
         h2 {
             text-align: center;
-            color: #555;
+            color: #3525cd;
             margin-bottom: 20px;
         }
         table {
@@ -28,16 +28,17 @@
             margin-top: 20px;
         }
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #e0e3e5;
             padding: 8px;
             text-align: right;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #3525cd;
+            color: #ffffff;
             font-weight: bold;
         }
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f2f4f6;
         }
     </style>
 </head>

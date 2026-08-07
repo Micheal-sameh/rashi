@@ -2,23 +2,20 @@
 
 @section('content')
 <div class="container-fluid px-3 px-lg-4 py-4">
-    <!-- Header Section -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-5">
-        <div>
-            <h1 class="fw-bold display-6 text-dark mb-2">{{ __('messages.create_reward') }}</h1>
-            <p class="text-muted mb-0">{{ __('messages.add_new_reward_for_users') }}</p>
-        </div>
-        <a href="{{ route('rewards.index') }}" class="btn btn-outline-secondary btn-lg px-4 py-3 shadow-sm rounded-pill d-flex align-items-center gap-2">
-            <i class="fa fa-arrow-left fa-lg"></i>
-            <span class="fw-semibold">{{ __('messages.back_to_rewards') }}</span>
-        </a>
-    </div>
+    <x-page-header icon="fa-gift" :title="__('messages.create_reward')" :subtitle="__('messages.add_new_reward_for_users')">
+        <x-slot:actions>
+            <a href="{{ route('rewards.index') }}" class="btn btn-secondary shadow-sm d-flex align-items-center gap-2">
+                <i class="fa fa-arrow-left"></i>
+                <span class="fw-semibold">{{ __('messages.back_to_rewards') }}</span>
+            </a>
+        </x-slot>
+    </x-page-header>
 
     <div class="row justify-content-center">
         <div class="col-xl-8 col-lg-10">
             <!-- Validation Errors -->
             @if ($errors->any())
-                <div class="alert alert-danger border-0 shadow-sm rounded-4 mb-4">
+                <div class="alert alert-danger rounded-4 mb-4">
                     <div class="d-flex align-items-center gap-2 mb-3">
                         <i class="fa fa-exclamation-triangle fa-lg"></i>
                         <h5 class="mb-0 fw-bold">{{ __('messages.validation_errors') }}</h5>
@@ -32,20 +29,20 @@
             @endif
 
             <!-- Form Card -->
-            <div class="card border-0 shadow-lg rounded-4 ">
-                <div class="card-header bg-gradient-primary text-white border-0 py-4">
+            <div class="card rounded-4 shadow-soft">
+                <div class="card-header">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="bg-white bg-opacity-25 rounded-circle p-2">
-                            <i class="fa fa-gift fa-lg"></i>
+                        <div class="rs-page-icon">
+                            <i class="fa fa-gift"></i>
                         </div>
                         <div>
-                            <h4 class="mb-0 fw-bold">{{ __('messages.new_reward_details') }}</h4>
-                            <small class="opacity-75">{{ __('messages.fill_all_required_fields') }}</small>
+                            <h4 class="rs-title-lg mb-0 text-gradient">{{ __('messages.new_reward_details') }}</h4>
+                            <small class="rs-label-md">{{ __('messages.fill_all_required_fields') }}</small>
                         </div>
                     </div>
                 </div>
 
-                <div class="card-body p-5">
+                <div class="card-body">
                     <form action="{{ route('rewards.store') }}" method="POST" enctype="multipart/form-data" id="rewardForm">
                         @csrf
 
@@ -53,145 +50,117 @@
                             <!-- Name -->
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label fw-semibold mb-2">
-                                        <i class="fa fa-tag me-2 text-primary"></i>
+                                    <label class="form-label mb-2">
+                                        <i class="fa fa-tag me-1 text-primary"></i>
                                         {{ __('messages.reward_name') }}
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-text bg-light border-0">
-                                            <i class="fa fa-gift text-primary"></i>
-                                        </span>
-                                        <input type="text"
-                                               class="form-control border-0 bg-light rounded-end"
-                                               id="name"
-                                               name="name"
-                                               value="{{ old('name') }}"
-                                               placeholder="{{ __('messages.enter_reward_name') }}"
-                                               style="height: 56px;"
-                                               required>
-                                    </div>
-                                    <small class="text-muted mt-1 d-block">{{ __('messages.reward_name_help') }}</small>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="name"
+                                           name="name"
+                                           value="{{ old('name') }}"
+                                           placeholder="{{ __('messages.enter_reward_name') }}"
+                                           required>
+                                    <small class="rs-label-md d-block mt-1" style="text-transform:none;">{{ __('messages.reward_name_help') }}</small>
                                 </div>
                             </div>
 
                             <!-- Points -->
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label fw-semibold mb-2">
-                                        <i class="fa fa-star me-2 text-warning"></i>
+                                    <label class="form-label mb-2">
+                                        <i class="fa fa-star me-1 text-warning"></i>
                                         {{ __('messages.points_required') }}
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-text bg-light border-0">
-                                            <i class="fa fa-star text-warning"></i>
-                                        </span>
-                                        <input type="number"
-                                               class="form-control border-0 bg-light rounded-end"
-                                               id="points"
-                                               name="points"
-                                               value="{{ old('points') }}"
-                                               min="0"
-                                               placeholder="0"
-                                               style="height: 56px;"
-                                               required>
-                                    </div>
-                                    <small class="text-muted mt-1 d-block">{{ __('messages.points_help') }}</small>
+                                    <input type="number"
+                                           class="form-control"
+                                           id="points"
+                                           name="points"
+                                           value="{{ old('points') }}"
+                                           min="0"
+                                           placeholder="0"
+                                           required>
+                                    <small class="rs-label-md d-block mt-1" style="text-transform:none;">{{ __('messages.points_help') }}</small>
                                 </div>
                             </div>
 
                             <!-- Quantity -->
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label fw-semibold mb-2">
-                                        <i class="fa fa-box me-2 text-success"></i>
+                                    <label class="form-label mb-2">
+                                        <i class="fa fa-box me-1 text-success"></i>
                                         {{ __('messages.initial_quantity') }}
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-text bg-light border-0">
-                                            <i class="fa fa-box text-success"></i>
-                                        </span>
+                                    <div class="input-group">
                                         <input type="number"
-                                               class="form-control border-0 bg-light rounded-end"
+                                               class="form-control"
                                                id="quantity"
                                                name="quantity"
                                                value="{{ old('quantity', 1) }}"
                                                min="1"
                                                placeholder="1"
-                                               style="height: 56px;"
                                                required>
-                                        <span class="input-group-text bg-light border-0">Units</span>
+                                        <span class="input-group-text">{{ __('messages.units') }}</span>
                                     </div>
-                                    <small class="text-muted mt-1 d-block">{{ __('messages.quantity_help') }}</small>
+                                    <small class="rs-label-md d-block mt-1" style="text-transform:none;">{{ __('messages.quantity_help') }}</small>
                                 </div>
                             </div>
 
                             <!-- Status -->
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label fw-semibold mb-2">
-                                        <i class="fa fa-info-circle me-2 text-info"></i>
+                                    <label class="form-label mb-2">
+                                        <i class="fa fa-circle-info me-1 text-info"></i>
                                         {{ __('messages.status') }}
                                         <span class="text-danger">*</span>
                                     </label>
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-text bg-light border-0">
-                                            <i class="fa fa-circle text-info"></i>
-                                        </span>
-                                        <select class="form-select border-0 bg-light rounded-end"
-                                                id="status"
-                                                name="status"
-                                                style="height: 56px;"
-                                                required>
-                                            <option value="" disabled selected>{{ __('messages.select_status') }}</option>
-                                            @foreach (collect(App\Enums\RewardStatus::all())->except([3, 1]) as $enum)
-                                                <option value="{{ $enum['value'] }}"
-                                                        {{ old('status') == $enum['value'] ? 'selected' : '' }}
-                                                        data-color="{{ $enum['value'] == \App\Enums\RewardStatus::ACTIVE ? 'success' : ($enum['value'] == \App\Enums\RewardStatus::CANCELLED ? 'danger' : 'secondary') }}">
-                                                    {{ $enum['name'] }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <small class="text-muted mt-1 d-block">{{ __('messages.status_help') }}</small>
+                                    <select class="form-select"
+                                            id="status"
+                                            name="status"
+                                            required>
+                                        <option value="" disabled selected>{{ __('messages.select_status') }}</option>
+                                        @foreach (collect(App\Enums\RewardStatus::all())->except([3, 1]) as $enum)
+                                            <option value="{{ $enum['value'] }}"
+                                                    {{ old('status') == $enum['value'] ? 'selected' : '' }}
+                                                    data-color="{{ $enum['value'] == \App\Enums\RewardStatus::ACTIVE ? 'success' : ($enum['value'] == \App\Enums\RewardStatus::CANCELLED ? 'danger' : 'secondary') }}">
+                                                {{ $enum['name'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="rs-label-md d-block mt-1" style="text-transform:none;">{{ __('messages.status_help') }}</small>
                                 </div>
                             </div>
 
                             <!-- Group -->
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-label fw-semibold mb-2">
-                                        <i class="fa fa-users me-2 text-purple"></i>
+                                    <label class="form-label mb-2">
+                                        <i class="fa fa-users me-1 text-purple"></i>
                                         {{ __('messages.assign_to_group') }}
                                     </label>
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-text bg-light border-0">
-                                            <i class="fa fa-users text-purple"></i>
-                                        </span>
-                                        <select class="form-select border-0 bg-light rounded-end"
-                                                id="group_id"
-                                                name="group_id"
-                                                style="height: 56px;">
-                                            <option value="" selected>{{ __('messages.select_group_optional') }}</option>
-                                            @foreach ($groups as $group)
-                                                <option value="{{ $group->id }}"
-                                                        {{ old('group_id') == $group->id ? 'selected' : '' }}>
-                                                    {{ $group->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <small class="text-muted mt-1 d-block">{{ __('messages.group_help') }}</small>
+                                    <select class="form-select"
+                                            id="group_id"
+                                            name="group_id">
+                                        <option value="" selected>{{ __('messages.select_group_optional') }}</option>
+                                        @foreach ($groups as $group)
+                                            <option value="{{ $group->id }}"
+                                                    {{ old('group_id') == $group->id ? 'selected' : '' }}>
+                                                {{ $group->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="rs-label-md d-block mt-1" style="text-transform:none;">{{ __('messages.group_help') }}</small>
                                 </div>
                             </div>
 
                             <!-- Image Upload -->
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label class="form-label fw-semibold mb-2">
-                                        <i class="fa fa-image me-2 text-danger"></i>
+                                    <label class="form-label mb-2">
+                                        <i class="fa fa-image me-1 text-danger"></i>
                                         {{ __('messages.reward_image') }}
                                     </label>
 
@@ -222,11 +191,11 @@
 
                         <!-- Form Actions -->
                         <div class="d-flex gap-3 mt-5 pt-4 border-top">
-                            <button type="reset" class="btn btn-outline-secondary rounded-pill px-5 py-2 fw-semibold flex-fill">
+                            <button type="reset" class="btn btn-secondary px-4">
                                 <i class="fa fa-redo me-2"></i>
                                 {{ __('messages.reset') }}
                             </button>
-                            <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 fw-semibold flex-fill">
+                            <button type="submit" class="btn btn-primary flex-fill">
                                 <i class="fa fa-plus-circle me-2"></i>
                                 {{ __('messages.create_reward') }}
                             </button>
@@ -236,8 +205,8 @@
             </div>
 
             <!-- Tips Card -->
-            <div class="card border-0 shadow-sm rounded-4 mt-4">
-                <div class="card-header bg-transparent border-0 py-3">
+            <div class="card rounded-4 shadow-soft mt-4">
+                <div class="card-header py-3">
                     <h5 class="mb-0 fw-semibold">
                         <i class="fa fa-lightbulb me-2 text-warning"></i>
                         {{ __('messages.tips_for_great_rewards') }}

@@ -2,17 +2,16 @@
 
 @section('content')
     <div class="container-fluid px-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold text-primary">{{ __('messages.competitions') }}: {{ $competition->name }}</h2>
-            <div class="d-flex gap-2">
+        <x-page-header icon="fa-users" :title="__('messages.competitions') . ': ' . $competition->name">
+            <x-slot:actions>
                 <a href="{{ route('competitions.leaderboard.export', array_merge(['id' => $competition->id], request()->only(['user_ids', 'group_id']))) }}" class="btn btn-primary">
                     <i class="fa fa-download me-1"></i> {{ __('messages.export_leaderboard_pdf') }}
                 </a>
                 <a href="{{ route('competitions.index') }}" class="btn btn-secondary">
                     <i class="fa fa-arrow-left me-1"></i> {{ __('messages.back') }}
                 </a>
-            </div>
-        </div>
+            </x-slot>
+        </x-page-header>
 
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -22,11 +21,11 @@
         @endif
 
         <!-- Filter Form -->
-        <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card mb-4">
             <div class="card-body">
                 <form method="GET" action="{{ route('competitions.userAnswers', $competition->id) }}" class="row g-3">
                     <div class="col-md-4">
-                        <label for="group_id" class="form-label fw-semibold">{{ __('messages.group') }}</label>
+                        <label for="group_id" class="form-label">{{ __('messages.group') }}</label>
                         <select name="group_id" id="group_id" class="form-select">
                             <option value="">{{ __('messages.all_groups') }}</option>
                             @foreach(\App\Models\Group::all() as $group)
@@ -37,7 +36,7 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label for="user_ids" class="form-label fw-semibold">{{ __('messages.select_users') }}</label>
+                        <label for="user_ids" class="form-label">{{ __('messages.select_users') }}</label>
                         <select name="user_ids[]" id="user_ids" class="form-select" multiple>
                             @foreach($users as $user)
                                 @php
@@ -64,9 +63,9 @@
 
         @if ($competition->quizzes->count())
             @foreach ($competition->quizzes as $quiz)
-                <div class="card shadow-sm border-0 rounded-4 mb-4">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">{{ $quiz->name }} ({{ \Carbon\Carbon::parse($quiz->date)->format('d M Y') }})</h5>
+                <div class="card mb-4">
+                    <div class="card-header rs-title-lg">
+                        {{ $quiz->name }} ({{ \Carbon\Carbon::parse($quiz->date)->format('d M Y') }})
                     </div>
                     <div class="card-body">
                         @if ($quiz->questions->count())
@@ -74,7 +73,7 @@
                                 <div class="mb-4">
                                     <h6 class="fw-bold">{{ __('messages.user_summary') }}</h6>
                                     <div class="table-responsive">
-                                        <table class="table table-sm table-striped">
+                                        <table class="table">
                                             <thead>
                                                 <tr>
                                                     <th>{{ __('messages.user') }}</th>
@@ -101,7 +100,7 @@
                                     <h6 class="fw-bold">{{ $question->question }} ({{ $question->points }} {{ __('messages.points') }})</h6>
                                     @if ($question->userAnswers->count())
                                         <div class="table-responsive">
-                                            <table class="table table-sm table-striped">
+                                            <table class="table">
                                                 <thead>
                                                     <tr>
                                                         <th>{{ __('messages.user') }}</th>
@@ -117,9 +116,9 @@
                                                             <td>{{ $userAnswer->answer->answer }}</td>
                                                             <td>
                                                                 @if($userAnswer->answer->is_correct)
-                                                                    <i class="fa fa-check text-success"></i> {{ __('messages.yes') }}
+                                                                    <span class="badge bg-success"><i class="fa fa-check me-1"></i>{{ __('messages.yes') }}</span>
                                                                 @else
-                                                                    <i class="fa fa-times text-danger"></i> {{ __('messages.no') }}
+                                                                    <span class="badge bg-danger"><i class="fa fa-times me-1"></i>{{ __('messages.no') }}</span>
                                                                 @endif
                                                             </td>
                                                             <td>{{ $userAnswer->points }}</td>

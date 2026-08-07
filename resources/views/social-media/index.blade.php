@@ -3,12 +3,7 @@
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
         <!-- Header Section -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="fw-bold display-6 text-dark mb-2">{{ __('messages.social_media') }}</h1>
-                <p class="text-muted mb-0">{{ __('messages.manage_social_media_links') }}</p>
-            </div>
-        </div>
+        <x-page-header icon="fa-share-alt" :title="__('messages.social_media')" :subtitle="__('messages.manage_social_media_links')" />
 
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -28,17 +23,17 @@
             </div>
         @else
             <!-- Social Media Table -->
-            <div class="card border-0 shadow-lg rounded-4">
+            <div class="card">
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-light">
                                 <tr>
-                                    <th class="ps-4 py-3 fw-semibold text-muted">{{ __('messages.id') }}</th>
-                                    <th class="py-3 fw-semibold text-muted">{{ __('messages.name') }}</th>
-                                    <th class="py-3 fw-semibold text-muted">{{ __('messages.icon') }}</th>
-                                    <th class="py-3 fw-semibold text-muted">{{ __('messages.link') }}</th>
-                                    <th class="pe-4 py-3 fw-semibold text-muted text-end">{{ __('messages.actions') }}</th>
+                                    <th class="ps-4 py-3 rs-label-md">{{ __('messages.id') }}</th>
+                                    <th class="py-3 rs-label-md">{{ __('messages.name') }}</th>
+                                    <th class="py-3 rs-label-md">{{ __('messages.icon') }}</th>
+                                    <th class="py-3 rs-label-md">{{ __('messages.link') }}</th>
+                                    <th class="pe-4 py-3 rs-label-md text-end">{{ __('messages.actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -46,10 +41,10 @@
                                     <tr class="border-bottom border-light">
                                         <td class="ps-4 py-3">{{ $social->id }}</td>
                                         <td class="py-3">
-                                            <span class="fw-semibold">{{ $social->name }}</span>
+                                            <span class="rs-title-lg">{{ $social->name }}</span>
                                         </td>
                                         <td class="py-3">
-                                            <i class="fa {{ $social->icon }} fa-2x text-primary"></i>
+                                            <i class="fa {{ $social->icon }} fa-2x text-gradient"></i>
                                         </td>
                                         <td class="py-3">
                                             <a href="{{ $social->link }}" target="_blank" class="text-decoration-none">
@@ -58,7 +53,7 @@
                                         </td>
                                         <td class="pe-4 py-3 text-end">
                                             <a href="{{ route('social-media.edit', $social->id) }}"
-                                               class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                               class="btn btn-sm btn-primary">
                                                 <i class="fa fa-edit me-1"></i>
                                                 {{ __('messages.edit') }}
                                             </a>

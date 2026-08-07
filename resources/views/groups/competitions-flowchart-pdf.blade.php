@@ -9,14 +9,14 @@
         body {
             font-family: DejaVu Sans, sans-serif;
             font-size: 12px;
-            color: #5f7ec7;
+            color: #3525cd;
             background: #f1f5f9;
             padding: 24px;
         }
 
         /* ── Header ─────────────────────────────────────── */
         .header-wrap {
-            background: #5f7ec7;
+            background: #3525cd;
             border-radius: 12px;
             padding: 0;
             margin-bottom: 18px;
@@ -24,7 +24,7 @@
         }
         .header-accent {
             height: 5px;
-            background: linear-gradient(90deg, #6366f1 0%, #38bdf8 50%, #34d399 100%);
+            background: linear-gradient(90deg, #3525cd 0%, #4f46e5 50%, #34d399 100%);
         }
         .header-body {
             padding: 16px 20px 18px 20px;
@@ -38,9 +38,9 @@
         .header-icon {
             width: 44px;
             height: 44px;
-            background: #5f7ec7;
+            background: #3525cd;
             border-radius: 10px;
-            border: 1px solid #5f7ec7;
+            border: 1px solid #3525cd;
             text-align: center;
             vertical-align: middle;
             padding-top: 4px;
@@ -60,8 +60,8 @@
             margin-top: 3px;
         }
         .header-badge {
-            background: #5f7ec7;
-            border: 1px solid #5f7ec7;
+            background: #3525cd;
+            border: 1px solid #3525cd;
             border-radius: 6px;
             padding: 5px 10px;
             text-align: right;
@@ -216,8 +216,8 @@
                     <td style="width:44px;">
                         <div class="header-icon">
                             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#6366f1" stroke-width="1.8" stroke-linejoin="round"/>
-                                <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="#38bdf8" stroke-width="1.8" stroke-linejoin="round"/>
+                                <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#3525cd" stroke-width="1.8" stroke-linejoin="round"/>
+                                <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="#4f46e5" stroke-width="1.8" stroke-linejoin="round"/>
                             </svg>
                         </div>
                     </td>

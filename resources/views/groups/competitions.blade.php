@@ -2,15 +2,13 @@
 
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold text-primary">{{ __('messages.groups_competitions') }}</h2>
-        </div>
+        <x-page-header icon="fa-project-diagram" :title="__('messages.groups_competitions')" />
 
-        <div class="card shadow-sm border-0 mb-4">
+        <div class="card border-0 mb-4">
             <div class="card-body">
                 <form method="GET" action="{{ route('groups.competitions') }}" class="row g-3 align-items-end">
                     <div class="col-md-8">
-                        <label for="group_id" class="form-label fw-semibold">{{ __('messages.select_group_for_flowchart') }}</label>
+                        <label for="group_id" class="form-label">{{ __('messages.select_group_for_flowchart') }}</label>
                         <select id="group_id" name="group_id" class="form-select" required>
                             <option value="">{{ __('messages.choose_a_group') }}</option>
                             @foreach($groups as $group)
@@ -26,7 +24,7 @@
                         </button>
                         @if($selectedGroup)
                             <a href="{{ route('groups.competitions.exportPdf', ['group_id' => $selectedGroup->id]) }}"
-                                class="btn btn-outline-danger w-100">
+                                class="btn btn-danger w-100">
                                 <i class="fas fa-file-pdf me-1"></i>{{ __('messages.export_pdf') }}
                             </a>
                         @endif
@@ -42,43 +40,48 @@
                 $cancelledCount = $competitions->where('status', App\Enums\CompetitionStatus::CANCELLED)->count();
                 $futureCount = $competitions->where('status', App\Enums\CompetitionStatus::PENDING)->count();
             @endphp
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-body">
-                    <h6 class="fw-bold text-secondary mb-3">
-                        <i class="fas fa-palette me-2"></i>Color Key
-                    </h6>
-                    <div class="row g-2">
-                        <div class="col-md-3 col-6">
-                            <div class="border rounded-3 px-3 py-2 bg-success-subtle d-flex justify-content-between align-items-center">
-                                <span class="small fw-semibold text-success"><i class="fas fa-circle me-1"></i>{{ __('messages.flow_finished') }}</span>
-                                <span class="badge text-bg-success">{{ $finishedCount }}</span>
-                            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 col-6">
+                    <div class="rs-stat-card tone-success">
+                        <div class="rs-stat-top">
+                            <span class="rs-label-md">{{ __('messages.flow_finished') }}</span>
+                            <div class="rs-stat-icon"><i class="fas fa-check-circle"></i></div>
                         </div>
-                        <div class="col-md-3 col-6">
-                            <div class="border rounded-3 px-3 py-2 bg-warning-subtle d-flex justify-content-between align-items-center">
-                                <span class="small fw-semibold text-warning"><i class="fas fa-circle me-1"></i>{{ __('messages.flow_active') }}</span>
-                                <span class="badge text-bg-warning text-dark">{{ $activeCount }}</span>
-                            </div>
+                        <div class="rs-stat-value">{{ $finishedCount }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="rs-stat-card tone-warning">
+                        <div class="rs-stat-top">
+                            <span class="rs-label-md">{{ __('messages.flow_active') }}</span>
+                            <div class="rs-stat-icon"><i class="fas fa-play-circle"></i></div>
                         </div>
-                        <div class="col-md-3 col-6">
-                            <div class="border rounded-3 px-3 py-2 bg-danger-subtle d-flex justify-content-between align-items-center">
-                                <span class="small fw-semibold text-danger"><i class="fas fa-circle me-1"></i>{{ __('messages.flow_cancelled') }}</span>
-                                <span class="badge text-bg-danger">{{ $cancelledCount }}</span>
-                            </div>
+                        <div class="rs-stat-value">{{ $activeCount }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="rs-stat-card tone-error">
+                        <div class="rs-stat-top">
+                            <span class="rs-label-md">{{ __('messages.flow_cancelled') }}</span>
+                            <div class="rs-stat-icon"><i class="fas fa-times-circle"></i></div>
                         </div>
-                        <div class="col-md-3 col-6">
-                            <div class="border rounded-3 px-3 py-2 bg-primary-subtle d-flex justify-content-between align-items-center">
-                                <span class="small fw-semibold text-primary"><i class="fas fa-circle me-1"></i>{{ __('messages.flow_future') }}</span>
-                                <span class="badge text-bg-primary">{{ $futureCount }}</span>
-                            </div>
+                        <div class="rs-stat-value">{{ $cancelledCount }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="rs-stat-card tone-primary">
+                        <div class="rs-stat-top">
+                            <span class="rs-label-md">{{ __('messages.flow_future') }}</span>
+                            <div class="rs-stat-icon"><i class="fas fa-clock"></i></div>
                         </div>
+                        <div class="rs-stat-value">{{ $futureCount }}</div>
                     </div>
                 </div>
             </div>
 
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
+            <div class="card border-0 mb-4">
+                <div class="card-header">
+                    <h4 class="rs-title-lg mb-0">
                         <i class="fas fa-layer-group me-2"></i>
                         {{ $selectedGroup->name }}
                     </h4>

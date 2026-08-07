@@ -2,16 +2,14 @@
 
 @section('content')
     <div class="container-fluid px-3 px-lg-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold text-primary">{{ __('messages.questions') }}</h2>
-        </div>
+        <x-page-header icon="fa-edit" :title="__('messages.questions')" />
 
         {{-- Dependent Dropdowns --}}
-        <div class="card shadow-sm border-0 rounded-4 mb-4">
-            <div class="card-body">
+        <div class="card rounded-4 shadow-soft mb-4">
+            <div class="card-body p-4">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label for="competition" class="form-label fw-bold">
+                        <label for="competition" class="form-label">
                             <i class="fa fa-trophy text-warning me-1"></i> {{ __('messages.select_competition') }}
                         </label>
                         <select id="competition" class="form-select">
@@ -25,7 +23,7 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label for="quiz" class="form-label fw-bold">
+                        <label for="quiz" class="form-label">
                             <i class="fa fa-question-circle text-info me-1"></i> {{ __('messages.select_quiz') }}
                         </label>
                         <select id="quiz" class="form-select">
@@ -37,16 +35,16 @@
         </div>
 
         {{-- Create button and Archive filter --}}
-        <div class="d-flex gap-2 mb-3">
+        <div class="d-flex justify-content-between align-items-center gap-2 mb-3 flex-wrap">
             <div id="createButtonWrapper" style="display: none;">
-                <a id="createQuestionLink" href="#" class="btn btn-success">
+                <a id="createQuestionLink" href="#" class="btn btn-primary">
                     <i class="fa fa-plus-circle me-1"></i> {{ __('messages.create_questions') }}
                 </a>
             </div>
             <div class="form-check form-switch d-flex align-items-center">
                 <input class="form-check-input" type="checkbox" id="archiveFilter"
                     {{ request()->get('archive') == '1' ? 'checked' : '' }}>
-                <label class="form-check-label ms-2" for="archiveFilter">
+                <label class="form-check-label ms-2 mb-0" for="archiveFilter">
                     <i class="fa fa-archive me-1"></i> {{ __('messages.Archive') }}
                 </label>
             </div>
@@ -62,9 +60,9 @@
 
         @if ($questions->count())
             {{-- Desktop Table --}}
-            <div class="card shadow-sm border-0 rounded-4 d-none d-md-block">
-                <div class="card-body table-responsive">
-                    <table class="table table-hover align-middle">
+            <div class="card rounded-4 shadow-soft d-none d-md-block">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th>{{ __('messages.question') }}</th>
@@ -131,13 +129,13 @@
             {{-- Mobile Cards --}}
             <div class="d-block d-md-none">
                 @foreach ($questions as $question)
-                    <div class="card shadow-sm border-0 rounded-4 mb-3">
-                        <div class="card-body">
+                    <div class="card rounded-4 shadow-soft mb-3">
+                        <div class="card-body p-4">
                             @if ($question->hasMedia('question_image'))
                                 <img src="{{ $question->getFirstMediaUrl('question_image') }}"
                                     class="img-fluid rounded mb-2" style="max-width: 100%;">
                             @else
-                                <h6 class="fw-bold mb-2">{{ $question->question }}</h6>
+                                <h6 class="rs-title-lg mb-2">{{ $question->question }}</h6>
                             @endif
                             <p class="mb-2">
                                 <span class="badge bg-primary">{{ __('messages.points') }}: {{ $question->points }}</span>

@@ -4,12 +4,13 @@
     <div class="container-fluid px-3 px-lg-4">
         <div class="row justify-content-center">
             <div class="col-12 col-xl-10">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold text-primary">{{ __('messages.create_quiz') }}</h2>
-            <a href="{{ route('quizzes.index') }}" class="btn btn-outline-secondary">
-                <i class="fa fa-arrow-left me-1"></i> {{ __('messages.back') }}
-            </a>
-        </div>
+                <x-page-header icon="fa-question-circle" :title="__('messages.create_quiz')">
+                    <x-slot:actions>
+                        <a href="{{ route('quizzes.index') }}" class="btn btn-secondary">
+                            <i class="fa fa-arrow-left me-1"></i> {{ __('messages.back') }}
+                        </a>
+                    </x-slot>
+                </x-page-header>
 
         <!-- Warning Modal -->
         <div class="modal fade" id="warningModal" tabindex="-1" aria-hidden="true">
@@ -34,8 +35,8 @@
             </div>
         </div>
 
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body">
+        <div class="card rounded-4 shadow-soft">
+            <div class="card-body p-4">
                 <form action="{{ route('quizzes.store') }}" method="POST">
                     @csrf
 
@@ -92,9 +93,9 @@
                     </div>
 
                     {{-- Questions Section --}}
-                    <h4 class="fw-bold text-secondary mb-3">{{ __('messages.questions') }}</h4>
+                    <h4 class="rs-title-lg mb-3">{{ __('messages.questions') }}</h4>
                     <div id="questions-section">
-                        <div class="question card mb-4 border-0 shadow-sm rounded-3" id="question-0">
+                        <div class="question card mb-4 rounded-4 shadow-soft" id="question-0">
                             <div class="card-body">
                                 <h5 class="card-title mb-3">{{ __('messages.question') }} 1</h5>
 
@@ -153,7 +154,7 @@
                     </button>
 
                     <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-success px-4">
+                        <button type="submit" class="btn btn-primary px-4">
                             <i class="fa fa-save me-1"></i> {{ __('messages.create') }}
                         </button>
                     </div>
@@ -185,7 +186,7 @@
             }
 
             const questionHTML = `
-            <div class="question card mb-4 border-0 shadow-sm rounded-3" id="${questionId}">
+            <div class="question card mb-4 rounded-4 shadow-soft" id="${questionId}">
                 <div class="card-body">
                     <h5 class="card-title mb-3">{{ __('messages.question') }} ${questionIndex + 1}</h5>
 

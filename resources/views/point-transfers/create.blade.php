@@ -2,13 +2,16 @@
 
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
+        <x-page-header icon="fa-exchange-alt" :title="__('messages.create_point_transfer')">
+            <x-slot:actions>
+                <a href="{{ route('point-transfers.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>{{ __('messages.back') }}
+                </a>
+            </x-slot>
+        </x-page-header>
         <div class="row">
             <div class="col-lg-8 mx-auto">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0"><i class="fas fa-exchange-alt me-2"></i>{{ __('messages.create_point_transfer') }}</h4>
-                    </div>
-
+                <div class="card rounded-4 shadow-soft">
                     <div class="card-body">
                         @if(session('error'))
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -22,7 +25,7 @@
 
                             <!-- Family Code Selection -->
                             <div class="mb-4">
-                                <label for="family_code" class="form-label fw-semibold">
+                                <label for="family_code" class="form-label">
                                     <i class="fas fa-users me-1"></i>{{ __('messages.family_code') }}
                                 </label>
                                 <div class="input-group">
@@ -46,7 +49,7 @@
                             <div id="familyMembersSection" style="display: {{ $familyMembers ? 'block' : 'none' }};">
                                 <!-- Sender -->
                                 <div class="mb-4">
-                                    <label for="sender_id" class="form-label fw-semibold">
+                                    <label for="sender_id" class="form-label">
                                         <i class="fas fa-user-minus me-1"></i>{{ __('messages.sender') }}
                                     </label>
                                     <select class="form-select @error('sender_id') is-invalid @enderror"
@@ -72,7 +75,7 @@
 
                                 <!-- Receiver -->
                                 <div class="mb-4">
-                                    <label for="receiver_id" class="form-label fw-semibold">
+                                    <label for="receiver_id" class="form-label">
                                         <i class="fas fa-user-plus me-1"></i>{{ __('messages.receiver') }}
                                     </label>
                                     <select class="form-select @error('receiver_id') is-invalid @enderror"
@@ -98,7 +101,7 @@
 
                                 <!-- Points -->
                                 <div class="mb-4">
-                                    <label for="points" class="form-label fw-semibold">
+                                    <label for="points" class="form-label">
                                         <i class="fas fa-coins me-1"></i>{{ __('messages.points') }}
                                     </label>
                                     <input type="number"
@@ -117,7 +120,7 @@
 
                                 <!-- Reason -->
                                 <div class="mb-4">
-                                    <label for="reason" class="form-label fw-semibold">
+                                    <label for="reason" class="form-label">
                                         <i class="fas fa-comment me-1"></i>{{ __('messages.reason') }}
                                     </label>
                                     <textarea class="form-control @error('reason') is-invalid @enderror"

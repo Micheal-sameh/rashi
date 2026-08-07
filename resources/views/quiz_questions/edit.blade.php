@@ -2,14 +2,11 @@
 
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
+        <x-page-header icon="fa-edit" :title="__('messages.edit_question')" />
         <div class="row justify-content-center">
             <div class="col-12 col-xl-10">
-                <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body p-4">
-                <!-- Heading -->
-                <h3 class="fw-bold text-primary mb-4">
-                    <i class="fa fa-edit me-2"></i> {{ __('messages.edit_question') }}
-                </h3>
+                <div class="card rounded-4 shadow-soft">
+            <div class="card-body">
 
                 <!-- Error Handling -->
                 @if ($errors->any())
@@ -34,7 +31,7 @@
 
                     <!-- Question Type Toggle -->
                     <div class="mb-4">
-                        <label class="form-label fw-bold">
+                        <label class="form-label">
                             <i class="fa fa-image text-primary me-1"></i> {{ __('messages.question_type') }}
                         </label>
                         <div class="btn-group w-100" role="group">
@@ -53,7 +50,7 @@
 
                     <!-- Question Text -->
                     <div class="mb-3 {{ $question->hasMedia('question_image') ? 'd-none' : '' }}" id="text-question-container">
-                        <label for="question" class="form-label fw-bold">
+                        <label for="question" class="form-label">
                             <i class="fa fa-question-circle text-info me-1"></i> {{ __('messages.question') }}
                         </label>
                         <input type="text" name="question" id="question" class="form-control form-control-lg"
@@ -62,7 +59,7 @@
 
                     <!-- Question Image -->
                     <div class="mb-3 {{ !$question->hasMedia('question_image') ? 'd-none' : '' }}" id="image-question-container">
-                        <label for="question_image" class="form-label fw-bold">
+                        <label for="question_image" class="form-label">
                             <i class="fa fa-image text-info me-1"></i> {{ __('messages.question_image') }}
                         </label>
                         @if ($question->hasMedia('question_image'))
@@ -84,7 +81,7 @@
 
                     <!-- Points -->
                     <div class="mb-4">
-                        <label for="points" class="form-label fw-bold">
+                        <label for="points" class="form-label">
                             <i class="fa fa-star text-warning me-1"></i> {{ __('messages.points') }}
                         </label>
                         <input type="number" name="points" id="points" class="form-control"
@@ -92,9 +89,9 @@
                     </div>
 
                     <!-- Answers -->
-                    <div class="card border-0 shadow-sm rounded-3 mb-4">
-                        <div class="card-body">
-                            <h5 class="fw-bold mb-3 text-secondary">
+                    <div class="card rounded-4 bg-light border-0 mb-4">
+                        <div class="card-body p-4">
+                            <h5 class="rs-title-lg mb-3">
                                 <i class="fa fa-list-ol me-2"></i> {{ __('messages.answers') }}
                                 <span class="badge bg-info ms-2">{{ __('messages.min_2_max_4') }}</span>
                             </h5>
@@ -254,7 +251,7 @@
 
                     <!-- Buttons -->
                     <div class="d-flex justify-content-between flex-wrap gap-2">
-                        <a href="{{ route('questions.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('questions.index') }}" class="btn btn-secondary">
                             <i class="fa fa-arrow-left me-1"></i> {{ __('messages.back') }}
                         </a>
                         <button type="submit" class="btn btn-primary">

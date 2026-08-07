@@ -2,15 +2,30 @@
 
 @section('content')
 <div class="container-fluid px-3 px-lg-4 py-4">
-    <form action="{{ route("$route.update") }}" method="POST">
-        @csrf
-        @method('put')
+    <x-page-header icon="fa-edit" :title="__('messages.edit') . ' ' . __('messages.about_us')">
+        <x-slot:actions>
+            <a href="{{ route("$route.show") }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> {{ __('messages.back') }}
+            </a>
+        </x-slot>
+    </x-page-header>
 
-        <!-- Pre-fill the textarea with old value or model value -->
-        <textarea id="value" name="value">{{ old('value', $aboutUs->value ?? '') }}</textarea>
+    <div class="card">
+        <div class="card-body">
+            <form action="{{ route("$route.update") }}" method="POST">
+                @csrf
+                @method('put')
 
-        <button type="submit" class="btn btn-primary mt-3">Save</button>
-    </form>
+                <label class="form-label rs-label-md">{{ __('messages.about_us') }}</label>
+                <!-- Pre-fill the textarea with old value or model value -->
+                <textarea id="value" name="value">{{ old('value', $aboutUs->value ?? '') }}</textarea>
+
+                <button type="submit" class="btn btn-primary mt-3">
+                    <i class="fas fa-save me-1"></i> Save
+                </button>
+            </form>
+        </div>
+    </div>
 
     <script src="https://cdn.tiny.cloud/1/{{ env('TINY_API_KEY') }}/tinymce/6/tinymce.min.js"></script>
     <script>

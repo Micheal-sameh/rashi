@@ -1,14 +1,14 @@
 <!-- Desktop Table View -->
 <div class="d-none d-lg-block">
-    <div class="table-responsive shadow-sm rounded-4 w-100">
-        <table class="table table-hover table-striped align-middle mb-0 w-100">
-            <thead class="table-light">
+    <div class="table-responsive w-100">
+        <table class="table table-hover align-middle mb-0 w-100">
+            <thead>
                 <tr>
-                    <th>{{ __('messages.name') }}</th>
-                    <th>{{ __('messages.email') }}</th>
-                    <th>{{ __('messages.membership_code') }}</th>
-                    <th>{{ __('messages.phone') }}</th>
-                    <th onclick="applySort('score')" style="cursor:pointer;">
+                    <th class="rs-label-md">{{ __('messages.name') }}</th>
+                    <th class="rs-label-md">{{ __('messages.email') }}</th>
+                    <th class="rs-label-md">{{ __('messages.membership_code') }}</th>
+                    <th class="rs-label-md">{{ __('messages.phone') }}</th>
+                    <th class="rs-label-md" onclick="applySort('score')" style="cursor:pointer;">
                         {{ __('messages.score') }}
                         @if (request('sort_by') === 'score')
                             <i class="fa fa-sort-{{ request('direction') === 'asc' ? 'asc' : 'desc' }}"></i>
@@ -16,7 +16,7 @@
                             <i class="fa fa-sort text-muted"></i>
                         @endif
                     </th>
-                    <th onclick="applySort('points')" style="cursor:pointer;">
+                    <th class="rs-label-md" onclick="applySort('points')" style="cursor:pointer;">
                         {{ __('messages.points') }}
                         @if (request('sort_by') === 'points')
                             <i class="fa fa-sort-{{ request('direction') === 'asc' ? 'asc' : 'desc' }}"></i>
@@ -24,8 +24,8 @@
                             <i class="fa fa-sort text-muted"></i>
                         @endif
                     </th>
-                    <th>{{ __('messages.image') }}</th>
-                    <th>{{ __('messages.actions') }}</th>
+                    <th class="rs-label-md">{{ __('messages.image') }}</th>
+                    <th class="rs-label-md">{{ __('messages.actions') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,25 +35,25 @@
                         <td>{{ $user->email ?? __('messages.not_available') }}</td>
                         <td>
                             @if ($user->membership_code)
-                                <span class="badge bg-secondary">{{ $user->membership_code }}</span>
+                                <span class="badge" style="background: var(--color-secondary-container); color: var(--color-secondary);">{{ $user->membership_code }}</span>
                             @else
                                 {{ __('messages.not_available') }}
                             @endif
                         </td>
                         <td>{{ $user->phone ?? __('messages.not_available') }}</td>
-                        <td class="text-end">{{ $user->score ?? 0 }}</td>
-                        <td class="text-end">{{ $user->points ?? 0 }}</td>
+                        <td class="text-end fw-semibold">{{ $user->score ?? 0 }}</td>
+                        <td class="text-end fw-semibold">{{ $user->points ?? 0 }}</td>
                         <td>
                             @if ($user->hasMedia('profile_images'))
                                 <img src="{{ $user->getFirstMediaUrl('profile_images') }}" alt="{{ $user->name }}"
-                                    width="60" class="rounded-circle shadow-sm zoomable-image"
-                                    onclick="openPopup(this.src)" style="cursor:pointer;">
+                                    width="44" height="44" class="rounded-circle shadow-sm zoomable-image"
+                                    onclick="openPopup(this.src)" style="cursor:pointer; object-fit: cover;">
                             @else
                                 <span class="text-muted">N/A</span>
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-primary shadow-sm"
+                            <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-primary"
                                 title="{{ __('messages.view') }}">
                                 <i class="fa fa-eye"></i>
                             </a>
@@ -74,17 +74,17 @@
     <div class="row g-3">
         @forelse($users as $user)
             <div class="col-12">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body d-flex align-items-center">
+                <div class="card rounded-4 shadow-soft h-100">
+                    <div class="card-body d-flex align-items-center p-4">
                         <div class="me-3">
                             @if ($user->hasMedia('profile_images'))
                                 <img src="{{ $user->getFirstMediaUrl('profile_images') }}" alt="{{ $user->name }}"
                                     width="60" height="60" class="rounded-circle shadow-sm zoomable-image"
-                                    onclick="openPopup(this.src)" style="cursor:pointer;">
+                                    onclick="openPopup(this.src)" style="cursor:pointer; object-fit: cover;">
                             @else
-                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
-                                    style="width: 60px; height: 60px;">
-                                    <span class="text-muted">{{ __('messages.not_available') }}</span>
+                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width: 60px; height: 60px; background: var(--color-surface-container-low);">
+                                    <span class="text-muted small">{{ __('messages.not_available') }}</span>
                                 </div>
                             @endif
                         </div>
@@ -93,7 +93,7 @@
                             <p class="card-text mb-1"><small class="text-muted">{{ $user->email ?? 'N/A' }}</small></p>
                             <p class="card-text mb-1"><small class="text-muted">{{ $user->phone ?? 'N/A' }}</small></p>
                             @if ($user->membership_code)
-                                <span class="badge bg-secondary mb-2">{{ $user->membership_code }}</span>
+                                <span class="badge mb-2" style="background: var(--color-secondary-container); color: var(--color-secondary);">{{ $user->membership_code }}</span>
                             @endif
                             <div class="d-flex justify-content-between">
                                 <small class="text-muted">{{ __('messages.score') }}: {{ $user->score ?? 0 }}</small>
@@ -103,7 +103,7 @@
                         </div>
                     </div>
                     <div class="card-footer bg-transparent border-0 p-2 d-flex justify-content-end">
-                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-primary shadow-sm"
+                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-primary"
                             title="{{ __('messages.view') }}">
                             <i class="fa fa-eye"></i>
                         </a>
@@ -182,11 +182,6 @@
 
 <!-- Additional CSS -->
 <style>
-    .table-hover tbody tr:hover {
-        background-color: #f1f3f5;
-        transition: background 0.2s;
-    }
-
     .zoomable-image {
         transition: transform 0.2s, box-shadow 0.2s;
     }
@@ -198,5 +193,17 @@
 
     .table th {
         user-select: none;
+    }
+
+    .pagination .page-link {
+        border-radius: var(--radius-input, 8px);
+        margin: 0 2px;
+        border: 1px solid var(--color-border, #e2e8f0);
+        color: var(--color-on-surface-variant, #464555);
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: var(--color-primary, #3525cd);
+        border-color: var(--color-primary, #3525cd);
     }
 </style>

@@ -3,24 +3,22 @@
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
         <!-- Header Section -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="fw-bold display-6 text-dark mb-2">{{ __('messages.create_info_video') }}</h1>
-                <p class="text-muted mb-0">{{ __('messages.add_new_info_video') }}</p>
-            </div>
-            <a href="{{ route('info-videos.index') }}" class="btn btn-outline-secondary rounded-3">
-                <i class="fa fa-arrow-left me-1"></i> {{ __('messages.back') }}
-            </a>
-        </div>
+        <x-page-header icon="fa-video" :title="__('messages.create_info_video')" :subtitle="__('messages.add_new_info_video')">
+            <x-slot:actions>
+                <a href="{{ route('info-videos.index') }}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left me-1"></i> {{ __('messages.back') }}
+                </a>
+            </x-slot>
+        </x-page-header>
 
-        <div class="card border-0 shadow-lg rounded-4">
-            <div class="card-body p-4">
+        <div class="card">
+            <div class="card-body">
                 <form method="POST" action="{{ route('info-videos.store') }}" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row mb-4">
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">{{ __('messages.name') }} <span class="text-danger">*</span></label>
+                            <label class="form-label rs-label-md">{{ __('messages.name') }} <span class="text-danger">*</span></label>
                             <input type="text"
                                    name="name"
                                    class="form-control @error('name') is-invalid @enderror"
@@ -33,7 +31,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">{{ __('messages.status') }} <span class="text-danger">*</span></label>
+                            <label class="form-label rs-label-md">{{ __('messages.status') }} <span class="text-danger">*</span></label>
                             <select name="appear" class="form-select @error('appear') is-invalid @enderror" required>
                                 @foreach($appearanceStatuses as $status)
                                     <option value="{{ $status['value'] }}" {{ old('appear', 1) == $status['value'] ? 'selected' : '' }}>
@@ -48,7 +46,7 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">{{ __('messages.link') }} <span class="text-danger">*</span></label>
+                        <label class="form-label rs-label-md">{{ __('messages.link') }} <span class="text-danger">*</span></label>
                         <textarea name="link"
                                   rows="3"
                                   class="form-control @error('link') is-invalid @enderror"
@@ -60,7 +58,7 @@
                     </div>
 
                     <div class="text-end">
-                        <button type="submit" class="btn btn-primary px-4 py-2 rounded-3">
+                        <button type="submit" class="btn btn-primary">
                             <i class="fa fa-save me-1"></i> {{ __('messages.create') }}
                         </button>
                     </div>

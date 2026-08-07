@@ -2,40 +2,46 @@
 <html>
 <head>
     <title>Google Drive Authorization</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', Arial, sans-serif;
             max-width: 800px;
             margin: 50px auto;
             padding: 20px;
-            background: #f5f5f5;
+            background: #f7f9fb;
+            color: #191c1e;
         }
         .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0px 4px 6px -1px rgba(15, 23, 42, 0.05), 0px 2px 4px -2px rgba(15, 23, 42, 0.05);
         }
         h1 {
-            color: #4285f4;
+            color: #191c1e;
+            font-size: 24px;
+            font-weight: 700;
         }
         .code-box {
-            background: #f8f9fa;
+            background: #f2f4f6;
             padding: 15px;
-            border-radius: 5px;
-            border-left: 4px solid #4285f4;
+            border-radius: 8px;
+            border-left: 4px solid #3525cd;
             margin: 20px 0;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             word-break: break-all;
         }
         .success {
-            color: #0f9d58;
+            color: #11998e;
         }
         .instruction {
-            background: #fff3cd;
+            background: #d0e1fb;
+            color: #38485d;
             padding: 15px;
-            border-radius: 5px;
-            border-left: 4px solid #ffc107;
+            border-radius: 8px;
+            border-left: 4px solid #505f76;
             margin: 20px 0;
         }
     </style>

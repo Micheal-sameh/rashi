@@ -2,83 +2,55 @@
 
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
-        <!-- Header Section -->
-        <div
-            class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-5">
-            <div>
-                <h1 class="fw-bold display-6 text-dark mb-2">{{ __('messages.rewards') }}</h1>
-                <p class="text-muted mb-0">{{ __('messages.manage_your_rewards_catalog') }}</p>
-            </div>
-            <a href="{{ route('rewards.create') }}"
-                class="btn btn-primary btn-lg px-4 py-3 shadow-lg rounded-pill d-flex align-items-center gap-2">
-                <i class="fa fa-plus-circle fa-lg"></i>
-                <span class="fw-semibold">{{ __('messages.create_reward') }}</span>
-            </a>
-        </div>
+        <x-page-header icon="fa-gift" :title="__('messages.rewards')" :subtitle="__('messages.manage_your_rewards_catalog')">
+            <x-slot:actions>
+                <a href="{{ route('rewards.create') }}"
+                    class="btn btn-primary shadow-sm d-flex align-items-center gap-2">
+                    <i class="fa fa-plus-circle"></i>
+                    <span class="fw-semibold">{{ __('messages.create_reward') }}</span>
+                </a>
+            </x-slot>
+        </x-page-header>
 
-        <!-- Stats Cards -->
+        <!-- Stats Cards (Bento) -->
         <div class="row g-4 mb-5">
             <div class="col-md-3 col-sm-6">
-                <div class="card border-0 bg-gradient-primary text-white shadow-sm rounded-4">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-2 opacity-75">{{ __('messages.total_rewards') }}</h6>
-                                <h2 class="fw-bold display-6 mb-0">{{ $rewards->total() }}</h2>
-                            </div>
-                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
-                                <i class="fa fa-gift fa-2x"></i>
-                            </div>
-                        </div>
+                <div class="rs-stat-card tone-primary">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.total_rewards') }}</span>
+                        <div class="rs-stat-icon"><i class="fa fa-gift"></i></div>
                     </div>
+                    <div class="rs-stat-value">{{ $rewards->total() }}</div>
                 </div>
             </div>
 
             <div class="col-md-3 col-sm-6">
-                <div class="card border-0 bg-gradient-success text-white shadow-sm rounded-4">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-2 opacity-75">{{ __('messages.active_rewards') }}</h6>
-                                <h2 class="fw-bold display-6 mb-0">{{ $activeRewardsCount }}</h2>
-                            </div>
-                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
-                                <i class="fa fa-check-circle fa-2x"></i>
-                            </div>
-                        </div>
+                <div class="rs-stat-card tone-success">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.active_rewards') }}</span>
+                        <div class="rs-stat-icon"><i class="fa fa-check-circle"></i></div>
                     </div>
+                    <div class="rs-stat-value">{{ $activeRewardsCount }}</div>
                 </div>
             </div>
 
             <div class="col-md-3 col-sm-6">
-                <div class="card border-0 bg-gradient-warning text-white shadow-sm rounded-4">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-2 opacity-75">{{ __('messages.total_points_value') }}</h6>
-                                <h2 class="fw-bold display-6 mb-0">{{ $totalPointsValue }}</h2>
-                            </div>
-                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
-                                <i class="fa fa-star fa-2x"></i>
-                            </div>
-                        </div>
+                <div class="rs-stat-card tone-warning">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.total_points_value') }}</span>
+                        <div class="rs-stat-icon"><i class="fa fa-star"></i></div>
                     </div>
+                    <div class="rs-stat-value">{{ $totalPointsValue }}</div>
                 </div>
             </div>
 
             <div class="col-md-3 col-sm-6">
-                <div class="card border-0 bg-gradient-info text-white shadow-sm rounded-4">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-2 opacity-75">{{ __('messages.available_quantity') }}</h6>
-                                <h2 class="fw-bold display-6 mb-0">{{ $totalQuantity }}</h2>
-                            </div>
-                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
-                                <i class="fa fa-box fa-2x"></i>
-                            </div>
-                        </div>
+                <div class="rs-stat-card tone-secondary">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.available_quantity') }}</span>
+                        <div class="rs-stat-icon"><i class="fa fa-box"></i></div>
                     </div>
+                    <div class="rs-stat-value">{{ $totalQuantity }}</div>
                 </div>
             </div>
         </div>
@@ -91,21 +63,21 @@
                 </div>
                 <h3 class="text-muted mb-3">{{ __('messages.no_rewards_found') }}</h3>
                 <p class="text-muted mb-4">{{ __('messages.start_creating_rewards_to_get_started') }}</p>
-                <a href="{{ route('rewards.create') }}" class="btn btn-primary btn-lg px-5 rounded-pill">
+                <a href="{{ route('rewards.create') }}" class="btn btn-primary btn-lg px-5">
                     {{ __('messages.create_first_reward') }}
                 </a>
             </div>
         @else
             <!-- Desktop Table View -->
             <div class="d-none d-lg-block">
-                <div class="card border-0 shadow-lg rounded-4 ">
-                    <div class="card-header bg-transparent border-0 py-4">
+                <div class="card rounded-4 shadow-soft">
+                    <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 fw-semibold">{{ __('messages.rewards_list') }}</h5>
                             <div class="d-flex gap-2">
-                                <input type="text" id="searchInput" class="form-control rounded-pill"
+                                <input type="text" id="searchInput" class="form-control"
                                     placeholder="{{ __('messages.search_rewards') }}" style="width: 250px;">
-                                <button class="btn btn-outline-secondary rounded-pill px-3">
+                                <button class="btn btn-secondary px-3">
                                     <i class="fa fa-filter me-1"></i>
                                     {{ __('messages.filter') }}
                                 </button>
@@ -115,7 +87,7 @@
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
-                                <thead class="bg-light">
+                                <thead>
                                     <tr>
                                         <th class="ps-4 py-3 fw-semibold text-muted">{{ __('messages.reward') }}</th>
                                         <th class="py-3 fw-semibold text-muted">{{ __('messages.quantity') }}</th>
@@ -171,14 +143,14 @@
                                             </td>
                                             <td class="py-3">
                                                 <span
-                                                    class="badge bg-gradient-warning text-dark fs-6 px-3 py-2 rounded-pill">
+                                                    class="badge bg-warning-subtle text-warning px-3 py-2">
                                                     <i class="fa fa-star me-1"></i>
                                                     {{ $reward->points }}
                                                 </span>
                                             </td>
                                             <td class="py-3">
                                                 @if ($reward->group)
-                                                    <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
+                                                    <span class="badge bg-secondary-subtle text-secondary px-3 py-2">
                                                         <i class="fa fa-users me-1"></i>
                                                         {{ $reward->group->name }}
                                                     </span>
@@ -262,7 +234,7 @@
                 <div class="row g-3">
                     @foreach ($rewards as $reward)
                         <div class="col-12" id="reward-card-{{ $reward->id }}">
-                            <div class="card border-0 shadow-sm rounded-4 ">
+                            <div class="card rounded-4 shadow-soft">
                                 <div class="card-body p-0">
                                     <div class="d-flex align-items-start p-4">
                                         <div class="position-relative me-3">
@@ -990,7 +962,7 @@
             if (searchInput) {
                 searchInput.addEventListener('input', function(e) {
                     const searchTerm = e.target.value.toLowerCase();
-                    const rows = document.querySelectorAll('#reward-row-{{ $reward->id }}');
+                    const rows = document.querySelectorAll('[id^="reward-row-"]');
 
                     rows.forEach(row => {
                         const text = row.textContent.toLowerCase();

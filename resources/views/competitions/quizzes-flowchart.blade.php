@@ -2,19 +2,17 @@
 
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="fw-bold text-primary mb-1">{{ __('messages.quiz_flowchart_report') }}</h2>
-                <p class="text-muted mb-0">{{ $competition->name }}</p>
-            </div>
-            <a href="{{ route('competitions.index') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-1"></i>{{ __('messages.back') }}
-            </a>
-        </div>
+        <x-page-header icon="fa-project-diagram" :title="__('messages.quiz_flowchart_report')" :subtitle="$competition->name">
+            <x-slot:actions>
+                <a href="{{ route('competitions.index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>{{ __('messages.back') }}
+                </a>
+            </x-slot>
+        </x-page-header>
 
-        <div class="card shadow-sm border-0 mb-3">
+        <div class="card rounded-4 shadow-soft mb-3">
             <div class="card-body">
-                <div class="d-flex flex-wrap gap-3 small">
+                <div class="d-flex flex-wrap gap-3 rs-body-lg mb-0">
                     <span><i class="fas fa-circle text-success me-1"></i>{{ __('messages.flow_finished') }}</span>
                     <span><i class="fas fa-circle text-warning me-1"></i>{{ __('messages.flow_active') }}</span>
                     <span><i class="fas fa-circle text-primary me-1"></i>{{ __('messages.flow_future') }}</span>
@@ -22,7 +20,7 @@
             </div>
         </div>
 
-        <div class="card shadow-sm border-0">
+        <div class="card rounded-4 shadow-soft">
             <div class="card-body">
                 @if($quizTimeline->isEmpty())
                     <div class="alert alert-info mb-0">{{ __('messages.no_quizzes') }}</div>
@@ -69,7 +67,7 @@
                 'flowchart TB',
                 'classDef finished fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#111;',
                 'classDef active fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,color:#111;',
-                'classDef future fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#111;',
+                'classDef future fill:#e6e3fb,stroke:#3525cd,stroke-width:2px,color:#111;',
                 'classDef rowlink fill:transparent,stroke:transparent,color:transparent;'
             ];
 

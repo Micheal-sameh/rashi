@@ -2,64 +2,41 @@
 
 @section('content')
     <div class="container-fluid px-3 px-lg-4">
-        <!-- Page Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="fw-bold text-gradient mb-1">
-                    <i class="fas fa-trophy me-2"></i>{{ __('messages.competitions') }}
-                </h2>
-                <p class="text-muted mb-0">{{ __('messages.manage_all_competitions') }}</p>
-            </div>
-            <a href="{{ route('competitions.create') }}" class="btn btn-success btn-lg hover-lift">
-                <i class="fa fa-plus-circle me-2"></i> {{ __('messages.create_competitions') }}
-            </a>
-        </div>
+        <x-page-header icon="fa-trophy" :title="__('messages.competitions')" :subtitle="__('messages.manage_all_competitions')">
+            <x-slot:actions>
+                <a href="{{ route('competitions.create') }}" class="btn btn-primary">
+                    <i class="fa fa-plus-circle me-2"></i> {{ __('messages.create_competitions') }}
+                </a>
+            </x-slot>
+        </x-page-header>
 
         <!-- Competition Stats Cards -->
         <div class="row g-3 mb-4">
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 bg-warning text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 opacity-75">{{ __('messages.active_competitions') }}</h6>
-                                <h2 class="mb-0 fw-bold">{{ $competitionCounts['active'] }}</h2>
-                            </div>
-                            <div class="fs-1 opacity-50">
-                                <i class="fas fa-trophy"></i>
-                            </div>
-                        </div>
+                <div class="rs-stat-card tone-warning">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.active_competitions') }}</span>
+                        <div class="rs-stat-icon"><i class="fas fa-trophy"></i></div>
                     </div>
+                    <div class="rs-stat-value">{{ $competitionCounts['active'] }}</div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 bg-primary text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 opacity-75">{{ __('messages.pending_competitions') }}</h6>
-                                <h2 class="mb-0 fw-bold">{{ $competitionCounts['pending'] }}</h2>
-                            </div>
-                            <div class="fs-1 opacity-50">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                        </div>
+                <div class="rs-stat-card tone-primary">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.pending_competitions') }}</span>
+                        <div class="rs-stat-icon"><i class="fas fa-clock"></i></div>
                     </div>
+                    <div class="rs-stat-value">{{ $competitionCounts['pending'] }}</div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 bg-info text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 opacity-75">{{ __('messages.finished_competitions') }}</h6>
-                                <h2 class="mb-0 fw-bold">{{ $competitionCounts['finished'] }}</h2>
-                            </div>
-                            <div class="fs-1 opacity-50">
-                                <i class="fas fa-flag-checkered"></i>
-                            </div>
-                        </div>
+                <div class="rs-stat-card tone-secondary">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.finished_competitions') }}</span>
+                        <div class="rs-stat-icon"><i class="fas fa-flag-checkered"></i></div>
                     </div>
+                    <div class="rs-stat-value">{{ $competitionCounts['finished'] }}</div>
                 </div>
             </div>
         </div>
@@ -214,7 +191,7 @@
                                         onclick="openPopup(this.src)">
                                 @endif
                                 <div class="flex-grow-1">
-                                    <h5 class="mb-1 fw-bold text-gradient">
+                                    <h5 class="mb-1 fw-bold text-primary">
                                         <i class="fas fa-trophy me-1"></i>{{ $competition->name }}
                                     </h5>
                                     <form action="{{ route('competitions.changeStatus', $competition->id) }}"
@@ -298,7 +275,7 @@
     <div class="modal fade" id="uploadQuizzesModal" tabindex="-1" aria-labelledby="uploadQuizzesModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content rounded-4 border-0 shadow-lg">
-                <div class="modal-header text-white" style="background: var(--success-gradient);">
+                <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="uploadQuizzesModalLabel">
                         <i class="fa fa-file-excel me-2"></i>{{ __('messages.upload_quizzes_excel') }}
                     </h5>

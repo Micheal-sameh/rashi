@@ -2,45 +2,59 @@
 
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="fw-bold text-primary">{{ __('messages.pending_approvals') }}</h1>
+        <x-page-header icon="fa-clock" :title="__('messages.pending_approvals')" />
+
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-lg-3">
+                <div class="rs-stat-card tone-warning">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.pending_approvals') }}</span>
+                        <div class="rs-stat-icon"><i class="fa fa-clock"></i></div>
+                    </div>
+                    <div class="rs-stat-value">{{ $bonusPenalties->total() }}</div>
+                </div>
+            </div>
         </div>
 
         <!-- Search and Filter Form -->
-        <form method="GET" action="{{ route('bonus-penalties.pending') }}" class="row g-3 mb-4">
-            <div class="col-md-4">
-                <label for="search" class="form-label fw-semibold">{{ __('messages.search') }}</label>
-                <input type="text" name="search" id="search" class="form-control"
-                    placeholder="{{ __('messages.search_by_name_or_code') }}" value="{{ request('search') }}">
-            </div>
+        <div class="card rounded-4 shadow-soft mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ route('bonus-penalties.pending') }}" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="search" class="form-label">{{ __('messages.search') }}</label>
+                        <input type="text" name="search" id="search" class="form-control"
+                            placeholder="{{ __('messages.search_by_name_or_code') }}" value="{{ request('search') }}">
+                    </div>
 
-            <div class="col-md-4">
-                <label for="created_by" class="form-label fw-semibold">{{ __('messages.created_by') }}</label>
-                <select name="created_by" id="created_by" class="form-select">
-                    <option value="">{{ __('messages.all') }}</option>
-                    @foreach (App\Models\User::whereHas('bonusPenaltiesCreated')->orderBy('name')->get() as $creator)
-                        <option value="{{ $creator->id }}" {{ request('created_by') == $creator->id ? 'selected' : '' }}>
-                            {{ $creator->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+                    <div class="col-md-4">
+                        <label for="created_by" class="form-label">{{ __('messages.created_by') }}</label>
+                        <select name="created_by" id="created_by" class="form-select">
+                            <option value="">{{ __('messages.all') }}</option>
+                            @foreach (App\Models\User::whereHas('bonusPenaltiesCreated')->orderBy('name')->get() as $creator)
+                                <option value="{{ $creator->id }}" {{ request('created_by') == $creator->id ? 'selected' : '' }}>
+                                    {{ $creator->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-            <div class="col-md-4 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary shadow-sm me-2">
-                    <i class="fa fa-search me-1"></i>{{ __('messages.search') }}
-                </button>
-                <a href="{{ route('bonus-penalties.pending') }}" class="btn btn-secondary shadow-sm">
-                    <i class="fa fa-redo me-1"></i>{{ __('messages.reset') }}
-                </a>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fa fa-search me-1"></i>{{ __('messages.search') }}
+                        </button>
+                        <a href="{{ route('bonus-penalties.pending') }}" class="btn btn-secondary">
+                            <i class="fa fa-redo me-1"></i>{{ __('messages.reset') }}
+                        </a>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
 
         <!-- Desktop Table View -->
         <div class="d-none d-md-block">
-            <div class="table-responsive shadow-sm rounded-4">
+            <div class="table-responsive rounded-4 shadow-soft">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th>{{ __('messages.user_name') }}</th>
                             <th>{{ __('messages.groups') }}</th>
@@ -56,7 +70,7 @@
                         @forelse($bonusPenalties as $bonusPenalty)
                             <tr>
                                 <td>
-                                    <span class="text-primary user-detail" style="cursor:pointer;"
+                                    <span class="text-gradient fw-semibold user-detail" style="cursor:pointer;"
                                         data-name="{{ $bonusPenalty->user->name ?? '' }}"
                                         data-membership_code="{{ $bonusPenalty->user->membership_code ?? '' }}"
                                         data-phone="{{ $bonusPenalty->user->phone ?? '' }}">
@@ -68,14 +82,14 @@
                                         $groups = $bonusPenalty->user->groups->where('name', '!=', 'General');
                                     @endphp
                                     @forelse($groups as $group)
-                                        <span class="badge bg-info">{{ $group->name }}</span>
+                                        <span class="badge bg-info-subtle text-info">{{ $group->name }}</span>
                                     @empty
                                         <span class="text-muted">-</span>
                                     @endforelse
                                 </td>
                                 <td>
                                     <span
-                                        class="badge {{ $bonusPenalty->type == \App\Enums\BonusPenaltyType::BONUS ? 'bg-success' : 'bg-danger' }}">
+                                        class="badge {{ $bonusPenalty->type == \App\Enums\BonusPenaltyType::BONUS ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }}">
                                         {{ \App\Enums\BonusPenaltyType::getStringValue($bonusPenalty->type) }}
                                     </span>
                                 </td>
@@ -87,7 +101,7 @@
                                     <form action="{{ route('bonus-penalties.approve', $bonusPenalty->id) }}" method="POST"
                                         class="d-inline">
                                         @csrf
-                                        <button type="submit" class="btn btn-success btn-sm shadow-sm">
+                                        <button type="submit" class="btn btn-success btn-sm">
                                             <i class="fa fa-check me-1"></i>{{ __('messages.approve') }}
                                         </button>
                                     </form>
@@ -95,7 +109,7 @@
                                         class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm shadow-sm"
+                                        <button type="submit" class="btn btn-danger btn-sm"
                                             onclick="return confirm('{{ __('messages.confirm_reject') }}')">
                                             <i class="fa fa-times me-1"></i>{{ __('messages.reject') }}
                                         </button>
@@ -116,17 +130,17 @@
         <!-- Mobile Card View -->
         <div class="d-md-none">
             @forelse($bonusPenalties as $bonusPenalty)
-                <div class="card shadow-sm mb-3">
+                <div class="card rounded-4 shadow-soft mb-3">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="text-primary user-detail fw-semibold" style="cursor:pointer;"
+                            <span class="text-gradient user-detail fw-semibold" style="cursor:pointer;"
                                 data-name="{{ $bonusPenalty->user->name ?? '' }}"
                                 data-membership_code="{{ $bonusPenalty->user->membership_code ?? '' }}"
                                 data-phone="{{ $bonusPenalty->user->phone ?? '' }}">
                                 {{ $bonusPenalty->user->name ?? '' }}
                             </span>
                             <span
-                                class="badge {{ $bonusPenalty->type == \App\Enums\BonusPenaltyType::BONUS ? 'bg-success' : 'bg-danger' }}">
+                                class="badge {{ $bonusPenalty->type == \App\Enums\BonusPenaltyType::BONUS ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }}">
                                 {{ \App\Enums\BonusPenaltyType::getStringValue($bonusPenalty->type) }}
                             </span>
                         </div>
@@ -138,7 +152,7 @@
                                     $groups = $bonusPenalty->user->groups->where('name', '!=', 'General');
                                 @endphp
                                 @forelse($groups as $group)
-                                    <span class="badge bg-info">{{ $group->name }}</span>
+                                    <span class="badge bg-info-subtle text-info">{{ $group->name }}</span>
                                 @empty
                                     <span class="text-muted">-</span>
                                 @endforelse

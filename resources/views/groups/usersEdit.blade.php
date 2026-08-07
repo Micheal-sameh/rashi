@@ -3,15 +3,13 @@
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
 
-        <!-- Heading -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold text-primary">
-                {{ __('messages.update_users_for_group') }} : {{ $group->name }}
-            </h2>
-            <a href="{{ route('groups.index') }}" class="btn btn-secondary">
-                <i class="fa fa-arrow-left me-1"></i> {{ __('messages.back') }}
-            </a>
-        </div>
+        <x-page-header icon="fa-users" :title="__('messages.update_users_for_group') . ' : ' . $group->name">
+            <x-slot:actions>
+                <a href="{{ route('groups.index') }}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left me-1"></i> {{ __('messages.back') }}
+                </a>
+            </x-slot>
+        </x-page-header>
 
         <!-- Alerts -->
         @if (session('success'))
@@ -33,7 +31,7 @@
         @endif
 
         <!-- Form Card -->
-        <div class="card shadow-sm border-0 rounded-4">
+        <div class="card border-0">
             <div class="card-body">
                 <form action="{{ route('groups.updateUsers', $group->id) }}" method="POST">
                     @csrf
@@ -41,7 +39,7 @@
 
                     <!-- Search Bar -->
                     <div class="mb-3">
-                        <label for="search" class="form-label fw-semibold">
+                        <label for="search" class="form-label">
                             {{ __('messages.search_users') }}
                         </label>
                         <input type="text" id="search" class="form-control form-control-lg"
@@ -50,7 +48,7 @@
 
                     <!-- Users Grid -->
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">{{ __('messages.select_users') }}</label>
+                        <label class="form-label">{{ __('messages.select_users') }}</label>
                         <div id="usersList" class="d-flex flex-wrap gap-2 border rounded-3 p-3"
                             style="max-height: 400px; overflow-y: auto;">
                             @forelse ($users as $user)
@@ -68,7 +66,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 py-2 rounded-3 mt-2">
+                    <button type="submit" class="btn btn-primary w-100 mt-2">
                         <i class="fa fa-save me-1"></i> {{ __('messages.update') }}
                     </button>
                 </form>

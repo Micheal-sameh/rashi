@@ -4,9 +4,10 @@
     <meta charset="utf-8">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #191c1e;
+            background-color: #f7f9fb;
         }
         .container {
             max-width: 620px;
@@ -14,36 +15,42 @@
             padding: 20px;
         }
         .header {
-            background-color: #1f7ae0;
+            background-color: #3525cd;
             color: #fff;
-            padding: 16px;
+            padding: 20px;
             text-align: center;
-            border-radius: 6px 6px 0 0;
+            border-radius: 16px 16px 0 0;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
         }
         .content {
-            background-color: #f8f9fb;
+            background-color: #ffffff;
             padding: 24px;
-            border-radius: 0 0 6px 6px;
+            border-radius: 0 0 16px 16px;
         }
         .info {
-            background-color: #fff;
-            border-left: 4px solid #1f7ae0;
+            background-color: #f2f4f6;
+            border-left: 4px solid #3525cd;
+            border-radius: 8px;
             padding: 12px;
             margin: 16px 0;
         }
         .btn {
             display: inline-block;
-            background-color: #1f7ae0;
+            background-color: #3525cd;
             color: #fff !important;
             padding: 10px 20px;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 10px;
             margin: 8px 4px 0 0;
-            font-weight: bold;
+            font-weight: 600;
         }
         .footer {
             margin-top: 20px;
-            color: #7a7a7a;
+            color: #777587;
             font-size: 12px;
         }
     </style>
