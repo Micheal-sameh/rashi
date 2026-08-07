@@ -144,6 +144,7 @@
             background: var(--sidebar-bg);
             color: var(--sidebar-text);
             overflow-y: auto;
+            overflow-x: hidden;
             scrollbar-width: none;
             -ms-overflow-style: none;
             z-index: 1040;
@@ -196,12 +197,24 @@
             gap: 12px;
         }
 
-        .sidebar .brand img {
+        .sidebar .brand img,
+        .brand-logo-fallback {
             width: 44px;
             height: 44px;
             border-radius: 10px;
             object-fit: cover;
             box-shadow: var(--shadow-1);
+        }
+
+        .brand-logo-fallback {
+            flex-shrink: 0;
+            background: var(--color-primary);
+            color: var(--color-on-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
 
         .sidebar .brand-title {
@@ -533,8 +546,34 @@
                 margin-right: var(--sidebar-collapsed-width);
             }
 
+            .sidebar .brand {
+                padding: 20px 8px;
+                display: flex;
+                justify-content: center;
+                transition: padding .25s ease;
+            }
+
+            .sidebar:hover .brand {
+                padding: 24px 20px 16px;
+                justify-content: flex-start;
+            }
+
             .sidebar .brand-inner {
                 overflow: hidden;
+            }
+
+            .sidebar .brand img,
+            .brand-logo-fallback {
+                width: 36px;
+                height: 36px;
+                flex-shrink: 0;
+                transition: width .25s ease, height .25s ease;
+            }
+
+            .sidebar:hover .brand img,
+            .sidebar:hover .brand-logo-fallback {
+                width: 44px;
+                height: 44px;
             }
 
             .sidebar nav a,
@@ -542,6 +581,16 @@
             .menu-section-title {
                 overflow: hidden;
                 white-space: nowrap;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: justify-content .2s ease, padding .2s ease;
+            }
+
+            .sidebar:hover nav a,
+            .sidebar:hover nav button,
+            .sidebar:hover .menu-section-title {
+                justify-content: flex-start;
             }
 
             .sidebar .nav-label,
@@ -1008,7 +1057,8 @@
     <aside id="sidebar" class="sidebar">
         <div class="brand">
             <div class="brand-inner">
-                <img src="{{ $faviconUrl }}" alt="App Logo">
+                <img src="{{ $faviconUrl }}" alt="App Logo"
+                    onerror="this.replaceWith(Object.assign(document.createElement('span'), {className: 'brand-logo-fallback', textContent: '{{ mb_substr(config('app.name', 'Rashi'), 0, 1) }}'}))">
                 <div>
                     <p class="brand-title">{{ config('app.name', 'Rashi') }}</p>
                     <p class="brand-subtitle">{{ __('messages.admin_users') }}</p>
