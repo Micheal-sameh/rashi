@@ -33,7 +33,9 @@ class AuthController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->intended(route('competitions.index'))->with('success', __('messages.welcome_back_admin'));
+            return redirect()->intended(route('competitions.index'))
+                ->with('success', __('messages.welcome_back_admin'))
+                ->with('show_install_prompt', true);
         }
 
         return redirect()->back()
@@ -58,7 +60,9 @@ class AuthController extends Controller
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
-        return redirect()->intended(route('competitions.index'))->with('success', __('messages.welcome_back_admin'));
+        return redirect()->intended(route('competitions.index'))
+            ->with('success', __('messages.welcome_back_admin'))
+            ->with('show_install_prompt', true);
     }
 
     public function logout()

@@ -18,6 +18,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SocialMediaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserHistoryController;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -43,6 +44,28 @@ Route::get('/oauth2callback', function () {
 Route::get('/', function () {
     return view('landing');
 })->name('landing');
+
+Route::get('/manifest.webmanifest', function () {
+    $logoUrl = Cache::remember('app_logo_url', 3600, function () {
+        $logo = \App\Models\Setting::where('name', 'logo')->first();
+        return $logo?->getFirstMediaUrl('app_logo') ?? asset('default-logo.png');
+    });
+    $absoluteLogoUrl = filter_var($logoUrl, FILTER_VALIDATE_URL) ? $logoUrl : url($logoUrl);
+
+    return response()->json([
+        'name' => config('app.name'),
+        'short_name' => config('app.name'),
+        'start_url' => route('loginPage'),
+        'scope' => '/',
+        'display' => 'standalone',
+        'background_color' => '#f7f9fb',
+        'theme_color' => '#3525cd',
+        'icons' => [
+            ['src' => $absoluteLogoUrl, 'sizes' => '192x192', 'type' => 'image/png'],
+            ['src' => $absoluteLogoUrl, 'sizes' => '512x512', 'type' => 'image/png'],
+        ],
+    ])->header('Content-Type', 'application/manifest+json');
+})->name('pwa.manifest');
 
 Route::group(['middleware' => ['setlocale']], function () {
     // Language change routes (optional, if you want to switch languages via URL)

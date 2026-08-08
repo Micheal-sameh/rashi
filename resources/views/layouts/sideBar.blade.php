@@ -18,6 +18,11 @@
     <!-- Favicon -->
     <link rel="icon" href="{{ $faviconUrl }}" type="image/png">
 
+    <!-- PWA -->
+    <link rel="manifest" href="{{ route('pwa.manifest') }}">
+    <meta name="theme-color" content="#3525cd">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
+
     <!-- Open Graph Meta Tags for Social Media Sharing -->
     <meta property="og:title" content="@yield('title', config('app.name'))">
     <meta property="og:description" content="@yield('description', config('app.name') . ' - ' . __('messages.app_tagline'))">
@@ -1384,6 +1389,155 @@
             });
         });
     </script>
+
+    <!-- PWA: service worker registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('{{ asset('sw.js') }}').catch((err) => {
+                    console.warn('Service worker registration failed:', err);
+                });
+            });
+        }
+    </script>
+
+    @auth
+        @if (session('show_install_prompt'))
+            <!-- PWA Install Prompt -->
+            <div id="pwaInstallPrompt" class="pwa-install-prompt" role="dialog" aria-live="polite">
+                <div class="pwa-install-icon">
+                    <img src="{{ $faviconUrl }}" alt="{{ config('app.name') }}"
+                        onerror="this.style.display='none'">
+                </div>
+                <div class="pwa-install-body">
+                    <p class="pwa-install-title">{{ __('messages.install_app_title', ['app_name' => config('app.name')]) }}</p>
+                    <p class="pwa-install-text">{{ __('messages.install_app_text') }}</p>
+                </div>
+                <div class="pwa-install-actions">
+                    <button type="button" id="pwaInstallBtn" class="btn btn-primary btn-sm">{{ __('messages.install') }}</button>
+                    <button type="button" id="pwaDismissBtn" class="btn-close" aria-label="{{ __('messages.close') }}"></button>
+                </div>
+            </div>
+
+            <style>
+                .pwa-install-prompt {
+                    position: fixed;
+                    bottom: 24px;
+                    inset-inline-end: 24px;
+                    max-width: 340px;
+                    background: var(--color-surface-container-lowest, #fff);
+                    border-radius: var(--radius-card, 16px);
+                    box-shadow: var(--shadow-2, 0 10px 15px -3px rgba(15,23,42,.15));
+                    padding: 16px;
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 12px;
+                    z-index: 2000;
+                    opacity: 0;
+                    transform: translateY(16px);
+                    transition: opacity .25s ease, transform .25s ease;
+                }
+
+                .pwa-install-prompt.show {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+
+                .pwa-install-icon img {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 10px;
+                    object-fit: cover;
+                    flex-shrink: 0;
+                }
+
+                .pwa-install-body {
+                    flex: 1;
+                    min-width: 0;
+                }
+
+                .pwa-install-title {
+                    font-weight: 700;
+                    font-size: .9rem;
+                    margin: 0 0 4px;
+                    color: var(--color-on-surface, #191c1e);
+                }
+
+                .pwa-install-text {
+                    font-size: .78rem;
+                    margin: 0;
+                    color: var(--color-on-surface-variant, #464555);
+                }
+
+                .pwa-install-actions {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                    gap: 8px;
+                    flex-shrink: 0;
+                }
+
+                @media (max-width: 480px) {
+                    .pwa-install-prompt {
+                        inset-inline: 16px;
+                        max-width: none;
+                    }
+                }
+            </style>
+
+            <script>
+                (() => {
+                    let deferredPrompt = null;
+                    const prompt = document.getElementById('pwaInstallPrompt');
+                    const installBtn = document.getElementById('pwaInstallBtn');
+                    const dismissBtn = document.getElementById('pwaDismissBtn');
+                    let hideTimer = null;
+
+                    const hidePrompt = () => {
+                        prompt.classList.remove('show');
+                        setTimeout(() => prompt.remove(), 250);
+                    };
+
+                    const clearHideTimer = () => {
+                        if (hideTimer) {
+                            clearTimeout(hideTimer);
+                            hideTimer = null;
+                        }
+                    };
+
+                    window.addEventListener('beforeinstallprompt', (e) => {
+                        e.preventDefault();
+                        deferredPrompt = e;
+                        prompt.classList.add('show');
+
+                        hideTimer = setTimeout(hidePrompt, 5000);
+                    });
+
+                    installBtn?.addEventListener('click', async () => {
+                        clearHideTimer();
+                        if (!deferredPrompt) {
+                            hidePrompt();
+                            return;
+                        }
+                        deferredPrompt.prompt();
+                        await deferredPrompt.userChoice;
+                        deferredPrompt = null;
+                        hidePrompt();
+                    });
+
+                    dismissBtn?.addEventListener('click', () => {
+                        clearHideTimer();
+                        hidePrompt();
+                    });
+
+                    window.addEventListener('appinstalled', () => {
+                        clearHideTimer();
+                        hidePrompt();
+                    });
+                })();
+            </script>
+        @endif
+    @endauth
 
     @stack('scripts')
 
