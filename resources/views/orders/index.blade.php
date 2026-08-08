@@ -139,7 +139,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center text-muted">{{ __('No rewards found.') }}</td>
+                            <td colspan="8" class="text-center text-muted">{{ __('messages.no_rewards_found') }}</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -231,7 +231,7 @@
                     </div>
                 </div>
             @empty
-                <div class="text-center text-muted">{{ __('No rewards found.') }}</div>
+                <div class="text-center text-muted">{{ __('messages.no_rewards_found') }}</div>
             @endforelse
         </div>
     </div>
@@ -350,7 +350,7 @@
                 </div>
                 <div class="modal-body text-center py-4">
                     <i class="fa fa-shopping-cart fa-4x text-success mb-3"></i>
-                    <h5 class="mb-3" id="newOrderTitle">{{ __('New Order Received!') }}</h5>
+                    <h5 class="mb-3" id="newOrderTitle">{{ __('messages.new_order_created') }}</h5>
                     <div class="text-start">
                         <p class="mb-2"><strong>{{ __('messages.order') }} ID:</strong> <span id="newOrderId"></span></p>
                         <p class="mb-2"><strong>{{ __('messages.user_name') }}:</strong> <span id="newOrderCustomer"></span></p>
@@ -359,7 +359,7 @@
                 </div>
                 <div class="modal-footer border-0 justify-content-center">
                     <button type="button" class="btn btn-success px-4" onclick="window.location.reload()">
-                        <i class="fa fa-refresh me-1"></i>{{ __('Refresh Page') }}
+                        <i class="fa fa-refresh me-1"></i>{{ __('messages.refresh_page') }}
                     </button>
                 </div>
             </div>

@@ -606,4 +606,12 @@ return [
     'view_profile' => 'عرض الملف الشخصي',
     'view_all' => 'عرض الكل',
     'language' => 'اللغة',
+    'app_tagline' => 'نظام إدارة المسابقات والنقاط',
+    'refresh_page' => 'تحديث الصفحة',
+
+    // Leaderboard PDF Exports
+    'overall_ranking' => 'الترتيب العام',
+    'ranking_by_group' => 'الترتيب حسب المجموعة',
+    'total_questions' => 'إجمالي الأسئلة',
+    'not_specified' => 'غير محدد',
 ];

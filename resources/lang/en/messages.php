@@ -584,4 +584,12 @@ return [
     'view_profile' => 'View Profile',
     'view_all' => 'View All',
     'language' => 'Language',
+    'app_tagline' => 'Competitions and Points Management System',
+    'refresh_page' => 'Refresh Page',
+
+    // Leaderboard PDF Exports
+    'overall_ranking' => 'Overall Ranking',
+    'ranking_by_group' => 'Ranking by Group',
+    'total_questions' => 'Total Questions',
+    'not_specified' => 'Not Specified',
 ];

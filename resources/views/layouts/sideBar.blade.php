@@ -20,7 +20,7 @@
 
     <!-- Open Graph Meta Tags for Social Media Sharing -->
     <meta property="og:title" content="@yield('title', config('app.name'))">
-    <meta property="og:description" content="@yield('description', config('app.name') . ' - نظام إدارة المسابقات والنقاط')">
+    <meta property="og:description" content="@yield('description', config('app.name') . ' - ' . __('messages.app_tagline'))">
     <meta property="og:image" content="{{ $absoluteLogoUrl }}">
     <meta property="og:image:secure_url" content="{{ $absoluteLogoUrl }}">
     <meta property="og:image:width" content="1200">
@@ -32,7 +32,7 @@
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('title', config('app.name'))">
-    <meta name="twitter:description" content="@yield('description', config('app.name') . ' - نظام إدارة المسابقات والنقاط')">
+    <meta name="twitter:description" content="@yield('description', config('app.name') . ' - ' . __('messages.app_tagline'))">
     <meta name="twitter:image" content="{{ $absoluteLogoUrl }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

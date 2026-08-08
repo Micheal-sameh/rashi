@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->isLocale('ar') ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name') }} - Reset Password</title>
+    <title>{{ config('app.name') }} - {{ __('messages.reset_password_title') }}</title>
 
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -151,15 +151,15 @@
                         <div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:48px;height:48px;border-radius:var(--radius-input);background:rgba(53,37,205,0.08);color:var(--color-primary);">
                             <i class="bi bi-shield-lock fs-5"></i>
                         </div>
-                        <h4 class="fw-bold mb-1">Reset Password</h4>
-                        <p class="text-muted small mb-0">Choose a new, secure password for your account.</p>
+                        <h4 class="fw-bold mb-1">{{ __('messages.reset_password_title') }}</h4>
+                        <p class="text-muted small mb-0">{{ __('messages.reset_password_description') }}</p>
                     </div>
 
                     <!-- Password Reset Token -->
                     <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email Address</label>
+                        <label for="email" class="form-label">{{ __('messages.email_address') }}</label>
                         <input id="email" type="email" name="email" required autofocus
                             class="form-control @error('email') is-invalid @enderror"
                             value="{{ old('email', $request->email) }}">
@@ -171,7 +171,7 @@
 
                     <!-- Password -->
                     <div class="mb-3">
-                        <label for="password" class="form-label">New Password</label>
+                        <label for="password" class="form-label">{{ __('messages.new_password') }}</label>
                         <div class="input-group">
                             <input id="password" type="password" name="password" required
                                 class="form-control @error('password') is-invalid @enderror">
@@ -186,7 +186,7 @@
 
                     <!-- Confirm Password -->
                     <div class="mb-3">
-                        <label for="password_confirmation" class="form-label">Confirm New Password</label>
+                        <label for="password_confirmation" class="form-label">{{ __('messages.confirm_new_password') }}</label>
                         <div class="input-group">
                             <input id="password_confirmation" type="password" name="password_confirmation" required
                                 class="form-control @error('password_confirmation') is-invalid @enderror">
@@ -200,11 +200,11 @@
                     </div>
 
                     <div class="d-grid mb-3">
-                        <button type="submit" class="btn btn-primary">Reset Password</button>
+                        <button type="submit" class="btn btn-primary">{{ __('messages.reset_password_button') }}</button>
                     </div>
 
                     <div class="text-center">
-                        <a href="{{ route('loginPage') }}" class="text-decoration-none small fw-semibold">Back to Login</a>
+                        <a href="{{ route('loginPage') }}" class="text-decoration-none small fw-semibold">{{ __('messages.back_to_login') }}</a>
                     </div>
                 </form>
             </div>
