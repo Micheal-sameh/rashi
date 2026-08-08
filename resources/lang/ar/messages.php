@@ -651,12 +651,13 @@ return [
     'maintenance_check_back_soon' => 'يرجى التحقق مرة أخرى قريباً',
     'all_rights_reserved' => 'جميع الحقوق محفوظة.',
 
+    'auth_subtitle' => 'سجّل الدخول لإدارة المستخدمين والمسابقات والجوائز.',
+
     // QR Code Login
     'welcome_back_admin' => 'مرحباً بعودتك أيها المسؤول!',
     'login_with_password' => 'كلمة المرور',
     'login_with_qr' => 'رمز QR',
     'scan_qr_code_instruction' => 'امسح رمز QR الخاص بعضويتك باستخدام جهاز مسح متصل، أو استخدم الكاميرا أدناه.',
-    'qr_code_input_placeholder' => 'بانتظار المسح...',
     'use_camera_to_scan' => 'استخدام الكاميرا بدلاً من ذلك',
     'stop_camera' => 'إيقاف الكاميرا',
     'camera_not_available' => 'الكاميرا غير متاحة. استخدم جهاز مسح QR متصل أو تحقق من أذونات المتصفح.',

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->isLocale('ar') ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="UTF-8">
@@ -107,6 +107,22 @@
             border: none;
         }
 
+        .lang-switcher-fixed {
+            position: fixed;
+            top: 20px;
+            inset-inline-end: 20px;
+            z-index: 10;
+        }
+
+        .lang-switcher-fixed .btn {
+            border-radius: var(--radius-btn);
+            border-color: var(--color-outline-variant);
+            color: var(--color-on-surface-variant);
+            font-weight: 700;
+            font-size: 0.78rem;
+            letter-spacing: 0.03em;
+        }
+
         .login-tabs {
             display: flex;
             gap: 4px;
@@ -147,14 +163,29 @@
             background: #000;
         }
 
-        #qrCodeManualInput {
-            text-align: center;
-            letter-spacing: 0.03em;
-        }
     </style>
 </head>
 
 <body>
+
+    <div class="dropdown lang-switcher-fixed">
+        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="langSwitchToggle"
+            data-bs-toggle="dropdown" aria-expanded="false" title="{{ __('messages.language') }}">
+            {{ strtoupper(app()->getLocale()) }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langSwitchToggle">
+            <li>
+                <a class="dropdown-item {{ app()->isLocale('en') ? 'active' : '' }}" href="{{ route('lang.switch', 'en') }}">
+                    English
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item {{ app()->isLocale('ar') ? 'active' : '' }}" href="{{ route('lang.switch', 'ar') }}">
+                    العربية
+                </a>
+            </li>
+        </ul>
+    </div>
 
     <div class="container d-flex align-items-center justify-content-center min-vh-100">
         <div class="w-100" style="max-width: 420px;">
@@ -169,7 +200,7 @@
                         style="max-height: 72px; border-radius: 12px;">
                 @endif
                 <h1 class="auth-brand-title">{{ config('app.name') }}</h1>
-                <p class="auth-brand-subtitle mb-0">Sign in to manage users, competitions, and rewards.</p>
+                <p class="auth-brand-subtitle mb-0">{{ __('messages.auth_subtitle') }}</p>
             </div>
 
             <div class="auth-card">
@@ -252,14 +283,14 @@
 
                     <p class="text-muted small mb-3">{{ __('messages.scan_qr_code_instruction') }}</p>
 
-                    <div class="mb-3">
-                        <label for="qrCodeManualInput" class="form-label">{{ __('messages.login_with_qr') }}</label>
-                        <input type="text" id="qrCodeManualInput" class="form-control @error('qr_code') is-invalid @enderror"
-                            placeholder="{{ __('messages.qr_code_input_placeholder') }}" autocomplete="off">
-                        @error('qr_code')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                    </div>
+                    @error('qr_code')
+                        <div class="alert alert-danger small py-2">{{ $message }}</div>
+                    @enderror
+
+                    <!-- Not visible: stays focused so a hardware QR/barcode scanner (which
+                         types like a keyboard) can still submit the login without an on-screen field. -->
+                    <input type="text" id="qrCodeManualInput" autocomplete="off"
+                        style="position:absolute; opacity:0; height:1px; width:1px; overflow:hidden; pointer-events:none;">
 
                     <div id="qrReader"></div>
                     <div id="qrCameraError" class="alert alert-warning small py-2" style="display:none;"></div>
@@ -310,7 +341,7 @@
             tabQr.classList.remove('active');
             tabPassword.setAttribute('aria-selected', 'true');
             tabQr.setAttribute('aria-selected', 'false');
-            passwordPane.style.display = '';
+            passwordPane.style.display = 'block';
             qrPane.style.display = 'none';
             stopQrScanner();
         }
@@ -320,7 +351,7 @@
             tabPassword.classList.remove('active');
             tabQr.setAttribute('aria-selected', 'true');
             tabPassword.setAttribute('aria-selected', 'false');
-            qrPane.style.display = '';
+            qrPane.style.display = 'block';
             passwordPane.style.display = 'none';
             qrCodeManualInput.focus();
         }
@@ -395,20 +426,34 @@
         });
 
         function startCamera() {
-            qrReaderEl.style.display = '';
+            qrReaderEl.style.display = 'block';
             html5QrCode = new Html5Qrcode('qrReader');
 
-            html5QrCode.start(
-                { facingMode: 'environment' },
-                { fps: 10, qrbox: 220 },
-                function(decodedText) {
-                    stopQrScanner();
-                    submitQrCode(decodedText);
-                },
-                function() {
-                    // ignore per-frame decode failures
+            // Enumerate actual devices instead of requesting facingMode:'environment' —
+            // that exact constraint fails outright on most laptops/desktops, which only
+            // expose a front-facing camera, and getUserMedia rejects with no fallback.
+            Html5Qrcode.getCameras().then(function(devices) {
+                if (!devices || !devices.length) {
+                    throw new Error('no-camera-devices');
                 }
-            ).then(function() {
+
+                const rearCamera = devices.find(function(d) {
+                    return /back|rear|environment/i.test(d.label || '');
+                });
+                const cameraId = (rearCamera || devices[0]).id;
+
+                return html5QrCode.start(
+                    cameraId,
+                    { fps: 10, qrbox: 220 },
+                    function(decodedText) {
+                        stopQrScanner();
+                        submitQrCode(decodedText);
+                    },
+                    function() {
+                        // ignore per-frame decode failures
+                    }
+                );
+            }).then(function() {
                 cameraActive = true;
                 toggleCameraBtn.textContent = '{{ __('messages.stop_camera') }}';
             }).catch(function() {

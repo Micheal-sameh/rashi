@@ -629,12 +629,13 @@ return [
     'maintenance_check_back_soon' => 'Please check back soon',
     'all_rights_reserved' => 'All rights reserved.',
 
+    'auth_subtitle' => 'Sign in to manage users, competitions, and rewards.',
+
     // QR Code Login
     'welcome_back_admin' => 'Welcome back, Admin!',
     'login_with_password' => 'Password',
     'login_with_qr' => 'QR Code',
     'scan_qr_code_instruction' => 'Scan your membership QR code with a connected scanner, or use your camera below.',
-    'qr_code_input_placeholder' => 'Waiting for scan...',
     'use_camera_to_scan' => 'Use Camera Instead',
     'stop_camera' => 'Stop Camera',
     'camera_not_available' => 'Camera access is unavailable. Use a connected QR scanner or check your browser permissions.',
