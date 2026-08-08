@@ -38,6 +38,28 @@ services:
     depends_on:
       - app
 
+  reverb:
+    build:
+      args:
+        user: rashi
+        uid: 1001
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: rashi-reverb
+    restart: unless-stopped
+    working_dir: /var/www/rashi
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    ports:
+      - 127.0.0.1:8080:8080
+    volumes:
+      - ./:/var/www/rashi
+      - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    networks:
+      - rashi
+      - central_net
+    depends_on:
+      - app
+
 networks:
   rashi:
     driver: bridge

@@ -569,7 +569,7 @@
                 } else {
                     console.error('❌ Echo is not defined. WebSocket connection failed.');
                     console.log('Please check:');
-                    console.log('1. Is Soketi running? (npx soketi start)');
+                    console.log('1. Is Reverb running? (php artisan reverb:start)');
                     console.log('2. Are Echo scripts loaded?');
                     console.log('3. Check browser console for errors');
                 }

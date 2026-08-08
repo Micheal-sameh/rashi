@@ -106,6 +106,51 @@
             border-radius: 12px;
             border: none;
         }
+
+        .login-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--color-background);
+            border-radius: var(--radius-btn);
+            padding: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-tabs button {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 0.6rem 1rem;
+            border-radius: calc(var(--radius-btn) - 2px);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-on-surface-variant);
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .login-tabs button.active {
+            background: var(--color-surface-container-lowest);
+            color: var(--color-primary);
+            box-shadow: var(--shadow-1);
+        }
+
+        #qrPane {
+            display: none;
+        }
+
+        #qrReader {
+            display: none;
+            width: 100%;
+            border-radius: var(--radius-input);
+            overflow: hidden;
+            margin-bottom: 1rem;
+            background: #000;
+        }
+
+        #qrCodeManualInput {
+            text-align: center;
+            letter-spacing: 0.03em;
+        }
     </style>
 </head>
 
@@ -149,8 +194,14 @@
                     </div>
                 @endif
 
-                <!-- Login Form -->
-                <form method="POST" action="{{ route('login') }}">
+                <!-- Login Method Tabs -->
+                <div class="login-tabs" role="tablist">
+                    <button type="button" id="tabPassword" class="active" role="tab" aria-selected="true">{{ __('messages.login_with_password') }}</button>
+                    <button type="button" id="tabQr" role="tab" aria-selected="false">{{ __('messages.login_with_qr') }}</button>
+                </div>
+
+                <!-- Password Login Form -->
+                <form method="POST" action="{{ route('login') }}" id="passwordPane">
                     @csrf
 
                     <div class="mb-3">
@@ -193,6 +244,37 @@
                         <a href="{{ route('password.request') }}" class="text-decoration-none small fw-semibold">{{ __('messages.forgot_password_link') }}</a>
                     </div>
                 </form>
+
+                <!-- QR Code Login Form -->
+                <form method="POST" action="{{ route('login.qr') }}" id="qrPane">
+                    @csrf
+                    <input type="hidden" name="qr_code" id="qrCodeHidden">
+
+                    <p class="text-muted small mb-3">{{ __('messages.scan_qr_code_instruction') }}</p>
+
+                    <div class="mb-3">
+                        <label for="qrCodeManualInput" class="form-label">{{ __('messages.login_with_qr') }}</label>
+                        <input type="text" id="qrCodeManualInput" class="form-control @error('qr_code') is-invalid @enderror"
+                            placeholder="{{ __('messages.qr_code_input_placeholder') }}" autocomplete="off">
+                        @error('qr_code')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div id="qrReader"></div>
+                    <div id="qrCameraError" class="alert alert-warning small py-2" style="display:none;"></div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="remember" class="form-check-input" id="rememberQr">
+                            <label class="form-check-label text-normal text-capitalize" for="rememberQr" style="font-size: 0.9rem; font-weight: 500;">{{ __('messages.remember_me_label') }}</label>
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-outline-secondary" id="toggleCameraBtn">{{ __('messages.use_camera_to_scan') }}</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -214,6 +296,127 @@
                 icon.classList.add("bi-eye");
             }
         });
+    </script>
+
+    <script>
+        // --- Login method tabs ---
+        const tabPassword = document.getElementById('tabPassword');
+        const tabQr = document.getElementById('tabQr');
+        const passwordPane = document.getElementById('passwordPane');
+        const qrPane = document.getElementById('qrPane');
+
+        function showPasswordTab() {
+            tabPassword.classList.add('active');
+            tabQr.classList.remove('active');
+            tabPassword.setAttribute('aria-selected', 'true');
+            tabQr.setAttribute('aria-selected', 'false');
+            passwordPane.style.display = '';
+            qrPane.style.display = 'none';
+            stopQrScanner();
+        }
+
+        function showQrTab() {
+            tabQr.classList.add('active');
+            tabPassword.classList.remove('active');
+            tabQr.setAttribute('aria-selected', 'true');
+            tabPassword.setAttribute('aria-selected', 'false');
+            qrPane.style.display = '';
+            passwordPane.style.display = 'none';
+            qrCodeManualInput.focus();
+        }
+
+        tabPassword.addEventListener('click', showPasswordTab);
+        tabQr.addEventListener('click', showQrTab);
+
+        @if ($errors->has('qr_code'))
+            showQrTab();
+        @endif
+
+        // --- Manual / hardware-scanner input ---
+        const qrCodeManualInput = document.getElementById('qrCodeManualInput');
+        const qrCodeHidden = document.getElementById('qrCodeHidden');
+        const qrForm = document.getElementById('qrPane');
+
+        function submitQrCode(value) {
+            const trimmed = (value || '').trim();
+            if (!trimmed) {
+                return;
+            }
+            qrCodeHidden.value = trimmed;
+            qrForm.submit();
+        }
+
+        // Hardware QR/barcode scanners behave like a keyboard: they type the
+        // payload then send Enter. Submit as soon as Enter arrives.
+        qrCodeManualInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                submitQrCode(qrCodeManualInput.value);
+            }
+        });
+
+        // --- Optional camera-based scanning (progressive enhancement) ---
+        const toggleCameraBtn = document.getElementById('toggleCameraBtn');
+        const qrReaderEl = document.getElementById('qrReader');
+        const qrCameraError = document.getElementById('qrCameraError');
+        let html5QrCode = null;
+        let cameraActive = false;
+
+        function stopQrScanner() {
+            if (html5QrCode && cameraActive) {
+                html5QrCode.stop().catch(() => {});
+                cameraActive = false;
+            }
+            qrReaderEl.style.display = 'none';
+            toggleCameraBtn.textContent = '{{ __('messages.use_camera_to_scan') }}';
+        }
+
+        toggleCameraBtn.addEventListener('click', function() {
+            if (cameraActive) {
+                stopQrScanner();
+                return;
+            }
+
+            qrCameraError.style.display = 'none';
+
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js';
+            script.onload = startCamera;
+            script.onerror = function() {
+                qrCameraError.textContent = '{{ __('messages.camera_not_available') }}';
+                qrCameraError.style.display = '';
+            };
+
+            if (window.Html5Qrcode) {
+                startCamera();
+            } else {
+                document.head.appendChild(script);
+            }
+        });
+
+        function startCamera() {
+            qrReaderEl.style.display = '';
+            html5QrCode = new Html5Qrcode('qrReader');
+
+            html5QrCode.start(
+                { facingMode: 'environment' },
+                { fps: 10, qrbox: 220 },
+                function(decodedText) {
+                    stopQrScanner();
+                    submitQrCode(decodedText);
+                },
+                function() {
+                    // ignore per-frame decode failures
+                }
+            ).then(function() {
+                cameraActive = true;
+                toggleCameraBtn.textContent = '{{ __('messages.stop_camera') }}';
+            }).catch(function() {
+                qrCameraError.textContent = '{{ __('messages.camera_not_available') }}';
+                qrCameraError.style.display = '';
+                qrReaderEl.style.display = 'none';
+            });
+        }
     </script>
 </body>
 

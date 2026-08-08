@@ -8,9 +8,9 @@ use App\Http\Requests\LogoutRequest;
 use App\Http\Requests\RefreshTokenRequest;
 use App\Http\Resources\UserResource;
 use App\Services\FcmTokenService;
+use App\Services\QrCodeCredentialsService;
 use App\Services\RefreshTokenService;
 use App\Services\UserService;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class AuthController extends BaseController
@@ -19,12 +19,13 @@ class AuthController extends BaseController
         protected UserService $userService,
         protected FcmTokenService $fcmTokenService,
         protected RefreshTokenService $refreshTokenService,
+        protected QrCodeCredentialsService $qrCodeCredentialsService,
     ) {}
 
     public function login(LoginRequest $request)
     {
         try {
-            $credentials = collect($this->getCredentials($request->qr_code));
+            $credentials = collect($this->qrCodeCredentialsService->decode($request->qr_code));
 
             $input = new UserLoginDTO(...$credentials->only(
                 'membership_code',
@@ -46,16 +47,15 @@ class AuthController extends BaseController
             $this->updateOrCreateFcmToken($request, $user);
 
             $token = $this->generateToken($user);
-            // Refresh tokens are disabled for now.
-            // $refreshToken = $this->refreshTokenService->createForUser(
-            //     $user,
-            //     $request->device_type ?? null,
-            //     $request->imei ?? null
-            // );
+            $refreshToken = $this->refreshTokenService->createForUser(
+                $user,
+                $request->device_type ?? null,
+                $request->imei ?? null
+            );
 
             return $this->apiResponse([
                 'token' => $token,
-                // 'refresh_token' => $refreshToken,
+                'refresh_token' => $refreshToken,
                 'user' => new UserResource($user),
             ], trans('messages.login successfuly'));
 
@@ -75,23 +75,19 @@ class AuthController extends BaseController
 
         // revoke access token
         $token = $user->currentAccessToken();
-        $token->update([
-            'expired_at' => now(),
-        ]);
         $token->delete();
 
-        // Refresh tokens are disabled for now.
         // revoke refresh tokens for this device only (if identifiers present)
-        // if ($request->has('device_type') || $request->has('imei')) {
-        //     $this->refreshTokenService->revokeForDevice(
-        //         $user->id,
-        //         $request->device_type,
-        //         $request->imei
-        //     );
-        // } else {
-        //     // fallback: revoke everything
-        //     $this->refreshTokenService->revokeAllForUser($user->id);
-        // }
+        if ($request->has('device_type') || $request->has('imei')) {
+            $this->refreshTokenService->revokeForDevice(
+                $user->id,
+                $request->device_type,
+                $request->imei
+            );
+        } else {
+            // fallback: revoke everything
+            $this->refreshTokenService->revokeAllForUser($user->id);
+        }
 
         auth()->guard('web')->logout();
 
@@ -110,38 +106,6 @@ class AuthController extends BaseController
         $tokenModel->save();
 
         return $token;
-    }
-
-    private function getCredentials($qr_code)
-    {
-        $code = explode('|', $qr_code)[0];
-
-        // Parse datetime components
-        $minutes = (int) substr($code, 0, 2);
-        $hours = (int) substr($code, 2, 2);
-        $day = (int) substr($code, 4, 2);
-        $month = (int) substr($code, 6, 2);
-        $year = 2000 + (int) substr($code, 8, 2);
-        $dateTime = Carbon::create($year, $month, $day, $hours, $minutes);
-        // Validate datetime is within 5 minutes of current time
-        $timeDifference = now()->diffInMinutes($dateTime, false); // false = signed difference
-        // if ($timeDifference > 5 || $timeDifference < -5) {
-        //     throw new \Exception('This code is expired - must be within 5 minutes');
-        // }
-
-        // Parse membership components
-        $familyNumberLength = (int) substr($code, 10, 1);
-        $NR = substr($code, -$familyNumberLength);
-        $membershipPart = substr($code, 13, -$familyNumberLength);
-        $membership_code = "E1C1F{$membershipPart}NR{$NR}";
-        $name = explode('|', $qr_code)[1];
-        $group = explode('|', $qr_code)[2] ?? '';
-        $groups = [];
-        if ($group) {
-            $groups = explode(',', $group);
-        }
-
-        return compact('membership_code', 'name', 'groups');
     }
 
     private function updateOrCreateFcmToken($request, $user)
@@ -163,7 +127,16 @@ class AuthController extends BaseController
      */
     public function refresh(RefreshTokenRequest $request)
     {
-        // Refresh tokens are disabled for now.
-        return $this->apiErrorResponse('refresh token is disabled for now', 403);
+        try {
+            [$refreshToken, $user] = $this->refreshTokenService->rotateByPlain($request->refresh_token);
+            $token = $this->generateToken($user);
+
+            return $this->apiResponse([
+                'token' => $token,
+                'refresh_token' => $refreshToken,
+            ], 'token refreshed successfully');
+        } catch (\RuntimeException $e) {
+            return $this->apiErrorResponse($e->getMessage(), 401);
+        }
     }
 }

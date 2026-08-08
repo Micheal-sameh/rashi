@@ -56,6 +56,7 @@ Route::group(['middleware' => ['setlocale']], function () {
     Route::prefix('auth')->group(function () {
         Route::get('/login', [AuthController::class, 'loginPage'])->name('loginPage');
         Route::post('/login', [AuthController::class, 'login'])->name('login');
+        Route::post('/login/qr', [AuthController::class, 'loginWithQr'])->name('login.qr')->middleware('throttle:10,1');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
         // Password Reset Routes

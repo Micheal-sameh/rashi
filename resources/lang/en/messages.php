@@ -592,4 +592,51 @@ return [
     'ranking_by_group' => 'Ranking by Group',
     'total_questions' => 'Total Questions',
     'not_specified' => 'Not Specified',
+
+    // Error Pages
+    'error_back_to_dashboard' => 'Back to Dashboard',
+    'error_go_to_dashboard' => 'Go back to Dashboard',
+    'error_contact_support' => 'Contact Support',
+    'error_try_again' => 'Try Again',
+    'error_request_access' => 'Request Access',
+    'error_contact_it_support' => 'Contact IT Support',
+    'error_support_center' => 'Support Center',
+    'error_system_status' => 'System Status',
+    'error_session_id' => 'Session ID',
+
+    'error_404_badge' => 'Error 404',
+    'error_404_heading' => 'Oops! Page Not Found',
+    'error_404_description' => 'The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.',
+
+    'error_403_badge' => 'Error 403',
+    'error_403_heading' => 'Access Denied',
+    'error_403_description' => 'You do not have the necessary permissions to view this module. This area is restricted to administrators with elevated access rights within the :app Management System.',
+
+    'error_500_title' => '500 Internal Server Error',
+    'error_500_subheading' => 'System Hiccup',
+    'error_500_description' => "We've encountered an unexpected technical issue on our end. Our engineering team has been automatically notified and is working to restore full functionality.",
+
+    'error_502_heading' => 'Bad Gateway',
+    'error_502_description' => 'The server received an invalid response while acting as a gateway or proxy. This is usually a temporary issue with our upstream services.',
+
+    'database_error_heading' => 'Database Error',
+    'database_error_connection_refused' => 'Connection Refused',
+    'database_error_description' => 'We are unable to connect to the database at this moment. Our team has been alerted and is working on a fix.',
+
+    'maintenance_heading' => 'Scheduled Maintenance',
+    'maintenance_description' => 'We are currently performing scheduled updates to improve the :app system. Services are expected to resume shortly. Thank you for your patience.',
+    'maintenance_expected_back' => 'Expected Back',
+    'maintenance_check_back_soon' => 'Please check back soon',
+    'all_rights_reserved' => 'All rights reserved.',
+
+    // QR Code Login
+    'welcome_back_admin' => 'Welcome back, Admin!',
+    'login_with_password' => 'Password',
+    'login_with_qr' => 'QR Code',
+    'scan_qr_code_instruction' => 'Scan your membership QR code with a connected scanner, or use your camera below.',
+    'qr_code_input_placeholder' => 'Waiting for scan...',
+    'use_camera_to_scan' => 'Use Camera Instead',
+    'stop_camera' => 'Stop Camera',
+    'camera_not_available' => 'Camera access is unavailable. Use a connected QR scanner or check your browser permissions.',
+    'invalid_qr_code' => 'Invalid or unreadable QR code.',
 ];

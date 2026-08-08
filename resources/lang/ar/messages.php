@@ -614,4 +614,51 @@ return [
     'ranking_by_group' => 'الترتيب حسب المجموعة',
     'total_questions' => 'إجمالي الأسئلة',
     'not_specified' => 'غير محدد',
+
+    // Error Pages
+    'error_back_to_dashboard' => 'العودة إلى لوحة التحكم',
+    'error_go_to_dashboard' => 'العودة إلى لوحة التحكم',
+    'error_contact_support' => 'التواصل مع الدعم',
+    'error_try_again' => 'إعادة المحاولة',
+    'error_request_access' => 'طلب صلاحية الوصول',
+    'error_contact_it_support' => 'التواصل مع الدعم الفني',
+    'error_support_center' => 'مركز الدعم',
+    'error_system_status' => 'حالة النظام',
+    'error_session_id' => 'رقم الجلسة',
+
+    'error_404_badge' => 'خطأ 404',
+    'error_404_heading' => 'عذراً! الصفحة غير موجودة',
+    'error_404_description' => 'الصفحة التي تبحث عنها ربما تم حذفها أو تغيير اسمها أو أنها غير متاحة مؤقتاً.',
+
+    'error_403_badge' => 'خطأ 403',
+    'error_403_heading' => 'الوصول مرفوض',
+    'error_403_description' => 'ليس لديك الصلاحيات اللازمة لعرض هذا القسم. هذه المنطقة مخصصة للمسؤولين ذوي صلاحيات الوصول المرتفعة ضمن نظام إدارة :app.',
+
+    'error_500_title' => 'خطأ 500 في الخادم',
+    'error_500_subheading' => 'عطل مؤقت في النظام',
+    'error_500_description' => 'واجهنا مشكلة تقنية غير متوقعة من جانبنا. تم إخطار فريقنا الهندسي تلقائياً ويعمل على استعادة كامل الخدمة.',
+
+    'error_502_heading' => 'خطأ في البوابة (502)',
+    'error_502_description' => 'تلقى الخادم استجابة غير صالحة أثناء عمله كبوابة أو وسيط. عادةً ما تكون هذه مشكلة مؤقتة في الخدمات المرتبطة بنا.',
+
+    'database_error_heading' => 'خطأ في قاعدة البيانات',
+    'database_error_connection_refused' => 'تم رفض الاتصال',
+    'database_error_description' => 'تعذر الاتصال بقاعدة البيانات في الوقت الحالي. تم إخطار فريقنا ويعمل على إصلاح المشكلة.',
+
+    'maintenance_heading' => 'صيانة مجدولة',
+    'maintenance_description' => 'نقوم حالياً بإجراء تحديثات مجدولة لتحسين نظام :app. من المتوقع استئناف الخدمات قريباً. نشكركم على صبركم.',
+    'maintenance_expected_back' => 'العودة المتوقعة',
+    'maintenance_check_back_soon' => 'يرجى التحقق مرة أخرى قريباً',
+    'all_rights_reserved' => 'جميع الحقوق محفوظة.',
+
+    // QR Code Login
+    'welcome_back_admin' => 'مرحباً بعودتك أيها المسؤول!',
+    'login_with_password' => 'كلمة المرور',
+    'login_with_qr' => 'رمز QR',
+    'scan_qr_code_instruction' => 'امسح رمز QR الخاص بعضويتك باستخدام جهاز مسح متصل، أو استخدم الكاميرا أدناه.',
+    'qr_code_input_placeholder' => 'بانتظار المسح...',
+    'use_camera_to_scan' => 'استخدام الكاميرا بدلاً من ذلك',
+    'stop_camera' => 'إيقاف الكاميرا',
+    'camera_not_available' => 'الكاميرا غير متاحة. استخدم جهاز مسح QR متصل أو تحقق من أذونات المتصفح.',
+    'invalid_qr_code' => 'رمز QR غير صالح أو غير قابل للقراءة.',
 ];

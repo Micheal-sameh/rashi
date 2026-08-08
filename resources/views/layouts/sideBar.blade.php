@@ -1387,7 +1387,7 @@
 
     @stack('scripts')
 
-    <!-- Pusher & Laravel Echo for Real-time Updates -->
+    <!-- Pusher-protocol client & Laravel Echo, connected to Laravel Reverb -->
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.1/dist/echo.iife.js"></script>
     <script>
@@ -1397,23 +1397,20 @@
             Pusher.logToConsole = {{ config('app.debug') ? 'true' : 'false' }};
 
             window.Echo = new Echo({
-                broadcaster: 'pusher',
-                key: '{{ config('broadcasting.connections.pusher.key') }}',
-                wsHost: '{{ config('broadcasting.connections.pusher.options.host') }}',
-                wsPort: {{ config('broadcasting.connections.pusher.options.port') }},
-                wssPort: {{ config('broadcasting.connections.pusher.options.port') }},
-                forceTLS: false,
-                encrypted: false,
-                disableStats: true,
+                broadcaster: 'reverb',
+                key: '{{ config('broadcasting.connections.reverb.key') }}',
+                wsHost: '{{ config('broadcasting.connections.reverb.options.host') }}',
+                wsPort: {{ config('broadcasting.connections.reverb.options.port') }},
+                wssPort: {{ config('broadcasting.connections.reverb.options.port') }},
+                forceTLS: {{ config('broadcasting.connections.reverb.options.useTLS') ? 'true' : 'false' }},
                 enabledTransports: ['ws', 'wss'],
-                cluster: 'mt1', // Required by Pusher but not used by Soketi
             });
 
             console.log('🔌 WebSocket Config:', {
-                key: '{{ config('broadcasting.connections.pusher.key') }}',
-                host: '{{ config('broadcasting.connections.pusher.options.host') }}',
-                port: {{ config('broadcasting.connections.pusher.options.port') }},
-                scheme: '{{ config('broadcasting.connections.pusher.options.scheme') }}'
+                key: '{{ config('broadcasting.connections.reverb.key') }}',
+                host: '{{ config('broadcasting.connections.reverb.options.host') }}',
+                port: {{ config('broadcasting.connections.reverb.options.port') }},
+                scheme: '{{ config('broadcasting.connections.reverb.options.scheme') }}'
             });
 
             // Debug connection events - wrapped in try-catch

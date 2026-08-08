@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\RefreshToken;
 use App\Repositories\RefreshTokenRepository;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class RefreshTokenService
@@ -82,5 +83,31 @@ class RefreshTokenService
             $token->device_type,
             $token->imei
         );
+    }
+
+    /**
+     * Validate a plain-text refresh token and atomically rotate it.
+     * Locks the row for the duration of the transaction so concurrent
+     * refresh calls with the same token can't both succeed.
+     *
+     * @return array{0: string, 1: \App\Models\User} [newPlainRefreshToken, user]
+     *
+     * @throws \RuntimeException if the token is missing, revoked, or expired
+     */
+    public function rotateByPlain(string $plain): array
+    {
+        $hashed = hash('sha256', $plain);
+
+        return DB::transaction(function () use ($hashed) {
+            $token = RefreshToken::where('token', $hashed)->lockForUpdate()->first();
+
+            if (! $token || $token->isRevoked() || $token->isExpired()) {
+                throw new \RuntimeException('Invalid or expired refresh token');
+            }
+
+            $newPlain = $this->rotate($token);
+
+            return [$newPlain, $token->user];
+        });
     }
 }
