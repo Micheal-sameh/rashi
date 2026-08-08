@@ -18,6 +18,26 @@ services:
       - rashi
       - central_net
 
+  queue:
+    build:
+      args:
+        user: rashi
+        uid: 1001
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: rashi-queue
+    restart: unless-stopped
+    working_dir: /var/www/rashi
+    command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
+    volumes:
+      - ./:/var/www/rashi
+      - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    networks:
+      - rashi
+      - central_net
+    depends_on:
+      - app
+
 networks:
   rashi:
     driver: bridge
