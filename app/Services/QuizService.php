@@ -42,10 +42,8 @@ class QuizService
         $quiz = $this->quizRepository->store($input);
         foreach ($input['questions'] as $question) {
             $question_id = $this->quizQuestionRepository->store($quiz, $question);
-            $i = 0;
-            foreach (collect($question['answers']) as $answer) {
-                $this->questionAnswerRepository->store($question_id, $answer, $question['correct'] == $i ? 1 : 0);
-                $i++;
+            foreach ($question['answers'] as $key => $answer) {
+                $this->questionAnswerRepository->store($question_id, $answer, $question['correct'] == $key ? 1 : 0);
             }
         }
 
