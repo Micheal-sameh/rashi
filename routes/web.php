@@ -41,8 +41,8 @@ Route::get('/oauth2callback', function () {
 });
 
 Route::get('/', function () {
-    return redirect()->route('competitions.index');
-});
+    return view('landing');
+})->name('landing');
 
 Route::group(['middleware' => ['setlocale']], function () {
     // Language change routes (optional, if you want to switch languages via URL)
