@@ -1152,6 +1152,9 @@
                     <li><a href="{{ route('notifications.index') }}"
                             class="{{ $activeRoutes['notifications'] ? 'active' : '' }}">
                             <i class="fas fa-bell"></i><span class="nav-label">{{ __('messages.notifications') }}</span></a></li>
+                    <li><a href="{{ route('reports.index') }}"
+                            class="{{ $activeRoutes['reports'] ? 'active' : '' }}">
+                            <i class="fas fa-chart-bar"></i><span class="nav-label">{{ __('messages.reports') }}</span></a></li>
 
                     <!-- Content Management Section -->
                     <li class="menu-section-title"><i class="fas fa-folder me-2"></i><span class="nav-label">{{ __('messages.content_management') }}</span></li>

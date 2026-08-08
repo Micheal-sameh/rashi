@@ -13,6 +13,9 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PointTransferController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuizQuestionController;
+use App\Http\Controllers\ReportBuilderController;
+use App\Http\Controllers\ReportScheduleController;
+use App\Http\Controllers\ReportShareController;
 use App\Http\Controllers\RewardController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SocialMediaController;
@@ -241,4 +244,21 @@ Route::group(['middleware' => ['setlocale']], function () {
         });
 
     });
+});
+
+Route::middleware(['auth'])->prefix('reports')->name('reports.')->group(function () {
+    Route::get('/', [ReportBuilderController::class, 'index'])->name('index');
+    Route::get('/create', [ReportBuilderController::class, 'create'])->name('create');
+    Route::post('/', [ReportBuilderController::class, 'store'])->name('store');
+    Route::post('/run', [ReportBuilderController::class, 'run'])->name('run');
+    Route::get('/{report}', [ReportBuilderController::class, 'show'])->name('show');
+    Route::put('/{report}', [ReportBuilderController::class, 'update'])->name('update');
+    Route::delete('/{report}', [ReportBuilderController::class, 'destroy'])->name('destroy');
+
+    Route::post('/{report}/share', [ReportShareController::class, 'store'])->name('share.store');
+    Route::delete('/{report}/share', [ReportShareController::class, 'destroy'])->name('share.destroy');
+
+    Route::post('/{report}/schedule', [ReportScheduleController::class, 'store'])->name('schedule.store');
+    Route::put('/schedule/{schedule}', [ReportScheduleController::class, 'update'])->name('schedule.update');
+    Route::delete('/schedule/{schedule}', [ReportScheduleController::class, 'destroy'])->name('schedule.destroy');
 });

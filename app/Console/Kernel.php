@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new CheckCompetitionsJob)->dailyAt('17:00');
         $schedule->job(new CheckTodaysQuizAnswersJob)->dailyAt('17:00');
         $schedule->job(new DeleteOldNotificationsJob)->daily();
+        $schedule->command('reports:run-scheduled')->everyFiveMinutes();
     }
 
     /**

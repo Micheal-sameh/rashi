@@ -206,6 +206,7 @@ return [
     'delete_all_api_tokens' => 'Delete All Tokens',
     'enter_password_to_confirm' => 'Enter your password to confirm',
     'notifications' => 'Notifications',
+    'reports' => 'Reports',
     'ordered_at' => 'Ordered At',
     'you_have_already_solved_this_quiz' => 'You have already solved this quiz',
     'this_quiz_is_no_longer_available_to_solve' => 'This quiz is no longer available to solve',

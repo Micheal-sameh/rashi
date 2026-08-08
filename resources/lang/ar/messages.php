@@ -192,6 +192,7 @@ return [
     'delete_all_api_tokens' => 'حذف جميع الرموز',
     'enter_password_to_confirm' => 'أدخل كلمة المرور للتأكيد',
     'notifications' => 'اشعارات',
+    'reports' => 'التقارير',
     'ordered_at' => 'تم الطلب في',
     'you_have_already_solved_this_quiz' => 'لقد حللت هذا الاختبار بالفعل',
     'this_quiz_is_no_longer_available_to_solve' => 'هذا الاختبار لم يعد متاحًا للحل',
