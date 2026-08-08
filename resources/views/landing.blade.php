@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Rashi') }} — {{ __('messages.app_tagline') }}</title>
+    <link rel="icon" href="{{ asset('default-logo.png') }}" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -87,10 +88,7 @@
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; }
   .brand-mark {
     width: 34px; height: 34px; border-radius: 10px;
-    background: var(--color-primary);
-    display: grid; place-items: center;
-    color: var(--color-on-primary);
-    font-weight: 800; font-size: 14px;
+    object-fit: cover;
     box-shadow: var(--shadow-1);
   }
   .navlinks { display: flex; gap: 28px; font-size: 14.5px; color: var(--color-on-surface-variant); font-weight: 500; }
@@ -245,7 +243,7 @@
 
 <nav>
   <div class="wrap">
-    <div class="brand"><span class="brand-mark">{{ mb_substr(config('app.name', 'Rashi'), 0, 1) }}</span> {{ config('app.name', 'Rashi') }}</div>
+    <div class="brand"><img class="brand-mark" src="{{ asset('default-logo.png') }}" alt="{{ config('app.name', 'Rashi') }}"> {{ config('app.name', 'Rashi') }}</div>
     <div class="navlinks">
       <a href="#features">{{ __('messages.landing_features_nav') }}</a>
       <a href="#flow">{{ __('messages.landing_how_it_works_nav') }}</a>
