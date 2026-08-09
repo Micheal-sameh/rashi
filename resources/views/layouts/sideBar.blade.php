@@ -1410,8 +1410,12 @@
                         onerror="this.style.display='none'">
                 </div>
                 <div class="pwa-install-body">
-                    <p class="pwa-install-title">{{ __('messages.install_app_title', ['app_name' => config('app.name')]) }}</p>
-                    <p class="pwa-install-text">{{ __('messages.install_app_text') }}</p>
+                    <p class="pwa-install-title" id="pwaInstallTitle">{{ __('messages.install_app_title', ['app_name' => config('app.name')]) }}</p>
+                    <p class="pwa-install-text" id="pwaInstallText">{{ __('messages.install_app_text') }}</p>
+                    <p class="pwa-install-ios-steps" id="pwaInstallIosSteps" style="display:none;">
+                        <span>{{ __('messages.install_ios_step_share') }} <i class="fa-solid fa-arrow-up-from-bracket"></i></span>
+                        <span>{{ __('messages.install_ios_step_add') }} <i class="fa-solid fa-square-plus"></i></span>
+                    </p>
                 </div>
                 <div class="pwa-install-actions">
                     <button type="button" id="pwaInstallBtn" class="btn btn-primary btn-sm">{{ __('messages.install') }}</button>
@@ -1469,6 +1473,20 @@
                     color: var(--color-on-surface-variant, #464555);
                 }
 
+                .pwa-install-ios-steps {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    margin: 8px 0 0;
+                    font-size: .78rem;
+                    color: var(--color-on-surface-variant, #464555);
+                }
+
+                .pwa-install-ios-steps i {
+                    color: var(--color-primary, #3525cd);
+                    margin-inline-start: 4px;
+                }
+
                 .pwa-install-actions {
                     display: flex;
                     flex-direction: column;
@@ -1491,6 +1509,9 @@
                     const prompt = document.getElementById('pwaInstallPrompt');
                     const installBtn = document.getElementById('pwaInstallBtn');
                     const dismissBtn = document.getElementById('pwaDismissBtn');
+                    const titleEl = document.getElementById('pwaInstallTitle');
+                    const textEl = document.getElementById('pwaInstallText');
+                    const iosStepsEl = document.getElementById('pwaInstallIosSteps');
                     let hideTimer = null;
 
                     const hidePrompt = () => {
@@ -1504,6 +1525,36 @@
                             hideTimer = null;
                         }
                     };
+
+                    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                        || window.navigator.standalone === true;
+
+                    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent)
+                        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+                    if (isStandalone) {
+                        // Already installed/running as an app — nothing to prompt.
+                        return;
+                    }
+
+                    if (isIos) {
+                        // iOS Safari never fires beforeinstallprompt; show manual
+                        // "Share > Add to Home Screen" instructions instead.
+                        titleEl.textContent = @json(__('messages.install_app_title', ['app_name' => config('app.name')]));
+                        textEl.style.display = 'none';
+                        iosStepsEl.style.display = 'flex';
+                        installBtn.style.display = 'none';
+
+                        prompt.classList.add('show');
+                        hideTimer = setTimeout(hidePrompt, 5000);
+
+                        dismissBtn?.addEventListener('click', () => {
+                            clearHideTimer();
+                            hidePrompt();
+                        });
+
+                        return;
+                    }
 
                     window.addEventListener('beforeinstallprompt', (e) => {
                         e.preventDefault();

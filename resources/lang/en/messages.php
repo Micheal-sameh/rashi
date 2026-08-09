@@ -159,6 +159,8 @@ return [
     'install' => 'Install',
     'install_app_title' => 'Install :app_name',
     'install_app_text' => 'Add this app to your home screen for quick access.',
+    'install_ios_step_share' => '1. Tap the Share button',
+    'install_ios_step_add' => '2. Then tap "Add to Home Screen"',
     'update_users_for_group' => 'Update Users for Group',
     'search_users' => 'Search Users',
     'search_for_user' => 'Search for Users',
