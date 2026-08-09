@@ -171,7 +171,7 @@
             flex: 1;
         }
 
-        .sidebar nav > ul:first-child {
+        .sidebar nav > .nav-sections {
             flex: 1;
         }
 
@@ -239,30 +239,28 @@
             margin: 0;
         }
 
-        .sidebar nav ul {
-            list-style: none;
+        .nav-sections {
             padding: 10px 12px;
-            margin: 0;
         }
 
         .sidebar nav a,
-        .sidebar nav button {
+        .sidebar .sidebar-footer button {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 12px;
-            margin: 2px 0;
+            padding: 10px 14px;
+            margin: 3px 0;
             color: var(--sidebar-text);
             text-decoration: none;
             transition: all .2s ease;
             border-radius: var(--radius-input);
             position: relative;
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
+            line-height: 1.35;
         }
 
-        .sidebar nav a:hover,
-        .sidebar nav button:hover {
+        .sidebar nav a:hover {
             background: var(--color-surface-container-high);
         }
 
@@ -288,19 +286,80 @@
             margin: 0;
         }
 
-        /* Menu Section Titles */
-        .menu-section-title {
-            padding: 18px 12px 6px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--color-outline);
-            letter-spacing: 0.05em;
+        /* Collapsible section headers */
+        .nav-section + .nav-section {
             margin-top: 6px;
         }
 
-        .menu-section-title:first-of-type {
-            margin-top: 0;
+        .nav-section-toggle {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 10px;
+            padding: 10px 14px 10px 12px;
+            margin: 0;
+            border: none;
+            background: transparent;
+            color: var(--color-outline);
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-radius: var(--radius-input);
+            cursor: pointer;
+            transition: background .2s ease, color .2s ease;
+        }
+
+        [dir="rtl"] .nav-section-toggle {
+            padding: 10px 12px 10px 14px;
+        }
+
+        .nav-section-toggle:hover {
+            background: var(--color-surface-container-high);
+            color: var(--color-on-surface-variant);
+        }
+
+        .nav-section-toggle i:first-child {
+            width: 18px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .nav-section-chevron {
+            width: auto;
+            font-size: 0.68rem !important;
+            margin-inline-start: auto;
+            color: var(--color-outline);
+            transition: transform .25s ease;
+        }
+
+        .nav-section.collapsed .nav-section-chevron {
+            transform: rotate(-90deg);
+        }
+
+        [dir="rtl"] .nav-section.collapsed .nav-section-chevron {
+            transform: rotate(90deg);
+        }
+
+        .nav-section-body {
+            display: grid;
+            grid-template-rows: 1fr;
+            transition: grid-template-rows .25s ease;
+        }
+
+        .nav-section.collapsed .nav-section-body {
+            grid-template-rows: 0fr;
+        }
+
+        .nav-section-body > .nav-section-list {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .nav-section-list {
+            list-style: none;
+            margin: 0;
+            padding: 2px 0 10px;
         }
 
         /* Mobile Header */
@@ -582,8 +641,8 @@
             }
 
             .sidebar nav a,
-            .sidebar nav button,
-            .menu-section-title {
+            .sidebar .sidebar-footer button,
+            .nav-section-toggle {
                 overflow: hidden;
                 white-space: nowrap;
                 display: flex;
@@ -593,9 +652,17 @@
             }
 
             .sidebar:hover nav a,
-            .sidebar:hover nav button,
-            .sidebar:hover .menu-section-title {
+            .sidebar:hover .sidebar-footer button,
+            .sidebar:hover .nav-section-toggle {
                 justify-content: flex-start;
+            }
+
+            .nav-section-chevron {
+                display: none;
+            }
+
+            .sidebar:hover .nav-section-chevron {
+                display: inline-block;
             }
 
             .sidebar .nav-label,
@@ -1073,106 +1140,156 @@
 
         @auth
             <nav>
-                <ul>
+                <div class="nav-sections">
                     <!-- User Management Section -->
-                    <li class="menu-section-title"><i class="fas fa-users-cog me-2"></i><span class="nav-label">{{ __('messages.user_management') }}</span></li>
-                    <li><a href="{{ route('users.index') }}" class="{{ $activeRoutes['users'] ? 'active' : '' }}">
-                            <i class="fas fa-users"></i><span class="nav-label">{{ __('messages.users') }}</span></a></li>
-                    <li><a href="{{ route('users.admins') }}"
-                            class="{{ request()->routeIs('users.admins') ? 'active' : '' }}">
-                            <i class="fas fa-user-shield"></i><span class="nav-label">{{ __('messages.admin_users') }}</span></a></li>
-                    <li><a href="{{ route('families.index') }}"
-                            class="{{ request()->routeIs('families.*') ? 'active' : '' }}">
-                            <i class="fas fa-house-user"></i><span class="nav-label">{{ __('messages.families') }}</span></a></li>
-                    <li><a href="{{ route('user-history.index') }}"
-                            class="{{ request()->routeIs('user-history.*') ? 'active' : '' }}">
-                            <i class="fas fa-history"></i><span class="nav-label">{{ __('messages.user_history') }}</span></a></li>
-                    <li><a href="{{ route('users.leaderboard') }}"
-                            class="{{ $activeRoutes['leaderboard'] ? 'active' : '' }}">
-                            <i class="fas fa-trophy"></i><span class="nav-label">{{ __('messages.leaderboard') }}</span></a></li>
+                    <div class="nav-section" data-section="user-management">
+                        <button type="button" class="nav-section-toggle" aria-expanded="true">
+                            <i class="fas fa-users-cog"></i>
+                            <span class="nav-label nav-section-label">{{ __('messages.user_management') }}</span>
+                            <i class="fas fa-chevron-down nav-section-chevron"></i>
+                        </button>
+                        <div class="nav-section-body">
+                            <ul class="nav-section-list">
+                                <li><a href="{{ route('users.index') }}" class="{{ $activeRoutes['users'] ? 'active' : '' }}">
+                                        <i class="fas fa-users"></i><span class="nav-label">{{ __('messages.users') }}</span></a></li>
+                                <li><a href="{{ route('users.admins') }}"
+                                        class="{{ request()->routeIs('users.admins') ? 'active' : '' }}">
+                                        <i class="fas fa-user-shield"></i><span class="nav-label">{{ __('messages.admin_users') }}</span></a></li>
+                                <li><a href="{{ route('families.index') }}"
+                                        class="{{ request()->routeIs('families.*') ? 'active' : '' }}">
+                                        <i class="fas fa-house-user"></i><span class="nav-label">{{ __('messages.families') }}</span></a></li>
+                                <li><a href="{{ route('user-history.index') }}"
+                                        class="{{ request()->routeIs('user-history.*') ? 'active' : '' }}">
+                                        <i class="fas fa-history"></i><span class="nav-label">{{ __('messages.user_history') }}</span></a></li>
+                                <li><a href="{{ route('users.leaderboard') }}"
+                                        class="{{ $activeRoutes['leaderboard'] ? 'active' : '' }}">
+                                        <i class="fas fa-trophy"></i><span class="nav-label">{{ __('messages.leaderboard') }}</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
 
                     <!-- Competition Section -->
-                    <li class="menu-section-title"><i class="fas fa-graduation-cap me-2"></i><span class="nav-label">{{ __('messages.competitions_section') }}</span></li>
-                    <li><a href="{{ route('competitions.index') }}"
-                            class="{{ $activeRoutes['competitions'] ? 'active' : '' }}">
-                            <i class="fas fa-flag"></i><span class="nav-label">{{ __('messages.competitions') }}</span></a></li>
-                    <li><a href="{{ route('quizzes.index') }}"
-                            class="{{ $activeRoutes['quizzes'] ? 'active' : '' }}">
-                            <i class="fas fa-question-circle"></i><span class="nav-label">{{ __('messages.quizzes') }}</span></a></li>
-                    <li><a href="{{ route('questions.index') }}"
-                            class="{{ $activeRoutes['questions'] ? 'active' : '' }}">
-                            <i class="fas fa-edit"></i><span class="nav-label">{{ __('messages.questions') }}</span></a></li>
+                    <div class="nav-section" data-section="competitions">
+                        <button type="button" class="nav-section-toggle" aria-expanded="true">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span class="nav-label nav-section-label">{{ __('messages.competitions_section') }}</span>
+                            <i class="fas fa-chevron-down nav-section-chevron"></i>
+                        </button>
+                        <div class="nav-section-body">
+                            <ul class="nav-section-list">
+                                <li><a href="{{ route('competitions.index') }}"
+                                        class="{{ $activeRoutes['competitions'] ? 'active' : '' }}">
+                                        <i class="fas fa-flag"></i><span class="nav-label">{{ __('messages.competitions') }}</span></a></li>
+                                <li><a href="{{ route('quizzes.index') }}"
+                                        class="{{ $activeRoutes['quizzes'] ? 'active' : '' }}">
+                                        <i class="fas fa-question-circle"></i><span class="nav-label">{{ __('messages.quizzes') }}</span></a></li>
+                                <li><a href="{{ route('questions.index') }}"
+                                        class="{{ $activeRoutes['questions'] ? 'active' : '' }}">
+                                        <i class="fas fa-edit"></i><span class="nav-label">{{ __('messages.questions') }}</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
 
                     <!-- Points & Rewards Section -->
-                    <li class="menu-section-title"><i class="fas fa-coins me-2"></i><span class="nav-label">{{ __('messages.points_rewards') }}</span></li>
-                    <li><a href="{{ route('bonus-penalties.index') }}"
-                            class="{{ $activeRoutes['bonus-penalties'] ? 'active' : '' }}">
-                            <i class="fas fa-balance-scale"></i><span class="nav-label">{{ __('messages.bonus-penalties') }}</span></a></li>
-                    @if(Auth::user()->hasRole('admin'))
-                        <li><a href="{{ route('bonus-penalties.pending') }}"
-                                class="{{ request()->routeIs('bonus-penalties.pending') ? 'active' : '' }}">
-                                <i class="fas fa-clock"></i>
-                                <span class="nav-label">{{ __('messages.pending_approvals') }}
-                                @php
-                                    $pendingApprovals = \App\Models\BonusPenalty::where('status', \App\Enums\BonusPenaltyStatus::PENDING_APPROVAL)->count();
-                                @endphp
-                                @if($pendingApprovals > 0)
-                                    <span class="badge bg-danger ms-2">{{ $pendingApprovals }}</span>
+                    <div class="nav-section" data-section="points-rewards">
+                        <button type="button" class="nav-section-toggle" aria-expanded="true">
+                            <i class="fas fa-coins"></i>
+                            <span class="nav-label nav-section-label">{{ __('messages.points_rewards') }}</span>
+                            <i class="fas fa-chevron-down nav-section-chevron"></i>
+                        </button>
+                        <div class="nav-section-body">
+                            <ul class="nav-section-list">
+                                <li><a href="{{ route('bonus-penalties.index') }}"
+                                        class="{{ $activeRoutes['bonus-penalties'] ? 'active' : '' }}">
+                                        <i class="fas fa-balance-scale"></i><span class="nav-label">{{ __('messages.bonus-penalties') }}</span></a></li>
+                                @if(Auth::user()->hasRole('admin'))
+                                    <li><a href="{{ route('bonus-penalties.pending') }}"
+                                            class="{{ request()->routeIs('bonus-penalties.pending') ? 'active' : '' }}">
+                                            <i class="fas fa-clock"></i>
+                                            <span class="nav-label">{{ __('messages.pending_approvals') }}
+                                            @php
+                                                $pendingApprovals = \App\Models\BonusPenalty::where('status', \App\Enums\BonusPenaltyStatus::PENDING_APPROVAL)->count();
+                                            @endphp
+                                            @if($pendingApprovals > 0)
+                                                <span class="badge bg-danger ms-2">{{ $pendingApprovals }}</span>
+                                            @endif
+                                            </span>
+                                    </a></li>
                                 @endif
-                                </span>
-                        </a></li>
-                    @endif
-                    @if(Auth::user()->hasRole('admin'))
-                        <li><a href="{{ route('point-transfers.index') }}"
-                                class="{{ request()->routeIs('point-transfers.*') ? 'active' : '' }}">
-                                <i class="fas fa-exchange-alt"></i><span class="nav-label">{{ __('messages.point_transfers') }}</span></a></li>
-                    @endif
-                    <li><a href="{{ route('rewards.index') }}"
-                            class="{{ $activeRoutes['rewards'] ? 'active' : '' }}">
-                            <i class="fas fa-gift"></i><span class="nav-label">{{ __('messages.rewards') }}</span></a></li>
-                    <li><a href="{{ route('orders.index') }}"
-                            class="{{ $activeRoutes['orders'] ? 'active' : '' }}">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="nav-label">{{ __('messages.orders') }}
-                            @php
-                                $pendingOrdersCount = \App\Models\Order::where('status', \App\Enums\OrderStatus::PENDING)->count();
-                            @endphp
-                            @if($pendingOrdersCount > 0)
-                                <span class="badge bg-warning text-dark ms-2">{{ $pendingOrdersCount }}</span>
-                            @endif
-                            </span>
-                    </a></li>
+                                @if(Auth::user()->hasRole('admin'))
+                                    <li><a href="{{ route('point-transfers.index') }}"
+                                            class="{{ request()->routeIs('point-transfers.*') ? 'active' : '' }}">
+                                            <i class="fas fa-exchange-alt"></i><span class="nav-label">{{ __('messages.point_transfers') }}</span></a></li>
+                                @endif
+                                <li><a href="{{ route('rewards.index') }}"
+                                        class="{{ $activeRoutes['rewards'] ? 'active' : '' }}">
+                                        <i class="fas fa-gift"></i><span class="nav-label">{{ __('messages.rewards') }}</span></a></li>
+                                <li><a href="{{ route('orders.index') }}"
+                                        class="{{ $activeRoutes['orders'] ? 'active' : '' }}">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        <span class="nav-label">{{ __('messages.orders') }}
+                                        @php
+                                            $pendingOrdersCount = \App\Models\Order::where('status', \App\Enums\OrderStatus::PENDING)->count();
+                                        @endphp
+                                        @if($pendingOrdersCount > 0)
+                                            <span class="badge bg-warning text-dark ms-2">{{ $pendingOrdersCount }}</span>
+                                        @endif
+                                        </span>
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
 
                     <!-- System Section -->
-                    <li class="menu-section-title"><i class="fas fa-cogs me-2"></i><span class="nav-label">{{ __('messages.system_settings') }}</span></li>
-                    <li><a href="{{ route('settings.index') }}"
-                            class="{{ $activeRoutes['settings'] ? 'active' : '' }}">
-                            <i class="fas fa-cog"></i><span class="nav-label">{{ __('messages.settings') }}</span></a></li>
-                    <li><a href="{{ route('groups.index') }}"
-                            class="{{ $activeRoutes['groups'] ? 'active' : '' }}">
-                            <i class="fas fa-layer-group"></i><span class="nav-label">{{ __('messages.groups') }}</span></a></li>
-                    <li><a href="{{ route('groups.competitions') }}"
-                            class="{{ request()->routeIs('groups.competitions*') ? 'active' : '' }}">
-                            <i class="fas fa-project-diagram"></i><span class="nav-label">{{ __('messages.groups_competitions') }}</span></a></li>
-                    <li><a href="{{ route('notifications.index') }}"
-                            class="{{ $activeRoutes['notifications'] ? 'active' : '' }}">
-                            <i class="fas fa-bell"></i><span class="nav-label">{{ __('messages.notifications') }}</span></a></li>
+                    <div class="nav-section" data-section="system-settings">
+                        <button type="button" class="nav-section-toggle" aria-expanded="true">
+                            <i class="fas fa-cogs"></i>
+                            <span class="nav-label nav-section-label">{{ __('messages.system_settings') }}</span>
+                            <i class="fas fa-chevron-down nav-section-chevron"></i>
+                        </button>
+                        <div class="nav-section-body">
+                            <ul class="nav-section-list">
+                                <li><a href="{{ route('settings.index') }}"
+                                        class="{{ $activeRoutes['settings'] ? 'active' : '' }}">
+                                        <i class="fas fa-cog"></i><span class="nav-label">{{ __('messages.settings') }}</span></a></li>
+                                <li><a href="{{ route('groups.index') }}"
+                                        class="{{ $activeRoutes['groups'] ? 'active' : '' }}">
+                                        <i class="fas fa-layer-group"></i><span class="nav-label">{{ __('messages.groups') }}</span></a></li>
+                                <li><a href="{{ route('groups.competitions') }}"
+                                        class="{{ request()->routeIs('groups.competitions*') ? 'active' : '' }}">
+                                        <i class="fas fa-project-diagram"></i><span class="nav-label">{{ __('messages.groups_competitions') }}</span></a></li>
+                                <li><a href="{{ route('notifications.index') }}"
+                                        class="{{ $activeRoutes['notifications'] ? 'active' : '' }}">
+                                        <i class="fas fa-bell"></i><span class="nav-label">{{ __('messages.notifications') }}</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
 
                     <!-- Content Management Section -->
-                    <li class="menu-section-title"><i class="fas fa-folder me-2"></i><span class="nav-label">{{ __('messages.content_management') }}</span></li>
-                    <li><a href="{{ route('about_us.show') }}"
-                            class="{{ $activeRoutes['about_us'] ? 'active' : '' }}">
-                            <i class="fas fa-info-circle"></i><span class="nav-label">{{ __('messages.about_us') }}</span></a></li>
-                    <li><a href="{{ route('terms.show') }}"
-                            class="{{ $activeRoutes['terms'] ? 'active' : '' }}">
-                            <i class="fas fa-file-contract"></i><span class="nav-label">{{ __('messages.terms') }}</span></a></li>
-                    <li><a href="{{ route('social-media.index') }}"
-                            class="{{ $activeRoutes['social-media'] ? 'active' : '' }}">
-                            <i class="fas fa-share-alt"></i><span class="nav-label">{{ __('messages.social_media') }}</span></a></li>
-                    <li><a href="{{ route('info-videos.index') }}"
-                            class="{{ $activeRoutes['info-videos'] ? 'active' : '' }}">
-                            <i class="fas fa-video"></i><span class="nav-label">{{ __('messages.info_videos') }}</span></a></li>
-                </ul>
+                    <div class="nav-section" data-section="content-management">
+                        <button type="button" class="nav-section-toggle" aria-expanded="true">
+                            <i class="fas fa-folder"></i>
+                            <span class="nav-label nav-section-label">{{ __('messages.content_management') }}</span>
+                            <i class="fas fa-chevron-down nav-section-chevron"></i>
+                        </button>
+                        <div class="nav-section-body">
+                            <ul class="nav-section-list">
+                                <li><a href="{{ route('about_us.show') }}"
+                                        class="{{ $activeRoutes['about_us'] ? 'active' : '' }}">
+                                        <i class="fas fa-info-circle"></i><span class="nav-label">{{ __('messages.about_us') }}</span></a></li>
+                                <li><a href="{{ route('terms.show') }}"
+                                        class="{{ $activeRoutes['terms'] ? 'active' : '' }}">
+                                        <i class="fas fa-file-contract"></i><span class="nav-label">{{ __('messages.terms') }}</span></a></li>
+                                <li><a href="{{ route('social-media.index') }}"
+                                        class="{{ $activeRoutes['social-media'] ? 'active' : '' }}">
+                                        <i class="fas fa-share-alt"></i><span class="nav-label">{{ __('messages.social_media') }}</span></a></li>
+                                <li><a href="{{ route('info-videos.index') }}"
+                                        class="{{ $activeRoutes['info-videos'] ? 'active' : '' }}">
+                                        <i class="fas fa-video"></i><span class="nav-label">{{ __('messages.info_videos') }}</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="sidebar-footer">
                     <ul class="list-unstyled m-0">
@@ -1355,6 +1472,29 @@
 
             toggle?.addEventListener('click', () => sidebar.classList.toggle('show'));
             back?.addEventListener('click', () => window.history.back());
+
+            // Collapsible sidebar sections — state persisted per-section, but the
+            // section containing the current page is always forced open so users
+            // never lose track of where they are.
+            document.querySelectorAll('.nav-section').forEach((section) => {
+                const id = section.dataset.section;
+                const toggleBtn = section.querySelector('.nav-section-toggle');
+                const storageKey = `sidebarSectionCollapsed:${id}`;
+                const hasActiveLink = !!section.querySelector('.nav-section-list a.active');
+
+                const setCollapsed = (collapsed) => {
+                    section.classList.toggle('collapsed', collapsed);
+                    toggleBtn?.setAttribute('aria-expanded', String(!collapsed));
+                };
+
+                setCollapsed(!hasActiveLink && localStorage.getItem(storageKey) === '1');
+
+                toggleBtn?.addEventListener('click', () => {
+                    const collapsed = !section.classList.contains('collapsed');
+                    setCollapsed(collapsed);
+                    localStorage.setItem(storageKey, collapsed ? '1' : '0');
+                });
+            });
 
             document.addEventListener('click', e => {
                 if (window.innerWidth < 992 && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
