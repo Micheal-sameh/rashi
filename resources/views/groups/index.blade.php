@@ -3,29 +3,23 @@
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
 
-        <!-- Heading -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold text-primary">{{ __('messages.groups') }}</h2>
-            <a href="{{ route('groups.create') }}" class="btn btn-success">
-                <i class="fa fa-plus-circle me-1"></i> {{ __('messages.create_groups') }}
-            </a>
-        </div>
+        <x-page-header icon="fa-layer-group" :title="__('messages.groups')" :subtitle="__('messages.total_groups') . ': ' . number_format($totalGroups)">
+            <x-slot:actions>
+                <a href="{{ route('groups.create') }}" class="btn btn-primary">
+                    <i class="fa fa-plus-circle me-1"></i> {{ __('messages.create_groups') }}
+                </a>
+            </x-slot>
+        </x-page-header>
 
-        <!-- Total Groups Card -->
+        <!-- Total Groups KPI -->
         <div class="row g-3 mb-4">
-            <div class="col-md-12">
-                <div class="card shadow-sm border-0 bg-success text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 opacity-75">{{ __('messages.total_groups') }}</h6>
-                                <h2 class="mb-0 fw-bold">{{ number_format($totalGroups) }}</h2>
-                            </div>
-                            <div class="fs-1 opacity-50">
-                                <i class="fas fa-layer-group"></i>
-                            </div>
-                        </div>
+            <div class="col-md-4">
+                <div class="rs-stat-card tone-primary">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.total_groups') }}</span>
+                        <div class="rs-stat-icon"><i class="fas fa-layer-group"></i></div>
                     </div>
+                    <div class="rs-stat-value">{{ number_format($totalGroups) }}</div>
                 </div>
             </div>
         </div>
@@ -50,10 +44,10 @@
         @endif
 
         <!-- Groups Table Card -->
-        <div class="card shadow-sm border-0 rounded-4 ">
-            <div class="card-body table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
+        <div class="card border-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
                         <tr>
                             <th>#</th>
                             <th>{{ __('messages.name') }}</th>
@@ -66,31 +60,31 @@
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>
-                                    <span class="group-name-clickable text-primary fw-semibold"
+                                    <span class="group-name-clickable rs-body-lg fw-semibold text-gradient"
                                         data-id="{{ $group->id }}" data-name="{{ $group->name }}"
                                         data-abbreviation="{{ $group->abbreviation }}">
                                         {{ $group->name }}
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="group-name-clickable text-primary fw-semibold">
+                                    <span class="badge bg-primary-subtle text-primary">
                                         {{ $group->abbreviation }}
                                     </span>
                                 </td>
                                 <td class="text-center">
                                     <a href="{{ route('groups.usersedit', $group->id) }}"
-                                        class="btn btn-sm btn-outline-primary">
+                                        class="btn btn-sm btn-secondary">
                                         <i class="fa fa-users me-1"></i> {{ __('messages.edit_group_users') }}
                                     </a>
                                     <a href="{{ route('groups.edit', $group->id) }}"
-                                        class="btn btn-sm btn-outline-primary">
+                                        class="btn btn-sm btn-secondary">
                                         <i class="fa fa-edit me-1"></i>
                                     </a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="text-center text-muted">{{ __('messages.no_groups') }}</td>
+                                <td colspan="4" class="text-center text-muted py-4">{{ __('messages.no_groups') }}</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -179,9 +173,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary rounded-3"
+                        <button type="button" class="btn btn-secondary"
                             data-bs-dismiss="modal">{{ __('messages.close') }}</button>
-                        <button type="submit" class="btn btn-primary rounded-3">{{ __('messages.save') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('messages.save') }}</button>
                     </div>
                 </form>
             </div>

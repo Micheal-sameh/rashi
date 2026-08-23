@@ -8,6 +8,7 @@ use App\Http\Requests\LogoutRequest;
 use App\Http\Requests\RefreshTokenRequest;
 use App\Http\Resources\UserResource;
 use App\Services\FcmTokenService;
+use App\Services\QrCodeCredentialsService;
 use App\Services\RefreshTokenService;
 use App\Services\UserService;
 use App\Traits\IssuesSanctumTokens;
@@ -22,12 +23,13 @@ class AuthController extends BaseController
         protected UserService $userService,
         protected FcmTokenService $fcmTokenService,
         protected RefreshTokenService $refreshTokenService,
+        protected QrCodeCredentialsService $qrCodeCredentialsService,
     ) {}
 
     public function login(LoginRequest $request)
     {
         try {
-            $credentials = collect($this->getCredentials($request->qr_code));
+            $credentials = collect($this->qrCodeCredentialsService->decode($request->qr_code));
 
             $input = new UserLoginDTO(...$credentials->only(
                 'membership_code',
@@ -49,16 +51,15 @@ class AuthController extends BaseController
             $this->updateOrCreateFcmToken($request, $user);
 
             $token = $this->generateToken($user);
-            // Refresh tokens are disabled for now.
-            // $refreshToken = $this->refreshTokenService->createForUser(
-            //     $user,
-            //     $request->device_type ?? null,
-            //     $request->imei ?? null
-            // );
+            $refreshToken = $this->refreshTokenService->createForUser(
+                $user,
+                $request->device_type ?? null,
+                $request->imei ?? null
+            );
 
             return $this->apiResponse([
                 'token' => $token,
-                // 'refresh_token' => $refreshToken,
+                'refresh_token' => $refreshToken,
                 'user' => new UserResource($user),
             ], trans('messages.login successfuly'));
 
@@ -78,23 +79,19 @@ class AuthController extends BaseController
 
         // revoke access token
         $token = $user->currentAccessToken();
-        $token->update([
-            'expired_at' => now(),
-        ]);
         $token->delete();
 
-        // Refresh tokens are disabled for now.
         // revoke refresh tokens for this device only (if identifiers present)
-        // if ($request->has('device_type') || $request->has('imei')) {
-        //     $this->refreshTokenService->revokeForDevice(
-        //         $user->id,
-        //         $request->device_type,
-        //         $request->imei
-        //     );
-        // } else {
-        //     // fallback: revoke everything
-        //     $this->refreshTokenService->revokeAllForUser($user->id);
-        // }
+        if ($request->has('device_type') || $request->has('imei')) {
+            $this->refreshTokenService->revokeForDevice(
+                $user->id,
+                $request->device_type,
+                $request->imei
+            );
+        } else {
+            // fallback: revoke everything
+            $this->refreshTokenService->revokeAllForUser($user->id);
+        }
 
         auth()->guard('web')->logout();
 
@@ -152,7 +149,16 @@ class AuthController extends BaseController
      */
     public function refresh(RefreshTokenRequest $request)
     {
-        // Refresh tokens are disabled for now.
-        return $this->apiErrorResponse('refresh token is disabled for now', 403);
+        try {
+            [$refreshToken, $user] = $this->refreshTokenService->rotateByPlain($request->refresh_token);
+            $token = $this->generateToken($user);
+
+            return $this->apiResponse([
+                'token' => $token,
+                'refresh_token' => $refreshToken,
+            ], 'token refreshed successfully');
+        } catch (\RuntimeException $e) {
+            return $this->apiErrorResponse($e->getMessage(), 401);
+        }
     }
 }

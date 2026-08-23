@@ -2,7 +2,11 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
+use PDOException;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -26,5 +30,29 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     */
+    public function render($request, Throwable $e)
+    {
+        if ($this->isDatabaseConnectionFailure($e) && $request instanceof Request && ! $request->expectsJson()) {
+            return response()->view('errors.database', [], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return parent::render($request, $e);
+    }
+
+    /**
+     * Determine if the given exception represents a database connectivity failure.
+     */
+    protected function isDatabaseConnectionFailure(Throwable $e): bool
+    {
+        if ($e instanceof PDOException) {
+            return true;
+        }
+
+        return $e instanceof QueryException && str_contains(strtolower($e->getMessage()), 'connection');
     }
 }

@@ -18,9 +18,14 @@
     <!-- Favicon -->
     <link rel="icon" href="{{ $faviconUrl }}" type="image/png">
 
+    <!-- PWA -->
+    <link rel="manifest" href="{{ route('pwa.manifest') }}">
+    <meta name="theme-color" content="#3525cd">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
+
     <!-- Open Graph Meta Tags for Social Media Sharing -->
     <meta property="og:title" content="@yield('title', config('app.name'))">
-    <meta property="og:description" content="@yield('description', config('app.name') . ' - نظام إدارة المسابقات والنقاط')">
+    <meta property="og:description" content="@yield('description', config('app.name') . ' - ' . __('messages.app_tagline'))">
     <meta property="og:image" content="{{ $absoluteLogoUrl }}">
     <meta property="og:image:secure_url" content="{{ $absoluteLogoUrl }}">
     <meta property="og:image:width" content="1200">
@@ -32,7 +37,7 @@
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('title', config('app.name'))">
-    <meta name="twitter:description" content="@yield('description', config('app.name') . ' - نظام إدارة المسابقات والنقاط')">
+    <meta name="twitter:description" content="@yield('description', config('app.name') . ' - ' . __('messages.app_tagline'))">
     <meta name="twitter:image" content="{{ $absoluteLogoUrl }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,21 +47,66 @@
 
     <style>
         :root {
-            --sidebar-bg: linear-gradient(180deg, #1a237e 0%, #283593 100%);
-            --sidebar-hover: rgba(255, 255, 255, 0.1);
-            --sidebar-text: #E3F2FD;
+            /* Override Bootstrap's own primary so .text-primary/.bg-primary/.border-primary/
+               .btn-outline-primary/.form-check-input:checked etc. all follow the brand color too */
+            --bs-primary: #3525cd;
+            --bs-primary-rgb: 53, 37, 205;
+            --bs-link-color: #3525cd;
+            --bs-link-color-rgb: 53, 37, 205;
+            --bs-link-hover-color: #2a1ea3;
+            --bs-link-hover-color-rgb: 42, 30, 163;
+
+            /* Rashi Management System design tokens (Electric Indigo / Slate) */
+            --color-primary: #3525cd;
+            --color-primary-container: #4f46e5;
+            --color-on-primary: #ffffff;
+            --color-on-primary-container: #dad7ff;
+            --color-secondary: #505f76;
+            --color-secondary-container: #d0e1fb;
+            --color-tertiary: #41485e;
+            --color-tertiary-container: #586076;
+            --color-error: #ba1a1a;
+            --color-on-error: #ffffff;
+            --color-error-container: #ffdad6;
+            --color-on-error-container: #93000a;
+            --color-success: #11998e;
+            --color-success-container: #d4f4dd;
+            --color-on-success-container: #047857;
+            --color-warning: #b45309;
+            --color-warning-container: #fef3c7;
+
+            --color-background: #f7f9fb;
+            --color-surface: #f7f9fb;
+            --color-surface-container-lowest: #ffffff;
+            --color-surface-container-low: #f2f4f6;
+            --color-surface-container: #eceef0;
+            --color-surface-container-high: #e6e8ea;
+            --color-on-surface: #191c1e;
+            --color-on-surface-variant: #464555;
+            --color-outline: #777587;
+            --color-outline-variant: #c7c4d8;
+            --color-border: #e2e8f0;
+
+            --sidebar-bg: var(--color-surface-container-lowest);
+            --sidebar-hover: rgba(53, 37, 205, 0.06);
+            --sidebar-text: var(--color-on-surface-variant);
             --sidebar-width: 260px;
             --mobile-header-height: 60px;
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            --danger-gradient: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
-            --card-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            --hover-shadow: 0 8px 30px rgba(0,0,0,0.12);
+
+            --radius-card: 16px;
+            --radius-btn: 10px;
+            --radius-input: 8px;
+            --radius-badge: 9999px;
+
+            --shadow-1: 0px 4px 6px -1px rgba(15, 23, 42, 0.05), 0px 2px 4px -2px rgba(15, 23, 42, 0.05);
+            --shadow-2: 0px 10px 15px -3px rgba(15, 23, 42, 0.1);
+            --card-shadow: var(--shadow-1);
+            --hover-shadow: var(--shadow-2);
         }
 
         * {
             scrollbar-width: thin;
-            scrollbar-color: #667eea #f1f5f9;
+            scrollbar-color: var(--color-primary) var(--color-surface-container-low);
         }
 
         *::-webkit-scrollbar {
@@ -65,23 +115,28 @@
         }
 
         *::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: var(--color-surface-container-low);
         }
 
         *::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #667eea, #764ba2);
+            background: var(--color-primary);
             border-radius: 10px;
         }
 
         *::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #764ba2, #667eea);
+            background: var(--color-primary-container);
         }
 
         body {
             margin: 0;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             overflow-x: hidden;
-            background: #f8fafc;
+            background: var(--color-background);
+            color: var(--color-on-surface);
+        }
+
+        [dir="rtl"] body {
+            line-height: 1.75;
         }
 
         /* Sidebar */
@@ -94,120 +149,217 @@
             background: var(--sidebar-bg);
             color: var(--sidebar-text);
             overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
             z-index: 1040;
-            transition: transform .3s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+            transition: transform .3s cubic-bezier(0.4, 0, 0.2, 1), width .25s ease, box-shadow .25s ease;
+            will-change: transform, width;
+            border-inline-end: 1px solid var(--color-outline-variant);
+            box-shadow: var(--shadow-1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .sidebar nav > .nav-sections {
+            flex: 1;
+        }
+
+        .sidebar .sidebar-footer {
+            padding: 10px 12px 16px;
+            border-top: 1px solid var(--color-outline-variant);
+            margin-top: auto;
+        }
+
+        .sidebar .sidebar-footer button.text-danger:hover {
+            background: var(--color-error-container) !important;
+            color: var(--color-on-error-container) !important;
         }
 
         [dir="rtl"] .sidebar {
             left: auto;
             right: 0;
-            box-shadow: -4px 0 20px rgba(0,0,0,0.1);
         }
 
         .sidebar .brand {
-            text-align: center;
-            padding: 30px 0 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 24px 20px 16px;
+            border-bottom: 1px solid var(--color-outline-variant);
         }
 
-        .sidebar .brand img {
-            width: 100px;
-            height: 100px;
-            border-radius: 10%;
+        .sidebar .brand-inner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar .brand img,
+        .brand-logo-fallback {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
             object-fit: cover;
-            border: 3px solid rgba(255,255,255,0.2);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease;
+            box-shadow: var(--shadow-1);
         }
 
-        .sidebar .brand img:hover {
-            transform: scale(1.05);
+        .brand-logo-fallback {
+            flex-shrink: 0;
+            background: var(--color-primary);
+            color: var(--color-on-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
 
-        .sidebar nav ul {
-            list-style: none;
-            padding: 10px 0;
+        .sidebar .brand-title {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--color-primary);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .sidebar .brand-subtitle {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--color-on-surface-variant);
             margin: 0;
         }
 
+        .nav-sections {
+            padding: 10px 12px;
+        }
+
         .sidebar nav a,
-        .sidebar nav button {
+        .sidebar .sidebar-footer button {
             display: flex;
             align-items: center;
-            padding: 14px 24px;
+            gap: 12px;
+            padding: 10px 14px;
+            margin: 3px 0;
             color: var(--sidebar-text);
             text-decoration: none;
-            transition: all .3s ease;
-            border-radius: 0;
+            transition: all .2s ease;
+            border-radius: var(--radius-input);
             position: relative;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
+            line-height: 1.35;
         }
 
-        .sidebar nav a::before,
-        .sidebar nav button::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: #fff;
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
+        .sidebar nav a:hover {
+            background: var(--color-surface-container-high);
         }
 
-        [dir="rtl"] .sidebar nav a::before,
-        [dir="rtl"] .sidebar nav button::before {
-            left: auto;
-            right: 0;
+        .sidebar nav a.active {
+            background: var(--color-primary);
+            color: var(--color-on-primary);
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(53, 37, 205, 0.25);
         }
 
-        .sidebar nav a:hover,
-        .sidebar nav a.active,
-        .sidebar nav button:hover {
-            background: var(--sidebar-hover);
-            padding-left: 28px;
-        }
-
-        [dir="rtl"] .sidebar nav a:hover,
-        [dir="rtl"] .sidebar nav a.active {
-            padding-left: 24px;
-            padding-right: 28px;
-        }
-
-        .sidebar nav a:hover::before,
-        .sidebar nav a.active::before {
-            transform: scaleY(1);
+        .sidebar nav a.active:hover {
+            background: var(--color-primary);
         }
 
         .sidebar nav i {
-            width: 24px;
-            margin-right: 12px;
-            font-size: 1.1rem;
+            width: 20px;
+            font-size: 1rem;
             text-align: center;
+            color: inherit;
         }
 
         [dir="rtl"] .sidebar nav i {
-            margin-right: 0;
-            margin-left: 12px;
+            margin: 0;
         }
 
-        /* Menu Section Titles */
-        .menu-section-title {
-            padding: 20px 24px 10px;
-            font-size: 0.75rem;
-            font-weight: 600;
+        /* Collapsible section headers */
+        .nav-section + .nav-section {
+            margin-top: 6px;
+        }
+
+        .nav-section-toggle {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 10px;
+            padding: 10px 14px 10px 12px;
+            margin: 0;
+            border: none;
+            background: transparent;
+            color: var(--color-outline);
+            font-size: 0.72rem;
+            font-weight: 700;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.5);
-            letter-spacing: 1px;
-            margin-top: 10px;
+            letter-spacing: 0.06em;
+            border-radius: var(--radius-input);
+            cursor: pointer;
+            transition: background .2s ease, color .2s ease;
         }
 
-        .menu-section-title:first-of-type {
-            margin-top: 0;
+        [dir="rtl"] .nav-section-toggle {
+            padding: 10px 12px 10px 14px;
+        }
+
+        .nav-section-toggle:hover {
+            background: var(--color-surface-container-high);
+            color: var(--color-on-surface-variant);
+        }
+
+        .nav-section-toggle i:first-child {
+            width: 18px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .nav-section-chevron {
+            width: auto;
+            font-size: 0.68rem !important;
+            margin-inline-start: auto;
+            color: var(--color-outline);
+            transition: transform .25s ease;
+        }
+
+        .nav-section.collapsed .nav-section-chevron {
+            transform: rotate(-90deg);
+        }
+
+        [dir="rtl"] .nav-section.collapsed .nav-section-chevron {
+            transform: rotate(90deg);
+        }
+
+        .nav-section-body {
+            display: grid;
+            grid-template-rows: 1fr;
+            transition: grid-template-rows .25s ease;
+        }
+
+        .nav-section.collapsed .nav-section-body {
+            grid-template-rows: 0fr;
+        }
+
+        .nav-section-body > .nav-section-list {
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .nav-section-list {
+            list-style: none;
+            margin: 0;
+            padding: 2px 0 10px;
         }
 
         /* Mobile Header */
@@ -217,13 +369,14 @@
             top: 0;
             inset-inline: 0;
             height: var(--mobile-header-height);
-            background: var(--sidebar-bg);
-            color: white;
+            background: var(--color-surface-container-lowest);
+            color: var(--color-on-surface);
             padding: 0 15px;
             align-items: center;
             justify-content: space-between;
             z-index: 1050;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--color-outline-variant);
+            box-shadow: var(--shadow-1);
         }
 
         .btn-menu {
@@ -232,12 +385,191 @@
             color: inherit;
             font-size: 1.4rem;
             padding: 8px 12px;
-            border-radius: 8px;
-            transition: background 0.3s ease;
+            border-radius: var(--radius-input);
+            transition: background 0.2s ease;
         }
 
         .btn-menu:hover {
-            background: rgba(255,255,255,0.1);
+            background: var(--color-surface-container-high);
+        }
+
+        /* Top Bar */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            height: 64px;
+            padding: 0 24px;
+            background: rgba(247, 249, 251, 0.85);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--color-outline-variant);
+        }
+
+        .topbar-icon-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: var(--color-on-surface-variant);
+            background: transparent;
+            transition: background 0.2s ease, color 0.2s ease;
+            font-size: 1rem;
+            position: relative;
+        }
+
+        .topbar-icon-btn:hover {
+            background: var(--color-surface-container-high);
+            color: var(--color-primary);
+        }
+
+        .lang-switch-btn {
+            width: auto;
+            min-width: 40px;
+            border-radius: var(--radius-btn);
+            padding: 0 10px;
+        }
+
+        .lang-switch-btn .lang-code {
+            font-weight: 700;
+            font-size: 0.78rem;
+            letter-spacing: 0.03em;
+        }
+
+        .topbar .user-menu-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            background: transparent;
+            padding: 6px 10px 6px 6px;
+            border-radius: 999px;
+            transition: background 0.2s ease;
+        }
+
+        [dir="rtl"] .topbar .user-menu-toggle {
+            padding: 6px 6px 6px 10px;
+        }
+
+        .topbar .user-menu-toggle:hover {
+            background: var(--color-surface-container-high);
+        }
+
+        .topbar .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--color-primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .topbar .user-name {
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--color-on-surface);
+            line-height: 1.2;
+        }
+
+        .topbar .user-role {
+            font-size: 0.72rem;
+            color: var(--color-on-surface-variant);
+        }
+
+        .topbar .user-menu-toggle .fa-chevron-down {
+            font-size: 0.7rem;
+            color: var(--color-on-surface-variant);
+        }
+
+        .topbar .dropdown-menu {
+            border: none;
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-2);
+            padding: 8px;
+            min-width: 220px;
+        }
+
+        .topbar .dropdown-menu .dropdown-header {
+            font-weight: 700;
+            color: var(--color-on-surface);
+            font-size: 0.85rem;
+            padding: 6px 10px 2px;
+        }
+
+        .topbar .dropdown-menu .dropdown-item-text {
+            color: var(--color-on-surface-variant);
+            font-size: 0.75rem;
+            padding: 0 10px 8px;
+        }
+
+        .topbar .dropdown-menu .dropdown-item {
+            border-radius: var(--radius-input);
+            padding: 8px 10px;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .topbar .dropdown-menu .dropdown-item:hover {
+            background: var(--color-surface-container-high);
+        }
+
+        .topbar .dropdown-menu .dropdown-item.text-danger:hover {
+            background: var(--color-error-container);
+            color: var(--color-on-error-container) !important;
+        }
+
+        .notifications-menu {
+            min-width: 320px;
+            max-width: 360px;
+            padding: 8px;
+        }
+
+        .notification-item {
+            padding: 10px 10px;
+            border-radius: var(--radius-input);
+            transition: background 0.2s ease;
+        }
+
+        .notification-item:hover {
+            background: var(--color-surface-container-high);
+        }
+
+        .notification-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--color-on-surface);
+        }
+
+        .notification-message {
+            font-size: 0.78rem;
+            color: var(--color-on-surface-variant);
+            margin-top: 2px;
+            white-space: normal;
+        }
+
+        .notification-time {
+            font-size: 0.7rem;
+            color: var(--color-outline);
+            margin-top: 4px;
+        }
+
+        @media (max-width: 991px) {
+            .topbar {
+                top: var(--mobile-header-height);
+            }
         }
 
         /* Main Content */
@@ -245,7 +577,7 @@
             margin-left: var(--sidebar-width);
             min-height: 100vh;
             transition: margin .3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+            background: var(--color-background);
             will-change: margin;
         }
 
@@ -254,32 +586,144 @@
             margin-right: var(--sidebar-width);
         }
 
+        /* Collapsed sidebar that expands on hover (desktop only) */
+        @media (min-width: 992px) {
+            :root {
+                --sidebar-collapsed-width: 80px;
+            }
+
+            .sidebar {
+                width: var(--sidebar-collapsed-width);
+            }
+
+            .sidebar:hover {
+                width: var(--sidebar-width);
+                box-shadow: var(--shadow-2);
+            }
+
+            .content-wrapper {
+                margin-left: var(--sidebar-collapsed-width);
+            }
+
+            [dir="rtl"] .content-wrapper {
+                margin-left: 0;
+                margin-right: var(--sidebar-collapsed-width);
+            }
+
+            .sidebar .brand {
+                padding: 20px 8px;
+                display: flex;
+                justify-content: center;
+                transition: padding .25s ease;
+            }
+
+            .sidebar:hover .brand {
+                padding: 24px 20px 16px;
+                justify-content: flex-start;
+            }
+
+            .sidebar .brand-inner {
+                overflow: hidden;
+            }
+
+            .sidebar .brand img,
+            .brand-logo-fallback {
+                width: 36px;
+                height: 36px;
+                flex-shrink: 0;
+                transition: width .25s ease, height .25s ease;
+            }
+
+            .sidebar:hover .brand img,
+            .sidebar:hover .brand-logo-fallback {
+                width: 44px;
+                height: 44px;
+            }
+
+            .sidebar nav a,
+            .sidebar .sidebar-footer button,
+            .nav-section-toggle {
+                overflow: hidden;
+                white-space: nowrap;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: justify-content .2s ease, padding .2s ease;
+            }
+
+            .sidebar:hover nav a,
+            .sidebar:hover .sidebar-footer button,
+            .sidebar:hover .nav-section-toggle {
+                justify-content: flex-start;
+            }
+
+            .nav-section-chevron {
+                display: none;
+            }
+
+            .sidebar:hover .nav-section-chevron {
+                display: inline-block;
+            }
+
+            .sidebar .nav-label,
+            .sidebar .brand-title,
+            .sidebar .brand-subtitle {
+                display: inline-block;
+                opacity: 0;
+                max-width: 0;
+                overflow: hidden;
+                white-space: nowrap;
+                transition: opacity .15s ease, max-width .2s ease;
+                vertical-align: middle;
+            }
+
+            .sidebar:hover .nav-label,
+            .sidebar:hover .brand-title,
+            .sidebar:hover .brand-subtitle {
+                opacity: 1;
+                max-width: 200px;
+            }
+
+            .sidebar .brand-title,
+            .sidebar .brand-subtitle {
+                display: block;
+                max-width: 0;
+            }
+
+            .sidebar:hover .brand-title,
+            .sidebar:hover .brand-subtitle {
+                max-width: 180px;
+            }
+        }
+
         /* Enhanced Card Styles */
         .card {
             border: none;
-            border-radius: 16px !important;
+            border-radius: var(--radius-card) !important;
             box-shadow: var(--card-shadow);
-            transition: all 0.3s ease;
+            transition: box-shadow 0.2s ease;
             overflow: hidden;
+            background: var(--color-surface-container-lowest);
         }
 
         .card:hover {
             box-shadow: var(--hover-shadow);
-            transform: translateY(-2px);
         }
 
         .card-header {
-            background: var(--primary-gradient);
-            border: none;
+            background: var(--color-surface-container-lowest);
+            border-bottom: 1px solid var(--color-outline-variant);
             padding: 1.25rem 1.5rem;
+            color: var(--color-on-surface);
+            font-weight: 700;
         }
 
         /* Enhanced Table Styles */
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
-            border-radius: 16px;
-            background: white;
+            border-radius: var(--radius-card);
+            background: var(--color-surface-container-lowest);
         }
 
         .table {
@@ -287,27 +731,26 @@
         }
 
         .table thead {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: var(--color-surface-container-low);
         }
 
         .table thead th {
             border: none;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-            color: #475569;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: var(--color-on-surface-variant);
             padding: 1rem 1.25rem;
         }
 
         .table tbody tr {
-            transition: all 0.2s ease;
-            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s ease;
+            border-bottom: 1px solid var(--color-outline-variant);
         }
 
         .table tbody tr:hover {
-            background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%);
-            transform: scale(1.001);
+            background: var(--color-surface-container-low);
         }
 
         .table tbody td {
@@ -317,52 +760,73 @@
 
         /* Enhanced Button Styles */
         .btn {
-            border-radius: 10px;
+            border-radius: var(--radius-btn);
             padding: 0.625rem 1.25rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            transition: all 0.2s ease;
             border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            filter: brightness(0.96);
+        }
+
+        .btn:focus-visible {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--color-primary);
+            color: var(--color-on-primary);
+        }
+
+        .btn-secondary {
+            background: var(--color-surface-container-high);
+            color: var(--color-on-surface);
         }
 
         .btn-success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            background: var(--color-success);
+            color: #fff;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);
+            background: var(--color-error);
+            color: var(--color-on-error);
         }
 
         .btn-warning {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: var(--color-warning-container);
+            color: var(--color-warning);
         }
 
         .btn-info {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: var(--color-secondary-container);
+            color: var(--color-secondary);
         }
 
         /* Enhanced Form Controls */
         .form-control,
         .form-select {
-            border-radius: 10px;
-            border: 2px solid #e2e8f0;
+            border-radius: var(--radius-input);
+            border: 1px solid var(--color-border);
             padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            background: var(--color-surface-container-lowest);
         }
 
         .form-control:focus,
         .form-select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(53, 37, 205, 0.12);
+        }
+
+        label,
+        .form-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-on-surface-variant);
         }
 
         /* Enhanced Alert Styles */
@@ -374,21 +838,21 @@
         }
 
         .alert-success {
-            background: linear-gradient(135deg, #d4f4dd 0%, #c3f0d3 100%);
-            color: #047857;
+            background: var(--color-success-container);
+            color: var(--color-on-success-container);
         }
 
         .alert-danger {
-            background: linear-gradient(135deg, #fde8e8 0%, #fdd8d8 100%);
-            color: #dc2626;
+            background: var(--color-error-container);
+            color: var(--color-on-error-container);
         }
 
         /* Enhanced Badge Styles */
         .badge {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: 500;
-            font-size: 0.85rem;
+            padding: 0.4rem 0.85rem;
+            border-radius: var(--radius-badge);
+            font-weight: 600;
+            font-size: 0.75rem;
         }
 
         /* Zoomable Images */
@@ -396,12 +860,12 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-1);
         }
 
         .zoomable-image:hover {
             transform: scale(1.1);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-2);
         }
 
         @media (max-width: 991px) {
@@ -415,11 +879,7 @@
 
             .sidebar.show {
                 transform: translateX(0);
-                box-shadow: 8px 0 30px rgba(0,0,0,0.3);
-            }
-
-            [dir="rtl"] .sidebar.show {
-                box-shadow: -8px 0 30px rgba(0,0,0,0.3);
+                box-shadow: var(--shadow-2);
             }
 
             .mobile-header {
@@ -460,17 +920,13 @@
             }
 
             .table-responsive::-webkit-scrollbar-track {
-                background: #f1f1f1;
+                background: var(--color-surface-container-low);
                 border-radius: 4px;
             }
 
             .table-responsive::-webkit-scrollbar-thumb {
-                background: linear-gradient(90deg, #667eea, #764ba2);
+                background: var(--color-primary);
                 border-radius: 4px;
-            }
-
-            .table-responsive::-webkit-scrollbar-thumb:hover {
-                background: linear-gradient(90deg, #764ba2, #667eea);
             }
 
             /* Mobile card enhancements */
@@ -497,12 +953,12 @@
         }
 
         .content-wrapper > * {
-            animation: fadeIn 0.5s ease-out;
+            animation: fadeIn 0.4s ease-out;
         }
 
         /* Custom Utility Classes */
         .rounded-4 {
-            border-radius: 16px !important;
+            border-radius: var(--radius-card) !important;
         }
 
         .shadow-soft {
@@ -510,19 +966,152 @@
         }
 
         .hover-lift {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .hover-lift:hover {
-            transform: translateY(-4px);
+            transform: translateY(-3px);
             box-shadow: var(--hover-shadow);
         }
 
         .text-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--color-primary);
+        }
+
+        /* ---- Type scale (DESIGN.md) ---- */
+        .rs-display {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .rs-headline-lg {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+            color: var(--color-on-surface);
+        }
+
+        .rs-headline-md {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--color-on-surface);
+        }
+
+        .rs-title-lg {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.5;
+            color: var(--color-on-surface);
+        }
+
+        .rs-body-lg {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--color-on-surface-variant);
+        }
+
+        .rs-label-md {
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--color-on-surface-variant);
+        }
+
+        @media (max-width: 767px) {
+            .rs-headline-lg {
+                font-size: 28px;
+            }
+        }
+
+        /* ---- Page Header ---- */
+        .rs-page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .rs-page-header .rs-page-header-titles {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .rs-page-header .rs-page-icon {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border-radius: var(--radius-input);
+            background: rgba(53, 37, 205, 0.08);
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .rs-page-header .rs-page-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* ---- KPI / Bento Stat Card ---- */
+        .rs-stat-card {
+            background: var(--color-surface-container-lowest);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-1);
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 116px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rs-stat-card .rs-stat-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .rs-stat-card .rs-stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-input);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .rs-stat-card .rs-stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--color-on-surface);
+            margin-top: 8px;
+        }
+
+        .rs-stat-card.tone-primary .rs-stat-icon { background: rgba(53, 37, 205, 0.1); color: var(--color-primary); }
+        .rs-stat-card.tone-success .rs-stat-icon { background: var(--color-success-container); color: var(--color-on-success-container); }
+        .rs-stat-card.tone-error .rs-stat-icon { background: var(--color-error-container); color: var(--color-on-error-container); }
+        .rs-stat-card.tone-warning .rs-stat-icon { background: var(--color-warning-container); color: var(--color-warning); }
+        .rs-stat-card.tone-secondary .rs-stat-icon { background: var(--color-secondary-container); color: var(--color-secondary); }
+
+        /* ---- Section card body padding per DESIGN.md Bento Cards spec ---- */
+        .card-body {
+            padding: 24px;
         }
     </style>
 
@@ -539,124 +1128,280 @@
     <!-- Sidebar -->
     <aside id="sidebar" class="sidebar">
         <div class="brand">
-            <img src="{{ $faviconUrl }}" alt="App Logo">
+            <div class="brand-inner">
+                <img src="{{ $faviconUrl }}" alt="App Logo"
+                    onerror="this.replaceWith(Object.assign(document.createElement('span'), {className: 'brand-logo-fallback', textContent: '{{ mb_substr(config('app.name', 'Rashi'), 0, 1) }}'}))">
+                <div>
+                    <p class="brand-title">{{ config('app.name', 'Rashi') }}</p>
+                    <p class="brand-subtitle">{{ __('messages.admin_users') }}</p>
+                </div>
+            </div>
         </div>
 
         @auth
             <nav>
-                <ul>
+                <div class="nav-sections">
                     <!-- User Management Section -->
-                    <li class="menu-section-title"><i class="fas fa-users-cog me-2"></i>{{ __('messages.user_management') }}</li>
-                    <li><a href="{{ route('users.index') }}" class="{{ $activeRoutes['users'] ? 'active' : '' }}">
-                            <i class="fas fa-users"></i>{{ __('messages.users') }}</a></li>
-                    <li><a href="{{ route('users.admins') }}"
-                            class="{{ request()->routeIs('users.admins') ? 'active' : '' }}">
-                            <i class="fas fa-user-shield"></i>{{ __('messages.admin_users') }}</a></li>
-                    <li><a href="{{ route('families.index') }}"
-                            class="{{ request()->routeIs('families.*') ? 'active' : '' }}">
-                            <i class="fas fa-house-user"></i>{{ __('messages.families') }}</a></li>
-                    <li><a href="{{ route('user-history.index') }}"
-                            class="{{ request()->routeIs('user-history.*') ? 'active' : '' }}">
-                            <i class="fas fa-history"></i>{{ __('messages.user_history') }}</a></li>
-                    <li><a href="{{ route('users.leaderboard') }}"
-                            class="{{ $activeRoutes['leaderboard'] ? 'active' : '' }}">
-                            <i class="fas fa-trophy"></i>{{ __('messages.leaderboard') }}</a></li>
+                    <div class="nav-section" data-section="user-management">
+                        <button type="button" class="nav-section-toggle" aria-expanded="true">
+                            <i class="fas fa-users-cog"></i>
+                            <span class="nav-label nav-section-label">{{ __('messages.user_management') }}</span>
+                            <i class="fas fa-chevron-down nav-section-chevron"></i>
+                        </button>
+                        <div class="nav-section-body">
+                            <ul class="nav-section-list">
+                                <li><a href="{{ route('users.index') }}" class="{{ $activeRoutes['users'] ? 'active' : '' }}">
+                                        <i class="fas fa-users"></i><span class="nav-label">{{ __('messages.users') }}</span></a></li>
+                                <li><a href="{{ route('users.admins') }}"
+                                        class="{{ request()->routeIs('users.admins') ? 'active' : '' }}">
+                                        <i class="fas fa-user-shield"></i><span class="nav-label">{{ __('messages.admin_users') }}</span></a></li>
+                                <li><a href="{{ route('families.index') }}"
+                                        class="{{ request()->routeIs('families.*') ? 'active' : '' }}">
+                                        <i class="fas fa-house-user"></i><span class="nav-label">{{ __('messages.families') }}</span></a></li>
+                                <li><a href="{{ route('user-history.index') }}"
+                                        class="{{ request()->routeIs('user-history.*') ? 'active' : '' }}">
+                                        <i class="fas fa-history"></i><span class="nav-label">{{ __('messages.user_history') }}</span></a></li>
+                                <li><a href="{{ route('users.leaderboard') }}"
+                                        class="{{ $activeRoutes['leaderboard'] ? 'active' : '' }}">
+                                        <i class="fas fa-trophy"></i><span class="nav-label">{{ __('messages.leaderboard') }}</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
 
                     <!-- Competition Section -->
-                    <li class="menu-section-title"><i class="fas fa-graduation-cap me-2"></i>{{ __('messages.competitions_section') }}</li>
-                    <li><a href="{{ route('competitions.index') }}"
-                            class="{{ $activeRoutes['competitions'] ? 'active' : '' }}">
-                            <i class="fas fa-flag"></i>{{ __('messages.competitions') }}</a></li>
-                    <li><a href="{{ route('quizzes.index') }}"
-                            class="{{ $activeRoutes['quizzes'] ? 'active' : '' }}">
-                            <i class="fas fa-question-circle"></i>{{ __('messages.quizzes') }}</a></li>
-                    <li><a href="{{ route('questions.index') }}"
-                            class="{{ $activeRoutes['questions'] ? 'active' : '' }}">
-                            <i class="fas fa-edit"></i>{{ __('messages.questions') }}</a></li>
+                    <div class="nav-section" data-section="competitions">
+                        <button type="button" class="nav-section-toggle" aria-expanded="true">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span class="nav-label nav-section-label">{{ __('messages.competitions_section') }}</span>
+                            <i class="fas fa-chevron-down nav-section-chevron"></i>
+                        </button>
+                        <div class="nav-section-body">
+                            <ul class="nav-section-list">
+                                <li><a href="{{ route('competitions.index') }}"
+                                        class="{{ $activeRoutes['competitions'] ? 'active' : '' }}">
+                                        <i class="fas fa-flag"></i><span class="nav-label">{{ __('messages.competitions') }}</span></a></li>
+                                <li><a href="{{ route('quizzes.index') }}"
+                                        class="{{ $activeRoutes['quizzes'] ? 'active' : '' }}">
+                                        <i class="fas fa-question-circle"></i><span class="nav-label">{{ __('messages.quizzes') }}</span></a></li>
+                                <li><a href="{{ route('questions.index') }}"
+                                        class="{{ $activeRoutes['questions'] ? 'active' : '' }}">
+                                        <i class="fas fa-edit"></i><span class="nav-label">{{ __('messages.questions') }}</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
 
                     <!-- Points & Rewards Section -->
-                    <li class="menu-section-title"><i class="fas fa-coins me-2"></i>{{ __('messages.points_rewards') }}</li>
-                    <li><a href="{{ route('bonus-penalties.index') }}"
-                            class="{{ $activeRoutes['bonus-penalties'] ? 'active' : '' }}">
-                            <i class="fas fa-balance-scale"></i>{{ __('messages.bonus-penalties') }}</a></li>
-                    @if(Auth::user()->hasRole('admin'))
-                        <li><a href="{{ route('bonus-penalties.pending') }}"
-                                class="{{ request()->routeIs('bonus-penalties.pending') ? 'active' : '' }}">
-                                <i class="fas fa-clock"></i>{{ __('messages.pending_approvals') }}
-                                @php
-                                    $pendingApprovals = \App\Models\BonusPenalty::where('status', \App\Enums\BonusPenaltyStatus::PENDING_APPROVAL)->count();
-                                @endphp
-                                @if($pendingApprovals > 0)
-                                    <span class="badge bg-danger ms-2">{{ $pendingApprovals }}</span>
+                    <div class="nav-section" data-section="points-rewards">
+                        <button type="button" class="nav-section-toggle" aria-expanded="true">
+                            <i class="fas fa-coins"></i>
+                            <span class="nav-label nav-section-label">{{ __('messages.points_rewards') }}</span>
+                            <i class="fas fa-chevron-down nav-section-chevron"></i>
+                        </button>
+                        <div class="nav-section-body">
+                            <ul class="nav-section-list">
+                                <li><a href="{{ route('bonus-penalties.index') }}"
+                                        class="{{ $activeRoutes['bonus-penalties'] ? 'active' : '' }}">
+                                        <i class="fas fa-balance-scale"></i><span class="nav-label">{{ __('messages.bonus-penalties') }}</span></a></li>
+                                @if(Auth::user()->hasRole('admin'))
+                                    <li><a href="{{ route('bonus-penalties.pending') }}"
+                                            class="{{ request()->routeIs('bonus-penalties.pending') ? 'active' : '' }}">
+                                            <i class="fas fa-clock"></i>
+                                            <span class="nav-label">{{ __('messages.pending_approvals') }}
+                                            @php
+                                                $pendingApprovals = \App\Models\BonusPenalty::where('status', \App\Enums\BonusPenaltyStatus::PENDING_APPROVAL)->count();
+                                            @endphp
+                                            @if($pendingApprovals > 0)
+                                                <span class="badge bg-danger ms-2">{{ $pendingApprovals }}</span>
+                                            @endif
+                                            </span>
+                                    </a></li>
                                 @endif
-                        </a></li>
-                    @endif
-                    @if(Auth::user()->hasRole('admin'))
-                        <li><a href="{{ route('point-transfers.index') }}"
-                                class="{{ request()->routeIs('point-transfers.*') ? 'active' : '' }}">
-                                <i class="fas fa-exchange-alt"></i>{{ __('messages.point_transfers') }}</a></li>
-                    @endif
-                    <li><a href="{{ route('rewards.index') }}"
-                            class="{{ $activeRoutes['rewards'] ? 'active' : '' }}">
-                            <i class="fas fa-gift"></i>{{ __('messages.rewards') }}</a></li>
-                    <li><a href="{{ route('orders.index') }}"
-                            class="{{ $activeRoutes['orders'] ? 'active' : '' }}">
-                            <i class="fas fa-shopping-cart"></i>{{ __('messages.orders') }}
-                            @php
-                                $pendingOrdersCount = \App\Models\Order::where('status', \App\Enums\OrderStatus::PENDING)->count();
-                            @endphp
-                            @if($pendingOrdersCount > 0)
-                                <span class="badge bg-warning text-dark ms-2">{{ $pendingOrdersCount }}</span>
-                            @endif
-                    </a></li>
+                                @if(Auth::user()->hasRole('admin'))
+                                    <li><a href="{{ route('point-transfers.index') }}"
+                                            class="{{ request()->routeIs('point-transfers.*') ? 'active' : '' }}">
+                                            <i class="fas fa-exchange-alt"></i><span class="nav-label">{{ __('messages.point_transfers') }}</span></a></li>
+                                @endif
+                                <li><a href="{{ route('rewards.index') }}"
+                                        class="{{ $activeRoutes['rewards'] ? 'active' : '' }}">
+                                        <i class="fas fa-gift"></i><span class="nav-label">{{ __('messages.rewards') }}</span></a></li>
+                                <li><a href="{{ route('orders.index') }}"
+                                        class="{{ $activeRoutes['orders'] ? 'active' : '' }}">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        <span class="nav-label">{{ __('messages.orders') }}
+                                        @php
+                                            $pendingOrdersCount = \App\Models\Order::where('status', \App\Enums\OrderStatus::PENDING)->count();
+                                        @endphp
+                                        @if($pendingOrdersCount > 0)
+                                            <span class="badge bg-warning text-dark ms-2">{{ $pendingOrdersCount }}</span>
+                                        @endif
+                                        </span>
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
 
                     <!-- System Section -->
-                    <li class="menu-section-title"><i class="fas fa-cogs me-2"></i>{{ __('messages.system_settings') }}</li>
-                    <li><a href="{{ route('settings.index') }}"
-                            class="{{ $activeRoutes['settings'] ? 'active' : '' }}">
-                            <i class="fas fa-cog"></i>{{ __('messages.settings') }}</a></li>
-                    <li><a href="{{ route('groups.index') }}"
-                            class="{{ $activeRoutes['groups'] ? 'active' : '' }}">
-                            <i class="fas fa-layer-group"></i>{{ __('messages.groups') }}</a></li>
-                    <li><a href="{{ route('groups.competitions') }}"
-                            class="{{ request()->routeIs('groups.competitions') ? 'active' : '' }}">
-                            <i class="fas fa-trophy"></i>{{ __('messages.groups_competitions') }}</a></li>
-                    <li><a href="{{ route('notifications.index') }}"
-                            class="{{ $activeRoutes['notifications'] ? 'active' : '' }}">
-                            <i class="fas fa-bell"></i>{{ __('messages.notifications') }}</a></li>
+                    <div class="nav-section" data-section="system-settings">
+                        <button type="button" class="nav-section-toggle" aria-expanded="true">
+                            <i class="fas fa-cogs"></i>
+                            <span class="nav-label nav-section-label">{{ __('messages.system_settings') }}</span>
+                            <i class="fas fa-chevron-down nav-section-chevron"></i>
+                        </button>
+                        <div class="nav-section-body">
+                            <ul class="nav-section-list">
+                                <li><a href="{{ route('settings.index') }}"
+                                        class="{{ $activeRoutes['settings'] ? 'active' : '' }}">
+                                        <i class="fas fa-cog"></i><span class="nav-label">{{ __('messages.settings') }}</span></a></li>
+                                <li><a href="{{ route('groups.index') }}"
+                                        class="{{ $activeRoutes['groups'] ? 'active' : '' }}">
+                                        <i class="fas fa-layer-group"></i><span class="nav-label">{{ __('messages.groups') }}</span></a></li>
+                                <li><a href="{{ route('groups.competitions') }}"
+                                        class="{{ request()->routeIs('groups.competitions*') ? 'active' : '' }}">
+                                        <i class="fas fa-project-diagram"></i><span class="nav-label">{{ __('messages.groups_competitions') }}</span></a></li>
+                                <li><a href="{{ route('notifications.index') }}"
+                                        class="{{ $activeRoutes['notifications'] ? 'active' : '' }}">
+                                        <i class="fas fa-bell"></i><span class="nav-label">{{ __('messages.notifications') }}</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
 
                     <!-- Content Management Section -->
-                    <li class="menu-section-title"><i class="fas fa-folder me-2"></i>{{ __('messages.content_management') }}</li>
-                    <li><a href="{{ route('about_us.show') }}"
-                            class="{{ $activeRoutes['about_us'] ? 'active' : '' }}">
-                            <i class="fas fa-info-circle"></i>{{ __('messages.about_us') }}</a></li>
-                    <li><a href="{{ route('terms.show') }}"
-                            class="{{ $activeRoutes['terms'] ? 'active' : '' }}">
-                            <i class="fas fa-file-contract"></i>{{ __('messages.terms') }}</a></li>
-                    <li><a href="{{ route('social-media.index') }}"
-                            class="{{ $activeRoutes['social-media'] ? 'active' : '' }}">
-                            <i class="fas fa-share-alt"></i>{{ __('messages.social_media') }}</a></li>
-                    <li><a href="{{ route('info-videos.index') }}"
-                            class="{{ $activeRoutes['info-videos'] ? 'active' : '' }}">
-                            <i class="fas fa-video"></i>{{ __('messages.info_videos') }}</a></li>
+                    <div class="nav-section" data-section="content-management">
+                        <button type="button" class="nav-section-toggle" aria-expanded="true">
+                            <i class="fas fa-folder"></i>
+                            <span class="nav-label nav-section-label">{{ __('messages.content_management') }}</span>
+                            <i class="fas fa-chevron-down nav-section-chevron"></i>
+                        </button>
+                        <div class="nav-section-body">
+                            <ul class="nav-section-list">
+                                <li><a href="{{ route('about_us.show') }}"
+                                        class="{{ $activeRoutes['about_us'] ? 'active' : '' }}">
+                                        <i class="fas fa-info-circle"></i><span class="nav-label">{{ __('messages.about_us') }}</span></a></li>
+                                <li><a href="{{ route('terms.show') }}"
+                                        class="{{ $activeRoutes['terms'] ? 'active' : '' }}">
+                                        <i class="fas fa-file-contract"></i><span class="nav-label">{{ __('messages.terms') }}</span></a></li>
+                                <li><a href="{{ route('social-media.index') }}"
+                                        class="{{ $activeRoutes['social-media'] ? 'active' : '' }}">
+                                        <i class="fas fa-share-alt"></i><span class="nav-label">{{ __('messages.social_media') }}</span></a></li>
+                                <li><a href="{{ route('info-videos.index') }}"
+                                        class="{{ $activeRoutes['info-videos'] ? 'active' : '' }}">
+                                        <i class="fas fa-video"></i><span class="nav-label">{{ __('messages.info_videos') }}</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-                    <li class="mt-3 border-top border-light pt-2">
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button type="submit"
-                                class="w-100 d-flex align-items-center border-0 bg-transparent text-white py-2 px-3">
-                                <i class="fas fa-sign-out-alt me-2"></i>
-                                {{ __('messages.logout') }}
-                            </button>
-                        </form>
-                    </li>
-                </ul>
+                <div class="sidebar-footer">
+                    <ul class="list-unstyled m-0">
+                        <li>
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-100 text-danger">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    {{ __('messages.logout') }}
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </nav>
         @endauth
     </aside>
 
     <!-- Main Content -->
     <main class="content-wrapper">
+        @auth
+            @php
+                $recentNotifications = \App\Models\Notification::latest()->take(5)->get();
+            @endphp
+            <div class="topbar">
+                <div class="dropdown">
+                    <button class="topbar-icon-btn lang-switch-btn" type="button" id="langSwitchToggle" data-bs-toggle="dropdown"
+                        aria-expanded="false" title="{{ __('messages.language') }}">
+                        <span class="lang-code">{{ strtoupper(app()->getLocale()) }}</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langSwitchToggle">
+                        <li>
+                            <a class="dropdown-item {{ app()->isLocale('en') ? 'active' : '' }}" href="{{ route('lang.switch', 'en') }}">
+                                <span class="lang-code me-2">EN</span> English
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {{ app()->isLocale('ar') ? 'active' : '' }}" href="{{ route('lang.switch', 'ar') }}">
+                                <span class="lang-code me-2">AR</span> العربية
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <button class="topbar-icon-btn" type="button" id="notificationsToggle" data-bs-toggle="dropdown"
+                        aria-expanded="false" title="{{ __('messages.notifications') }}">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end notifications-menu" aria-labelledby="notificationsToggle">
+                        <li class="dropdown-header">{{ __('messages.notifications') }}</li>
+                        @forelse ($recentNotifications as $notification)
+                            <li>
+                                <div class="notification-item">
+                                    <div class="notification-title">{{ $notification->title }}</div>
+                                    <div class="notification-message">{{ Str::limit($notification->message, 80) }}</div>
+                                    <div class="notification-time">{{ $notification->created_at->diffForHumans() }}</div>
+                                </div>
+                            </li>
+                        @empty
+                            <li class="dropdown-item-text">{{ __('messages.no_notifications_found') }}</li>
+                        @endforelse
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-center justify-content-center" href="{{ route('notifications.index') }}">
+                                {{ __('messages.view_all') }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <button class="user-menu-toggle" type="button" id="userMenuToggle" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        @if (auth()->user()->hasMedia('profile_images'))
+                            <img src="{{ auth()->user()->getFirstMediaUrl('profile_images') }}"
+                                alt="{{ auth()->user()->name }}" class="user-avatar">
+                        @else
+                            <span class="user-avatar">{{ strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
+                        @endif
+                        <span class="d-none d-sm-flex flex-column align-items-start">
+                            <span class="user-name">{{ auth()->user()->name }}</span>
+                            <span class="user-role">{{ __('messages.admin_users') }}</span>
+                        </span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuToggle">
+                        <li class="dropdown-header">{{ auth()->user()->name }}</li>
+                        <li class="dropdown-item-text">{{ auth()->user()->email }}</li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('users.show', auth()->id()) }}">
+                                <i class="fas fa-user"></i> {{ __('messages.view_profile') }}
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="fas fa-sign-out-alt"></i> {{ __('messages.logout') }}
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        @endauth
         <div class="container-fluid px-3 px-md-4 py-4">
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show shadow-soft">
@@ -728,6 +1473,29 @@
             toggle?.addEventListener('click', () => sidebar.classList.toggle('show'));
             back?.addEventListener('click', () => window.history.back());
 
+            // Collapsible sidebar sections — state persisted per-section, but the
+            // section containing the current page is always forced open so users
+            // never lose track of where they are.
+            document.querySelectorAll('.nav-section').forEach((section) => {
+                const id = section.dataset.section;
+                const toggleBtn = section.querySelector('.nav-section-toggle');
+                const storageKey = `sidebarSectionCollapsed:${id}`;
+                const hasActiveLink = !!section.querySelector('.nav-section-list a.active');
+
+                const setCollapsed = (collapsed) => {
+                    section.classList.toggle('collapsed', collapsed);
+                    toggleBtn?.setAttribute('aria-expanded', String(!collapsed));
+                };
+
+                setCollapsed(!hasActiveLink && localStorage.getItem(storageKey) === '1');
+
+                toggleBtn?.addEventListener('click', () => {
+                    const collapsed = !section.classList.contains('collapsed');
+                    setCollapsed(collapsed);
+                    localStorage.setItem(storageKey, collapsed ? '1' : '0');
+                });
+            });
+
             document.addEventListener('click', e => {
                 if (window.innerWidth < 992 && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
                     sidebar.classList.remove('show');
@@ -762,9 +1530,209 @@
         });
     </script>
 
+    <!-- PWA: service worker registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('{{ asset('sw.js') }}').catch((err) => {
+                    console.warn('Service worker registration failed:', err);
+                });
+            });
+        }
+    </script>
+
+    @auth
+        @if (session('show_install_prompt'))
+            <!-- PWA Install Prompt -->
+            <div id="pwaInstallPrompt" class="pwa-install-prompt" role="dialog" aria-live="polite">
+                <div class="pwa-install-icon">
+                    <img src="{{ $faviconUrl }}" alt="{{ config('app.name') }}"
+                        onerror="this.style.display='none'">
+                </div>
+                <div class="pwa-install-body">
+                    <p class="pwa-install-title" id="pwaInstallTitle">{{ __('messages.install_app_title', ['app_name' => config('app.name')]) }}</p>
+                    <p class="pwa-install-text" id="pwaInstallText">{{ __('messages.install_app_text') }}</p>
+                    <p class="pwa-install-ios-steps" id="pwaInstallIosSteps" style="display:none;">
+                        <span>{{ __('messages.install_ios_step_share') }} <i class="fa-solid fa-arrow-up-from-bracket"></i></span>
+                        <span>{{ __('messages.install_ios_step_add') }} <i class="fa-solid fa-square-plus"></i></span>
+                    </p>
+                </div>
+                <div class="pwa-install-actions">
+                    <button type="button" id="pwaInstallBtn" class="btn btn-primary btn-sm">{{ __('messages.install') }}</button>
+                    <button type="button" id="pwaDismissBtn" class="btn-close" aria-label="{{ __('messages.close') }}"></button>
+                </div>
+            </div>
+
+            <style>
+                .pwa-install-prompt {
+                    position: fixed;
+                    bottom: 24px;
+                    inset-inline-end: 24px;
+                    max-width: 340px;
+                    background: var(--color-surface-container-lowest, #fff);
+                    border-radius: var(--radius-card, 16px);
+                    box-shadow: var(--shadow-2, 0 10px 15px -3px rgba(15,23,42,.15));
+                    padding: 16px;
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 12px;
+                    z-index: 2000;
+                    opacity: 0;
+                    transform: translateY(16px);
+                    transition: opacity .25s ease, transform .25s ease;
+                }
+
+                .pwa-install-prompt.show {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+
+                .pwa-install-icon img {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 10px;
+                    object-fit: cover;
+                    flex-shrink: 0;
+                }
+
+                .pwa-install-body {
+                    flex: 1;
+                    min-width: 0;
+                }
+
+                .pwa-install-title {
+                    font-weight: 700;
+                    font-size: .9rem;
+                    margin: 0 0 4px;
+                    color: var(--color-on-surface, #191c1e);
+                }
+
+                .pwa-install-text {
+                    font-size: .78rem;
+                    margin: 0;
+                    color: var(--color-on-surface-variant, #464555);
+                }
+
+                .pwa-install-ios-steps {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    margin: 8px 0 0;
+                    font-size: .78rem;
+                    color: var(--color-on-surface-variant, #464555);
+                }
+
+                .pwa-install-ios-steps i {
+                    color: var(--color-primary, #3525cd);
+                    margin-inline-start: 4px;
+                }
+
+                .pwa-install-actions {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                    gap: 8px;
+                    flex-shrink: 0;
+                }
+
+                @media (max-width: 480px) {
+                    .pwa-install-prompt {
+                        inset-inline: 16px;
+                        max-width: none;
+                    }
+                }
+            </style>
+
+            <script>
+                (() => {
+                    let deferredPrompt = null;
+                    const prompt = document.getElementById('pwaInstallPrompt');
+                    const installBtn = document.getElementById('pwaInstallBtn');
+                    const dismissBtn = document.getElementById('pwaDismissBtn');
+                    const titleEl = document.getElementById('pwaInstallTitle');
+                    const textEl = document.getElementById('pwaInstallText');
+                    const iosStepsEl = document.getElementById('pwaInstallIosSteps');
+                    let hideTimer = null;
+
+                    const hidePrompt = () => {
+                        prompt.classList.remove('show');
+                        setTimeout(() => prompt.remove(), 250);
+                    };
+
+                    const clearHideTimer = () => {
+                        if (hideTimer) {
+                            clearTimeout(hideTimer);
+                            hideTimer = null;
+                        }
+                    };
+
+                    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                        || window.navigator.standalone === true;
+
+                    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent)
+                        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+                    if (isStandalone) {
+                        // Already installed/running as an app — nothing to prompt.
+                        return;
+                    }
+
+                    if (isIos) {
+                        // iOS Safari never fires beforeinstallprompt; show manual
+                        // "Share > Add to Home Screen" instructions instead.
+                        titleEl.textContent = @json(__('messages.install_app_title', ['app_name' => config('app.name')]));
+                        textEl.style.display = 'none';
+                        iosStepsEl.style.display = 'flex';
+                        installBtn.style.display = 'none';
+
+                        prompt.classList.add('show');
+                        hideTimer = setTimeout(hidePrompt, 5000);
+
+                        dismissBtn?.addEventListener('click', () => {
+                            clearHideTimer();
+                            hidePrompt();
+                        });
+
+                        return;
+                    }
+
+                    window.addEventListener('beforeinstallprompt', (e) => {
+                        e.preventDefault();
+                        deferredPrompt = e;
+                        prompt.classList.add('show');
+
+                        hideTimer = setTimeout(hidePrompt, 5000);
+                    });
+
+                    installBtn?.addEventListener('click', async () => {
+                        clearHideTimer();
+                        if (!deferredPrompt) {
+                            hidePrompt();
+                            return;
+                        }
+                        deferredPrompt.prompt();
+                        await deferredPrompt.userChoice;
+                        deferredPrompt = null;
+                        hidePrompt();
+                    });
+
+                    dismissBtn?.addEventListener('click', () => {
+                        clearHideTimer();
+                        hidePrompt();
+                    });
+
+                    window.addEventListener('appinstalled', () => {
+                        clearHideTimer();
+                        hidePrompt();
+                    });
+                })();
+            </script>
+        @endif
+    @endauth
+
     @stack('scripts')
 
-    <!-- Pusher & Laravel Echo for Real-time Updates -->
+    <!-- Pusher-protocol client & Laravel Echo, connected to Laravel Reverb -->
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.1/dist/echo.iife.js"></script>
     <script>
@@ -774,23 +1742,20 @@
             Pusher.logToConsole = {{ config('app.debug') ? 'true' : 'false' }};
 
             window.Echo = new Echo({
-                broadcaster: 'pusher',
-                key: '{{ config('broadcasting.connections.pusher.key') }}',
-                wsHost: '{{ config('broadcasting.connections.pusher.options.host') }}',
-                wsPort: {{ config('broadcasting.connections.pusher.options.port') }},
-                wssPort: {{ config('broadcasting.connections.pusher.options.port') }},
-                forceTLS: false,
-                encrypted: false,
-                disableStats: true,
+                broadcaster: 'reverb',
+                key: '{{ config('broadcasting.connections.reverb.key') }}',
+                wsHost: '{{ config('broadcasting.connections.reverb.options.host') }}',
+                wsPort: {{ config('broadcasting.connections.reverb.options.port') }},
+                wssPort: {{ config('broadcasting.connections.reverb.options.port') }},
+                forceTLS: {{ config('broadcasting.connections.reverb.options.useTLS') ? 'true' : 'false' }},
                 enabledTransports: ['ws', 'wss'],
-                cluster: 'mt1', // Required by Pusher but not used by Soketi
             });
 
             console.log('🔌 WebSocket Config:', {
-                key: '{{ config('broadcasting.connections.pusher.key') }}',
-                host: '{{ config('broadcasting.connections.pusher.options.host') }}',
-                port: {{ config('broadcasting.connections.pusher.options.port') }},
-                scheme: '{{ config('broadcasting.connections.pusher.options.scheme') }}'
+                key: '{{ config('broadcasting.connections.reverb.key') }}',
+                host: '{{ config('broadcasting.connections.reverb.options.host') }}',
+                port: {{ config('broadcasting.connections.reverb.options.port') }},
+                scheme: '{{ config('broadcasting.connections.reverb.options.scheme') }}'
             });
 
             // Debug connection events - wrapped in try-catch

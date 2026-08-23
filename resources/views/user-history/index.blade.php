@@ -2,67 +2,79 @@
 
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="fw-bold text-primary">{{ __('messages.user_history') }}</h1>
-        </div>
+        <x-page-header icon="fa-history" :title="__('messages.user_history')" />
 
         <!-- Search Form -->
-        <form method="GET" action="{{ route('user-history.index') }}" class="row g-3 mb-4">
-            <div class="col-md-8">
-                <label for="search" class="form-label fw-semibold">{{ __('messages.search') }}</label>
-                <input type="text" name="search" id="search" class="form-control"
-                    placeholder="{{ __('messages.search_by_name_or_code') }}"
-                    value="{{ $search ?? '' }}" required>
-            </div>
+        <div class="card rounded-4 shadow-soft border-0 mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ route('user-history.index') }}" class="row g-3">
+                    <div class="col-md-8">
+                        <label for="search" class="rs-label-md form-label">{{ __('messages.search') }}</label>
+                        <input type="text" name="search" id="search" class="form-control"
+                            placeholder="{{ __('messages.search_by_name_or_code') }}"
+                            value="{{ $search ?? '' }}" required>
+                    </div>
 
-            <div class="col-md-4 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary shadow-sm">
-                    <i class="fa fa-search me-1"></i>{{ __('messages.search') }}
-                </button>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-search me-1"></i>{{ __('messages.search') }}
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
 
         @if($search && $user)
             <!-- User Info Card -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
+            <div class="card rounded-4 shadow-soft border-0 mb-4">
+                <div class="card-header">
                     <div class="d-flex align-items-center">
                         <img src="{{ $user->getFirstMediaUrl('profile_images') ?: asset('images/default.png') }}"
                              alt="{{ $user->name }}"
                              class="rounded-circle me-3"
-                             style="width: 50px; height: 50px; object-fit: cover; border: 2px solid white;">
+                             style="width: 50px; height: 50px; object-fit: cover; border: 2px solid var(--color-outline-variant);">
                         <div>
-                            <h5 class="mb-0">{{ $user->name }}</h5>
-                            <small>{{ $user->membership_code }}</small>
+                            <h5 class="rs-title-lg mb-0">{{ $user->name }}</h5>
+                            <small class="text-muted">{{ $user->membership_code }}</small>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="text-center p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.current_points') }}</h6>
-                                <h3 class="text-primary mb-0">{{ $user->points }}</h3>
+                    <div class="row g-3">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="rs-stat-card tone-primary">
+                                <div class="rs-stat-top">
+                                    <span class="rs-label-md">{{ __('messages.current_points') }}</span>
+                                    <div class="rs-stat-icon"><i class="fas fa-coins"></i></div>
+                                </div>
+                                <div class="rs-stat-value">{{ $user->points }}</div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="text-center p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.total_credit') }}</h6>
-                                <h3 class="text-success mb-0">+{{ $totalCredit }}</h3>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="rs-stat-card tone-success">
+                                <div class="rs-stat-top">
+                                    <span class="rs-label-md">{{ __('messages.total_credit') }}</span>
+                                    <div class="rs-stat-icon"><i class="fas fa-arrow-up"></i></div>
+                                </div>
+                                <div class="rs-stat-value">+{{ $totalCredit }}</div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="text-center p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.total_debit') }}</h6>
-                                <h3 class="text-danger mb-0">-{{ $totalDebit }}</h3>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="rs-stat-card tone-error">
+                                <div class="rs-stat-top">
+                                    <span class="rs-label-md">{{ __('messages.total_debit') }}</span>
+                                    <div class="rs-stat-icon"><i class="fas fa-arrow-down"></i></div>
+                                </div>
+                                <div class="rs-stat-value">-{{ $totalDebit }}</div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="text-center p-3 bg-light rounded">
-                                <h6 class="text-muted mb-2">{{ __('messages.net_balance') }}</h6>
-                                <h3 class="mb-0" style="color: {{ ($totalCredit - $totalDebit) >= 0 ? '#10b981' : '#ef4444' }}">
-                                    {{ $totalCredit - $totalDebit }}
-                                </h3>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="rs-stat-card {{ ($totalCredit - $totalDebit) >= 0 ? 'tone-success' : 'tone-error' }}">
+                                <div class="rs-stat-top">
+                                    <span class="rs-label-md">{{ __('messages.net_balance') }}</span>
+                                    <div class="rs-stat-icon"><i class="fas fa-scale-balanced"></i></div>
+                                </div>
+                                <div class="rs-stat-value">{{ $totalCredit - $totalDebit }}</div>
                             </div>
                         </div>
                     </div>
@@ -70,10 +82,10 @@
             </div>
 
             <!-- Point History Table -->
-            <div class="card shadow-sm">
-                <div class="card-header bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <h5 class="mb-0 text-white">
-                        <i class="fas fa-history me-2"></i>{{ __('messages.point_history') }}
+            <div class="card rounded-4 shadow-soft border-0">
+                <div class="card-header">
+                    <h5 class="rs-title-lg mb-0">
+                        <i class="fas fa-history me-2" style="color: var(--color-primary);"></i>{{ __('messages.point_history') }}
                     </h5>
                 </div>
                 <div class="card-body p-0">
@@ -98,7 +110,7 @@
                                         <tr>
                                             <td>{{ $history->created_at->format('Y-m-d H:i') }}</td>
                                             <td>
-                                                <span class="badge {{ in_array($history->type, $credit) ? 'bg-success' : 'bg-danger' }}">
+                                                <span class="badge" style="{{ in_array($history->type, $credit) ? 'background: var(--color-success-container); color: var(--color-on-success-container);' : 'background: var(--color-error-container); color: var(--color-on-error-container);' }}">
                                                     {{ ucfirst($history->type) }}
                                                 </span>
                                             </td>
@@ -135,7 +147,7 @@
                             <div class="card mb-3 border">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <span class="badge {{ $history->type == 'credit' ? 'bg-success' : 'bg-danger' }}">
+                                        <span class="badge" style="{{ $history->type == 'credit' ? 'background: var(--color-success-container); color: var(--color-on-success-container);' : 'background: var(--color-error-container); color: var(--color-on-error-container);' }}">
                                             {{ ucfirst($history->type) }}
                                         </span>
                                         <small class="text-muted">{{ $history->created_at->format('Y-m-d H:i') }}</small>
@@ -168,21 +180,25 @@
                         @empty
                             <div class="text-center text-muted py-4">
                                 <i class="fas fa-inbox fa-3x mb-3"></i>
-                                <p>{{ __('messages.no_history_found') }}</p>
+                                <p class="rs-body-lg">{{ __('messages.no_history_found') }}</p>
                             </div>
                         @endforelse
                     </div>
                 </div>
             </div>
         @elseif($search)
-            <div class="text-center text-muted py-5">
-                <i class="fas fa-user-slash fa-3x mb-3"></i>
-                <p>{{ __('messages.user_not_found') }}</p>
+            <div class="card rounded-4 shadow-soft border-0">
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-user-slash fa-3x mb-3"></i>
+                    <p class="rs-body-lg">{{ __('messages.user_not_found') }}</p>
+                </div>
             </div>
         @else
-            <div class="text-center text-muted py-5">
-                <i class="fas fa-search fa-3x mb-3"></i>
-                <p>{{ __('messages.enter_user_name_or_code') }}</p>
+            <div class="card rounded-4 shadow-soft border-0">
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-search fa-3x mb-3"></i>
+                    <p class="rs-body-lg">{{ __('messages.enter_user_name_or_code') }}</p>
+                </div>
             </div>
         @endif
     </div>

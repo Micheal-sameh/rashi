@@ -3,72 +3,65 @@ services:
     build:
       args:
         user: rashi
-        uid: 1500
+        uid: 1001
       context: ./docker/php
       dockerfile: Dockerfile
     container_name: rashi
     restart: unless-stopped
     working_dir: /var/www/rashi
+    ports:
+      - 127.0.0.1:1601:9000
     volumes:
       - ./:/var/www/rashi
       - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
     networks:
       - rashi
-      - external_db_network
-    depends_on:
-      - db
+      - central_net
 
-  nginx:
-    container_name: reservation-test-nginx
+  queue:
+    build:
+      args:
+        user: rashi
+        uid: 1001
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: rashi-queue
     restart: unless-stopped
-    image: nginx
-    ports:
-      - 1600:80
-    depends_on:
-      - app
+    working_dir: /var/www/rashi
+    command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
     volumes:
       - ./:/var/www/rashi
-      - ./docker/nginx/conf.d/:/etc/nginx/conf.d
+      - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
     networks:
       - rashi
-  db:
-    image: mariadb:10.5
-    container_name: reservation-test-db
-    restart: unless-stopped
-    command: --max_allowed_packet=67108864
-    environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
-    volumes:
-      - mysql-data:/var/lib/mysql
-    ports:
-      - "1601:3306"
-    networks:
-      - rashi
-      - external_db_network
+      - central_net
+    depends_on:
+      - app
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: rashi-db
+  reverb:
+    build:
+      args:
+        user: rashi
+        uid: 1001
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: rashi-reverb
     restart: unless-stopped
-    environment:
-      PMA_HOST: db  # Points to the db service
-      PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      UPLOAD_LIMIT: 256M
+    working_dir: /var/www/rashi
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
     ports:
-      - "1602:80"
+      - 127.0.0.1:6002:8080
+    volumes:
+      - ./:/var/www/rashi
+      - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
     networks:
       - rashi
+      - central_net
+    depends_on:
+      - app
 
 networks:
   rashi:
     driver: bridge
-  external_db_network:
-    external: false
-
-volumes:
-  mysql-data:
-    driver: local
+  central_net:
+    external: true

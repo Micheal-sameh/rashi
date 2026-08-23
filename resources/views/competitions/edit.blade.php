@@ -2,15 +2,11 @@
 
 @section('content')
 <div class="container-fluid px-3 px-lg-5 py-4">
+    <x-page-header icon="fa-trophy" :title="__('messages.edit_competition')" />
     <div class="row justify-content-center">
         <div class="col-12 col-xl-10">
     <div class="card shadow-soft border-0 rounded-4">
-        <div class="card-body p-4">
-                <!-- Title -->
-                <h3 class="fw-bold mb-4 text-primary">
-                    <i class="fas fa-trophy me-2"></i>{{ __('messages.edit_competition') }}
-                </h3>
-
+        <div class="card-body">
                 <!-- Validation Errors -->
                 @if ($errors->any())
                     <div class="alert alert-danger rounded-3 shadow-sm">
@@ -31,69 +27,73 @@
                     <div class="row g-3">
                         <!-- Name -->
                         <div class="col-md-6">
-                            <label for="name" class="form-label fw-semibold">{{ __('messages.name') }}</label>
-                            <input type="text" name="name" class="form-control shadow-sm"
+                            <label for="name" class="form-label">{{ __('messages.name') }}</label>
+                            <input type="text" name="name" class="form-control"
                                 value="{{ old('name', $competition->name) }}" required>
                         </div>
 
                         <!-- Start Date -->
                         <div class="col-md-3">
-                            <label for="start_at" class="form-label fw-semibold">{{ __('messages.start_at') }}</label>
-                            <input type="date" name="start_at" class="form-control shadow-sm"
+                            <label for="start_at" class="form-label">{{ __('messages.start_at') }}</label>
+                            <input type="date" name="start_at" class="form-control"
                                 value="{{ old('start_at', \Carbon\Carbon::parse($competition->start_at)->format('Y-m-d')) }}"
                                 required>
                         </div>
 
                         <!-- End Date -->
                         <div class="col-md-3">
-                            <label for="end_at" class="form-label fw-semibold">{{ __('messages.end_at') }}</label>
-                            <input type="date" name="end_at" class="form-control shadow-sm"
+                            <label for="end_at" class="form-label">{{ __('messages.end_at') }}</label>
+                            <input type="date" name="end_at" class="form-control"
                                 value="{{ old('end_at', \Carbon\Carbon::parse($competition->end_at)->format('Y-m-d')) }}"
                                 required>
                         </div>
 
                         <!-- Image Upload -->
                         <div class="col-md-6">
-                            <label for="image" class="form-label fw-semibold">{{ __('messages.image') }}</label>
-                            <input type="file" name="image" class="form-control shadow-sm" accept="image/*"
+                            <label for="image" class="form-label">{{ __('messages.image') }}</label>
+                            <input type="file" name="image" class="form-control" accept="image/*"
                                 onchange="previewImage(event)">
                             @if ($competition->hasMedia('competitions_images'))
                                 <div class="mt-3">
                                     <img id="imagePreview"
                                         src="{{ $competition->getFirstMediaUrl('competitions_images') }}"
-                                        alt="Competition Image" class="img-thumbnail shadow-sm" style="max-width: 220px;">
+                                        alt="Competition Image" class="img-thumbnail shadow-sm rounded-3" style="max-width: 220px;">
                                 </div>
                             @else
-                                <img id="imagePreview" class="mt-3 img-thumbnail shadow-sm d-none" style="max-width: 220px;"
+                                <img id="imagePreview" class="mt-3 img-thumbnail shadow-sm rounded-3 d-none" style="max-width: 220px;"
                                     alt="Preview">
                             @endif
                         </div>
 
                         <!-- Group Selection -->
                         <div class="col-md-12">
-                            <label class="form-label fw-semibold">{{ __('messages.select_groups') }}</label>
-                            <div class="border rounded-3 p-3 shadow-sm"
+                            <label class="form-label">{{ __('messages.select_groups') }}</label>
+                            <div class="border rounded-3 p-3 bg-light"
                                 style="height: auto; max-height: 280px; overflow-y: auto;">
-                                @foreach ($groups as $group)
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="groups[]"
-                                            value="{{ $group->id }}" id="group_{{ $group->id }}"
-                                            {{ in_array($group->id, $competition->groups->pluck('id')->toArray()) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="group_{{ $group->id }}">
-                                            {{ $group->name }}
-                                        </label>
-                                    </div>
-                                @endforeach
+                                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2">
+                                    @foreach ($groups as $group)
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="groups[]"
+                                                    value="{{ $group->id }}" id="group_{{ $group->id }}"
+                                                    {{ in_array($group->id, $competition->groups->pluck('id')->toArray()) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="group_{{ $group->id }}">
+                                                    {{ $group->name }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Actions -->
                     <div class="mt-4 d-flex justify-content-between">
-                        <a href="{{ route('competitions.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('competitions.index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-1"></i>{{ __('messages.back') }}
                         </a>
-                        <button type="submit" class="btn btn-primary shadow-sm">
+                        <button type="submit" class="btn btn-primary">
                             <i class="fas fa-save me-1"></i>{{ __('messages.update') }}
                         </button>
                     </div>

@@ -4,9 +4,10 @@
     <meta charset="utf-8">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #191c1e;
+            background-color: #f7f9fb;
         }
         .container {
             max-width: 600px;
@@ -14,41 +15,47 @@
             padding: 20px;
         }
         .header {
-            background-color: #4a90e2;
+            background-color: #3525cd;
             color: white;
-            padding: 20px;
+            padding: 24px;
             text-align: center;
-            border-radius: 5px 5px 0 0;
+            border-radius: 16px 16px 0 0;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
         }
         .content {
-            background-color: #f9f9f9;
+            background-color: #ffffff;
             padding: 30px;
-            border-radius: 0 0 5px 5px;
+            border-radius: 0 0 16px 16px;
         }
         .info-box {
-            background-color: white;
-            border-left: 4px solid #4a90e2;
+            background-color: #f2f4f6;
+            border-left: 4px solid #3525cd;
+            border-radius: 8px;
             padding: 15px;
             margin: 20px 0;
         }
         .footer {
             text-align: center;
             margin-top: 30px;
-            color: #999;
+            color: #777587;
             font-size: 12px;
         }
         .download-btn {
             display: inline-block;
-            background-color: #4a90e2;
+            background-color: #3525cd;
             color: white;
             padding: 12px 30px;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 10px;
             margin: 20px 0;
-            font-weight: bold;
+            font-weight: 600;
         }
         .download-btn:hover {
-            background-color: #357abd;
+            background-color: #4f46e5;
         }
     </style>
 </head>

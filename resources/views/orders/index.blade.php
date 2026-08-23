@@ -2,75 +2,71 @@
 
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="fw-bold text-primary">{{ __('messages.orders') }}</h1>
-            {{-- <button id="testBroadcast" class="btn btn-info btn-sm">
-                <i class="fa fa-broadcast-tower me-1"></i>Test WebSocket
-            </button> --}}
-        </div>
+        <x-page-header icon="fa-shopping-cart" :title="__('messages.orders')" />
+        {{-- <button id="testBroadcast" class="btn btn-info btn-sm">
+            <i class="fa fa-broadcast-tower me-1"></i>Test WebSocket
+        </button> --}}
 
         <!-- Pending Orders Card -->
         <div class="row g-3 mb-4">
-            <div class="col-md-12">
-                <div class="card shadow-sm border-0 bg-danger text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 opacity-75">{{ __('messages.pending_orders') }}</h6>
-                                <h2 class="mb-0 fw-bold">{{ number_format($pendingOrdersCount) }}</h2>
-                            </div>
-                            <div class="fs-1 opacity-50">
-                                <i class="fas fa-shopping-cart"></i>
-                            </div>
-                        </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="rs-stat-card tone-error">
+                    <div class="rs-stat-top">
+                        <span class="rs-label-md">{{ __('messages.pending_orders') }}</span>
+                        <div class="rs-stat-icon"><i class="fas fa-shopping-cart"></i></div>
                     </div>
+                    <div class="rs-stat-value">{{ number_format($pendingOrdersCount) }}</div>
                 </div>
             </div>
         </div>
 
         <!-- Search Filter Form -->
-        <form method="GET" action="{{ route('orders.index') }}" class="row g-3 mb-4">
-            <div class="col-md-3">
-                <label for="status" class="form-label fw-semibold">{{ __('messages.status') }}</label>
-                <select name="status" id="status" class="form-select">
-                    <option value="">{{ __('messages.status') }}</option>
-                    @foreach (App\Enums\OrderStatus::all() as $value)
-                        <option value="{{ $value['value'] }}" {{ request('status') == $value['value'] ? 'selected' : '' }}>
-                            {{ $value['name'] }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+        <div class="card rounded-4 shadow-soft mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ route('orders.index') }}" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">{{ __('messages.status') }}</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">{{ __('messages.status') }}</option>
+                            @foreach (App\Enums\OrderStatus::all() as $value)
+                                <option value="{{ $value['value'] }}" {{ request('status') == $value['value'] ? 'selected' : '' }}>
+                                    {{ $value['name'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-            <div class="col-md-3">
-                <label for="user_id" class="form-label fw-semibold">{{ __('messages.user_name') }}</label>
-                <select name="user_id" id="user_id" class="form-select">
-                    <option value="">{{ __('messages.users') }}</option>
-                    @foreach (App\Models\User::OrderBy('name')->get() as $user)
-                        <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
-                            {{ $user->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+                    <div class="col-md-3">
+                        <label for="user_id" class="form-label">{{ __('messages.user_name') }}</label>
+                        <select name="user_id" id="user_id" class="form-select">
+                            <option value="">{{ __('messages.users') }}</option>
+                            @foreach (App\Models\User::OrderBy('name')->get() as $user)
+                                <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
+                                    {{ $user->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-            <div class="col-md-3">
-                <label for="membership_code" class="form-label fw-semibold">{{ __('messages.membership_code') }}</label>
-                <input type="text" name="membership_code" id="membership_code" class="form-control"
-                       placeholder="{{ __('messages.membership_code') }}" value="{{ request('membership_code') }}">
-            </div>
+                    <div class="col-md-3">
+                        <label for="membership_code" class="form-label">{{ __('messages.membership_code') }}</label>
+                        <input type="text" name="membership_code" id="membership_code" class="form-control"
+                               placeholder="{{ __('messages.membership_code') }}" value="{{ request('membership_code') }}">
+                    </div>
 
-            <div class="col-md-3 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary shadow-sm">
-                    <i class="fa fa-search me-1"></i>{{ __('messages.search') }}
-                </button>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-search me-1"></i>{{ __('messages.search') }}
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
 
         <!-- Orders Table (Desktop) -->
-        <div class="table-responsive shadow-sm rounded-4  d-none d-md-block">
+        <div class="table-responsive rounded-4 shadow-soft d-none d-md-block">
             <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
+                <thead>
                     <tr>
                         <th>{{ __('messages.reward') }}</th>
                         <th>{{ __('messages.quantity') }}</th>
@@ -86,7 +82,7 @@
                     @forelse($orders as $order)
                         <tr>
                             <td>
-                                <span class="text-primary reward-detail" style="cursor:pointer;"
+                                <span class="text-gradient fw-semibold reward-detail" style="cursor:pointer;"
                                     data-name="{{ $order->reward->name ?? '' }}"
                                     data-points="{{ $order->reward->points ?? '' }}"
                                     data-image="{{ $order->reward?->getFirstMediaUrl('rewards_images') ?: asset('images/default.png') }}">
@@ -97,12 +93,12 @@
                             <td>{{ $order->points }}</td>
                             <td>
                                 <span
-                                    class="badge {{ $order->status == \App\Enums\OrderStatus::COMPLETED ? 'bg-success' : ($order->status == \App\Enums\OrderStatus::CANCELLED ? 'bg-danger' : 'bg-warning text-dark') }}">
+                                    class="badge {{ $order->status == \App\Enums\OrderStatus::COMPLETED ? 'bg-success-subtle text-success' : ($order->status == \App\Enums\OrderStatus::CANCELLED ? 'bg-danger-subtle text-danger' : 'bg-warning-subtle text-warning') }}">
                                     {{ App\Enums\OrderStatus::getStringValue($order->status) }}
                                 </span>
                             </td>
                             <td>
-                                <span class="text-primary user-detail" style="cursor:pointer;"
+                                <span class="text-gradient fw-semibold user-detail" style="cursor:pointer;"
                                     data-name="{{ $order->user->name ?? '' }}"
                                     data-membership_code="{{ $order->user->membership_code ?? '' }}"
                                     data-phone="{{ $order->user->phone ?? '' }}"
@@ -111,7 +107,7 @@
                                 </span>
                             </td>
                             <td>
-                                <span class="text-primary servant-detail" style="cursor:pointer;"
+                                <span class="text-gradient fw-semibold servant-detail" style="cursor:pointer;"
                                     data-name="{{ $order->servant?->name ?? '' }}"
                                     data-membership_code="{{ $order->servant?->membership_code ?? '' }}"
                                     data-phone="{{ $order->servant?->phone ?? '' }}"
@@ -127,13 +123,13 @@
                                         class="d-inline">
                                         @csrf
                                         @method('PUT')
-                                        <button type="submit" class="btn btn-success btn-sm shadow-sm">
+                                        <button type="submit" class="btn btn-success btn-sm">
                                             <i class="fa fa-check me-1"></i>{{ __('messages.received') }}
                                         </button>
                                     </form>
 
                                     <!-- Cancel Button -->
-                                    <button type="button" class="btn btn-danger btn-sm shadow-sm cancel-order"
+                                    <button type="button" class="btn btn-danger btn-sm cancel-order"
                                         data-id="{{ $order->id }}">
                                         <i class="fa fa-times me-1"></i>{{ __('messages.cancel') }}
                                     </button>
@@ -143,7 +139,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center text-muted">{{ __('No rewards found.') }}</td>
+                            <td colspan="8" class="text-center text-muted">{{ __('messages.no_rewards_found') }}</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -153,12 +149,12 @@
         <!-- Orders Cards (Mobile) -->
         <div class="d-block d-md-none">
             @forelse($orders as $order)
-                <div class="card shadow-sm mb-3">
+                <div class="card rounded-4 shadow-soft mb-3">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6">
                                 <strong>{{ __('messages.reward') }}:</strong><br>
-                                <span class="text-primary reward-detail" style="cursor:pointer;"
+                                <span class="text-gradient fw-semibold reward-detail" style="cursor:pointer;"
                                     data-name="{{ $order->reward->name ?? '' }}"
                                     data-points="{{ $order->reward->points ?? '' }}"
                                     data-image="{{ $order->reward?->getFirstMediaUrl('rewards_images') ?: asset('images/default.png') }}">
@@ -184,7 +180,7 @@
                             <div class="col-12">
                                 <strong>{{ __('messages.status') }}:</strong><br>
                                 <span
-                                    class="badge {{ $order->status == \App\Enums\OrderStatus::COMPLETED ? 'bg-success' : ($order->status == \App\Enums\OrderStatus::CANCELLED ? 'bg-danger' : 'bg-warning text-dark') }}">
+                                    class="badge {{ $order->status == \App\Enums\OrderStatus::COMPLETED ? 'bg-success-subtle text-success' : ($order->status == \App\Enums\OrderStatus::CANCELLED ? 'bg-danger-subtle text-danger' : 'bg-warning-subtle text-warning') }}">
                                     {{ App\Enums\OrderStatus::getStringValue($order->status) }}
                                 </span>
                             </div>
@@ -192,7 +188,7 @@
                         <div class="row mt-2">
                             <div class="col-6">
                                 <strong>{{ __('messages.user_name') }}:</strong><br>
-                                <span class="text-primary user-detail" style="cursor:pointer;"
+                                <span class="text-gradient fw-semibold user-detail" style="cursor:pointer;"
                                     data-name="{{ $order->user->name ?? '' }}"
                                     data-membership_code="{{ $order->user->membership_code ?? '' }}"
                                     data-phone="{{ $order->user->phone ?? '' }}"
@@ -202,7 +198,7 @@
                             </div>
                             <div class="col-6">
                                 <strong>{{ __('messages.servant') }}:</strong><br>
-                                <span class="text-primary servant-detail" style="cursor:pointer;"
+                                <span class="text-gradient fw-semibold servant-detail" style="cursor:pointer;"
                                     data-name="{{ $order->servant?->name ?? '' }}"
                                     data-membership_code="{{ $order->servant?->membership_code ?? '' }}"
                                     data-phone="{{ $order->servant?->phone ?? '' }}"
@@ -219,13 +215,13 @@
                                         class="d-inline">
                                         @csrf
                                         @method('PUT')
-                                        <button type="submit" class="btn btn-success btn-sm shadow-sm">
+                                        <button type="submit" class="btn btn-success btn-sm">
                                             <i class="fa fa-check me-1"></i>{{ __('messages.received') }}
                                         </button>
                                     </form>
 
                                     <!-- Cancel Button -->
-                                    <button type="button" class="btn btn-danger btn-sm shadow-sm cancel-order"
+                                    <button type="button" class="btn btn-danger btn-sm cancel-order"
                                         data-id="{{ $order->id }}">
                                         <i class="fa fa-times me-1"></i>{{ __('messages.cancel') }}
                                     </button>
@@ -235,7 +231,7 @@
                     </div>
                 </div>
             @empty
-                <div class="text-center text-muted">{{ __('No rewards found.') }}</div>
+                <div class="text-center text-muted">{{ __('messages.no_rewards_found') }}</div>
             @endforelse
         </div>
     </div>
@@ -354,7 +350,7 @@
                 </div>
                 <div class="modal-body text-center py-4">
                     <i class="fa fa-shopping-cart fa-4x text-success mb-3"></i>
-                    <h5 class="mb-3" id="newOrderTitle">{{ __('New Order Received!') }}</h5>
+                    <h5 class="mb-3" id="newOrderTitle">{{ __('messages.new_order_created') }}</h5>
                     <div class="text-start">
                         <p class="mb-2"><strong>{{ __('messages.order') }} ID:</strong> <span id="newOrderId"></span></p>
                         <p class="mb-2"><strong>{{ __('messages.user_name') }}:</strong> <span id="newOrderCustomer"></span></p>
@@ -363,7 +359,7 @@
                 </div>
                 <div class="modal-footer border-0 justify-content-center">
                     <button type="button" class="btn btn-success px-4" onclick="window.location.reload()">
-                        <i class="fa fa-refresh me-1"></i>{{ __('Refresh Page') }}
+                        <i class="fa fa-refresh me-1"></i>{{ __('messages.refresh_page') }}
                     </button>
                 </div>
             </div>
@@ -465,7 +461,7 @@
                                     const statusBadge = row.querySelector('td:nth-child(4) .badge');
                                     if (statusBadge) {
                                         statusBadge.textContent = data.status;
-                                        statusBadge.className = 'badge bg-danger';
+                                        statusBadge.className = 'badge bg-danger-subtle text-danger';
                                     }
                                     const receiveBtn = row.querySelector('.receive-order');
                                     const cancelBtn = row.querySelector('.cancel-order');
@@ -573,7 +569,7 @@
                 } else {
                     console.error('❌ Echo is not defined. WebSocket connection failed.');
                     console.log('Please check:');
-                    console.log('1. Is Soketi running? (npx soketi start)');
+                    console.log('1. Is Reverb running? (php artisan reverb:start)');
                     console.log('2. Are Echo scripts loaded?');
                     console.log('3. Check browser console for errors');
                 }

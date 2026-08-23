@@ -4,12 +4,13 @@
     <div class="container-fluid px-3 px-lg-4">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10 col-xl-8">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold text-primary">{{ __('messages.edit_quiz') }}</h2>
-            <a href="{{ route('quizzes.index') }}" class="btn btn-outline-secondary">
-                <i class="fa fa-arrow-left me-1"></i> {{ __('messages.back') }}
-            </a>
-        </div>
+                <x-page-header icon="fa-question-circle" :title="__('messages.edit_quiz')">
+                    <x-slot:actions>
+                        <a href="{{ route('quizzes.index') }}" class="btn btn-secondary">
+                            <i class="fa fa-arrow-left me-1"></i> {{ __('messages.back') }}
+                        </a>
+                    </x-slot>
+                </x-page-header>
 
         {{-- Error messages --}}
         @if ($errors->any())
@@ -24,8 +25,8 @@
             </div>
         @endif
 
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body">
+        <div class="card rounded-4 shadow-soft">
+            <div class="card-body p-4">
                 <form action="{{ route('quizzes.update', $quiz->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')

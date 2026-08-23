@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/swagger', function () {
+Route::middleware('swagger.auth')->get('/swagger', function () {
     // Define which documentation to use, defaulting to 'default' if not set
     $documentation = config('l5-swagger.documentation') ?? 'default';
     $useAbsolutePath = true;

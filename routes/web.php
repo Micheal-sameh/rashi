@@ -19,6 +19,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SocialMediaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserHistoryController;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,8 +43,30 @@ Route::get('/oauth2callback', function () {
 });
 
 Route::get('/', function () {
-    return redirect()->route('competitions.index');
-});
+    return view('landing');
+})->name('landing');
+
+Route::get('/manifest.webmanifest', function () {
+    $logoUrl = Cache::remember('app_logo_url', 3600, function () {
+        $logo = \App\Models\Setting::where('name', 'logo')->first();
+        return $logo?->getFirstMediaUrl('app_logo') ?? asset('default-logo.png');
+    });
+    $absoluteLogoUrl = filter_var($logoUrl, FILTER_VALIDATE_URL) ? $logoUrl : url($logoUrl);
+
+    return response()->json([
+        'name' => config('app.name'),
+        'short_name' => config('app.name'),
+        'start_url' => route('loginPage'),
+        'scope' => '/',
+        'display' => 'standalone',
+        'background_color' => '#f7f9fb',
+        'theme_color' => '#3525cd',
+        'icons' => [
+            ['src' => $absoluteLogoUrl, 'sizes' => '192x192', 'type' => 'image/png'],
+            ['src' => $absoluteLogoUrl, 'sizes' => '512x512', 'type' => 'image/png'],
+        ],
+    ])->header('Content-Type', 'application/manifest+json');
+})->name('pwa.manifest');
 
 Route::group(['middleware' => ['setlocale']], function () {
     // Language change routes (optional, if you want to switch languages via URL)
@@ -52,11 +75,12 @@ Route::group(['middleware' => ['setlocale']], function () {
         session(['lang' => $lang]);  // Store the language in session
 
         return redirect()->back();
-    });
+    })->whereIn('lang', ['en', 'ar'])->name('lang.switch');
 
     Route::prefix('auth')->group(function () {
         Route::get('/login', [AuthController::class, 'loginPage'])->name('loginPage');
         Route::post('/login', [AuthController::class, 'login'])->name('login');
+        Route::post('/login/qr', [AuthController::class, 'loginWithQr'])->name('login.qr')->middleware('throttle:10,1');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
         Route::get('/login/avarewase', [AvarewaseSsoController::class, 'redirect'])->name('avarewase.login');
@@ -85,6 +109,7 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/create', [CompetitionController::class, 'create'])->name('competitions.create');
             Route::get('/download-example-excel', [CompetitionController::class, 'downloadExampleExcel'])->name('competitions.downloadExampleExcel');
             Route::get('/{id}/edit', [CompetitionController::class, 'edit'])->name('competitions.edit');
+            Route::get('/{id}/quizzes-flowchart', [CompetitionController::class, 'quizzesFlowchart'])->name('competitions.quizzesFlowchart');
             Route::get('/{id}/user-answers', [CompetitionController::class, 'userAnswers'])->name('competitions.userAnswers');
             Route::get('/{id}/leaderboard/export', [CompetitionController::class, 'exportLeaderboard'])->name('competitions.leaderboard.export');
             Route::get('/{id}/export', [CompetitionController::class, 'exportCompetition'])->name('competitions.export');
@@ -125,6 +150,7 @@ Route::group(['middleware' => ['setlocale']], function () {
         Route::prefix('groups')->group(function () {
             Route::get('/', [GroupController::class, 'index'])->name('groups.index');
             Route::get('/competitions', [GroupController::class, 'competitions'])->name('groups.competitions');
+            Route::get('/competitions/export-pdf', [GroupController::class, 'competitionsExportPdf'])->name('groups.competitions.exportPdf');
             Route::get('/create', [GroupController::class, 'create'])->name('groups.create');
             Route::get('/{id}/edit', [GroupController::class, 'edit'])->name('groups.edit');
             Route::get('/{id}/users-edit', [GroupController::class, 'usersedit'])->name('groups.usersedit');

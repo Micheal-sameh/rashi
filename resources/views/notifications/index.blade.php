@@ -4,15 +4,13 @@
     <div class="container-fluid px-3 px-lg-4 py-4">
 
         {{-- Header --}}
-        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-            <h2 class="mb-0 fw-bold text-primary">
-                <i class="fas fa-bell me-2"></i> Notifications
-            </h2>
-
-            <a href="{{ route('notifications.create') }}" class="btn btn-primary btn-sm shadow-sm">
-                <i class="fas fa-plus me-1"></i> Send Notification
-            </a>
-        </div>
+        <x-page-header icon="fa-bell" :title="__('messages.notifications')">
+            <x-slot:actions>
+                <a href="{{ route('notifications.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i> {{ __('messages.send_notification') }}
+                </a>
+            </x-slot>
+        </x-page-header>
 
         {{-- Success Message --}}
         @if (session('success'))
@@ -23,14 +21,16 @@
         @endif
 
         {{-- Filters --}}
-        <div class="card mb-3 shadow-sm border-0 rounded-3">
-            <div class="card-body p-3">
-                <form class="row g-2" method="GET" action="{{ route('notifications.index') }}">
+        <div class="card mb-3">
+            <div class="card-body">
+                <form class="row g-3" method="GET" action="{{ route('notifications.index') }}">
                     <div class="col-md-6">
+                        <label class="form-label rs-label-md">{{ __('messages.search_message_or_type') }}</label>
                         <input type="text" name="search" value="{{ request('search') }}" class="form-control"
                             placeholder="{{ __('messages.search_message_or_type') }}">
                     </div>
                     <div class="col-md-3">
+                        <label class="form-label rs-label-md">{{ __('messages.type') }}</label>
                         <select name="type" class="form-select">
                             <option value="">{{ __('messages.all_types') }}</option>
                             <option value="success" @selected(request('type') == 'success')>{{ __('messages.success') }}</option>
@@ -39,9 +39,9 @@
                             <option value="info" @selected(request('type') == 'info')>{{ __('messages.info') }}</option>
                         </select>
                     </div>
-                    <div class="col-md-3 text-end">
-                        <button type="submit" class="btn btn-outline-primary">
-                            <i class="fas fa-search"></i> {{ __('messages.filter') }}
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-1"></i> {{ __('messages.filter') }}
                         </button>
                     </div>
                 </form>
@@ -49,11 +49,11 @@
         </div>
 
         {{-- Table --}}
-        <div class="card shadow-sm border-0 rounded-3">
+        <div class="card">
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light text-center">
+                        <thead class="text-center">
                             <tr>
                                 <th style="width: 60px;">{{ __('messages.id') }}</th>
                                 <th>{{ __('messages.message') }}</th>
@@ -80,7 +80,7 @@
                                             ];
                                         @endphp
                                         <span
-                                            class="badge bg-{{ $badgeColors[$notification->type] ?? 'secondary' }} px-3 py-2 text-uppercase">
+                                            class="badge bg-{{ $badgeColors[$notification->type] ?? 'secondary' }} text-uppercase">
                                             {{ $notification->type }}
                                         </span>
                                     </td>
@@ -88,7 +88,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center py-4 text-muted">
+                                    <td colspan="4" class="text-center py-5 text-muted">
                                         <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
                                         {{ __('messages.no_notifications_found') }}
                                     </td>

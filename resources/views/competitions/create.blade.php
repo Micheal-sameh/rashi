@@ -2,20 +2,11 @@
 
 @section('content')
 <div class="container-fluid px-3 px-lg-5 py-4">
+    <x-page-header icon="fa-trophy" :title="__('messages.create_competitions')" :subtitle="__('messages.fill_competition_details')" />
     <div class="row justify-content-center">
         <div class="col-12 col-xl-10">
     <div class="card shadow-soft border-0 rounded-4">
-        <div class="card-header text-white rounded-top-4" style="background: var(--primary-gradient);">
-            <h4 class="mb-0 d-flex align-items-center">
-                <i class="fas fa-trophy me-3"></i>
-                <div>
-                    <div class="fw-bold">{{ __('messages.create_competitions') }}</div>
-                    <small class="opacity-90">{{ __('messages.fill_competition_details') }}</small>
-                </div>
-            </h4>
-        </div>
-
-        <div class="card-body p-4">
+        <div class="card-body">
             <form action="{{ route('competitions.store') }}" method="POST" enctype="multipart/form-data" id="competitionForm">
                 @csrf
 
@@ -133,10 +124,10 @@
                     <!-- Submit Buttons -->
                     <div class="col-12">
                         <div class="d-flex gap-3 justify-content-end mt-3">
-                            <a href="{{ route('competitions.index') }}" class="btn btn-light btn-lg px-5">
+                            <a href="{{ route('competitions.index') }}" class="btn btn-secondary px-5">
                                 <i class="fas fa-times me-2"></i>{{ __('messages.cancel') }}
                             </a>
-                            <button type="submit" class="btn btn-primary btn-lg px-5 hover-lift">
+                            <button type="submit" class="btn btn-primary px-5 hover-lift">
                                 <i class="fas fa-plus-circle me-2"></i>{{ __('messages.create_competition') }}
                             </button>
                         </div>
@@ -263,13 +254,13 @@
     }
 
     .btn-check:checked + .btn-outline-primary {
-        background: var(--primary-gradient);
+        background: var(--color-primary, #3525cd);
         border-color: transparent;
         color: white;
     }
 
     .btn-check:focus + .btn-outline-primary {
-        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+        box-shadow: 0 0 0 0.25rem rgba(53, 37, 205, 0.25);
     }
 
     /* Prevent layout shift on click */
@@ -290,8 +281,8 @@
 
     .form-control:focus,
     .form-select:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+        border-color: #3525cd;
+        box-shadow: 0 0 0 0.25rem rgba(53, 37, 205, 0.15);
     }
 
     .form-control-lg {

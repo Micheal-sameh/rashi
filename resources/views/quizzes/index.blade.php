@@ -2,16 +2,17 @@
 
 @section('content')
     <div class="container-fluid px-3 px-lg-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold text-primary">{{ __('messages.quizzes') }}</h2>
-            <a href="{{ route('quizzes.create') }}" class="btn btn-success">
-                <i class="fa fa-plus-circle me-1"></i> {{ __('messages.create_quizzes') }}
-            </a>
-        </div>
+        <x-page-header icon="fa-question-circle" :title="__('messages.quizzes')">
+            <x-slot:actions>
+                <a href="{{ route('quizzes.create') }}" class="btn btn-primary">
+                    <i class="fa fa-plus-circle me-1"></i> {{ __('messages.create_quizzes') }}
+                </a>
+            </x-slot>
+        </x-page-header>
 
         {{-- Search Filters --}}
-        <div class="card shadow-sm border-0 rounded-4 mb-4">
-            <div class="card-body">
+        <div class="card rounded-4 shadow-soft mb-4">
+            <div class="card-body p-4">
                 <form action="{{ route('quizzes.index') }}" method="GET">
                     <div class="row g-3">
                         <div class="col-md-5">
@@ -71,10 +72,10 @@
 
         @if ($quizzes->count())
             {{-- Desktop Table --}}
-            <div class="card shadow-sm border-0 rounded-4 d-none d-md-block">
+            <div class="card rounded-4 shadow-soft d-none d-md-block">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th>{{ __('messages.name') }}</th>
                                 <th>{{ __('messages.competition') }}</th>
@@ -88,7 +89,13 @@
                                 <tr>
                                     <td class="fw-semibold">{{ $quiz->name }}</td>
                                     <td>{{ $quiz->competition->name ?? '-' }}</td>
-                                    <td><a href="{{ $quiz->help }}"> {{ $quiz->help ?? '-' }} </a></td>
+                                    <td>
+                                        @if ($quiz->help)
+                                            <a href="{{ $quiz->help }}" class="badge bg-info text-decoration-none" target="_blank">{{ __('messages.help') }}</a>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td>{{ \Carbon\Carbon::parse($quiz->date)->format('d M Y') }}</td>
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
@@ -121,7 +128,7 @@
                 </div>
 
                 @if ($quizzes->hasPages())
-                    <div class="card-footer d-flex justify-content-center">
+                    <div class="card-footer d-flex justify-content-center bg-white">
                         {{ $quizzes->appends(request()->query())->links('pagination::bootstrap-5') }}
                     </div>
                 @endif
@@ -130,9 +137,9 @@
             {{-- Mobile Cards --}}
             <div class="d-md-none">
                 @foreach ($quizzes as $quiz)
-                    <div class="card mb-3 shadow-sm border-0 rounded-4">
+                    <div class="card mb-3 rounded-4 shadow-soft">
                         <div class="card-body">
-                            <h5 class="fw-bold text-primary mb-2">{{ $quiz->name }}</h5>
+                            <h5 class="rs-title-lg mb-2">{{ $quiz->name }}</h5>
                             <p class="mb-1"><strong>{{ __('messages.competition') }}:</strong>
                                 {{ $quiz->competition->name ?? '-' }}</p>
                             <p class="mb-3"><strong>{{ __('messages.date') }}:</strong>

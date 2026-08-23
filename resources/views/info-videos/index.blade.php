@@ -3,17 +3,14 @@
 @section('content')
     <div class="container-fluid px-3 px-lg-4 py-4">
         <!-- Header Section -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="fw-bold display-6 text-dark mb-2">{{ __('messages.info_videos') }}</h1>
-                <p class="text-muted mb-0">{{ __('messages.manage_info_videos') }}</p>
-            </div>
-            <a href="{{ route('info-videos.create') }}"
-                class="btn btn-primary btn-lg px-4 py-3 shadow-lg rounded-pill d-flex align-items-center gap-2">
-                <i class="fa fa-plus-circle fa-lg"></i>
-                <span class="fw-semibold">{{ __('messages.create_info_video') }}</span>
-            </a>
-        </div>
+        <x-page-header icon="fa-video" :title="__('messages.info_videos')" :subtitle="__('messages.manage_info_videos')">
+            <x-slot:actions>
+                <a href="{{ route('info-videos.create') }}" class="btn btn-primary">
+                    <i class="fa fa-plus-circle me-1"></i>
+                    {{ __('messages.create_info_video') }}
+                </a>
+            </x-slot>
+        </x-page-header>
 
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -30,26 +27,26 @@
                 </div>
                 <h3 class="text-muted mb-3">{{ __('messages.no_info_videos_found') }}</h3>
                 <p class="text-muted mb-4">{{ __('messages.start_creating_info_videos') }}</p>
-                <a href="{{ route('info-videos.create') }}" class="btn btn-primary btn-lg px-5 rounded-pill">
+                <a href="{{ route('info-videos.create') }}" class="btn btn-primary">
                     {{ __('messages.create_first_info_video') }}
                 </a>
             </div>
         @else
             <!-- Info Videos Table -->
-            <div class="card border-0 shadow-lg rounded-4">
+            <div class="card">
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-light">
                                 <tr>
-                                    <th class="ps-4 py-3 fw-semibold text-muted" style="width: 50px;">
+                                    <th class="ps-4 py-3 rs-label-md" style="width: 50px;">
                                         <i class="fa fa-grip-vertical"></i>
                                     </th>
-                                    <th class="py-3 fw-semibold text-muted">{{ __('messages.rank') }}</th>
-                                    <th class="py-3 fw-semibold text-muted">{{ __('messages.name') }}</th>
-                                    <th class="py-3 fw-semibold text-muted">{{ __('messages.link') }}</th>
-                                    <th class="py-3 fw-semibold text-muted">{{ __('messages.status') }}</th>
-                                    <th class="pe-4 py-3 fw-semibold text-muted text-end">{{ __('messages.actions') }}</th>
+                                    <th class="py-3 rs-label-md">{{ __('messages.rank') }}</th>
+                                    <th class="py-3 rs-label-md">{{ __('messages.name') }}</th>
+                                    <th class="py-3 rs-label-md">{{ __('messages.link') }}</th>
+                                    <th class="py-3 rs-label-md">{{ __('messages.status') }}</th>
+                                    <th class="pe-4 py-3 rs-label-md text-end">{{ __('messages.actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody id="sortable-videos">
@@ -62,7 +59,7 @@
                                             <span class="badge bg-light text-dark border px-3 py-2">{{ $video->rank }}</span>
                                         </td>
                                         <td class="py-3">
-                                            <span class="fw-semibold">{{ $video->name }}</span>
+                                            <span class="rs-title-lg">{{ $video->name }}</span>
                                         </td>
                                         <td class="py-3">
                                             <a href="{{ $video->link }}" target="_blank" class="text-decoration-none">
@@ -85,7 +82,7 @@
                                         <td class="pe-4 py-3 text-end">
                                             <div class="btn-group" role="group">
                                                 <a href="{{ route('info-videos.edit', $video->id) }}"
-                                                   class="btn btn-sm btn-outline-primary rounded-start">
+                                                   class="btn btn-sm btn-primary">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
                                                 <form method="POST" action="{{ route('info-videos.destroy', $video->id) }}"
@@ -93,7 +90,7 @@
                                                       onsubmit="return confirm('{{ __('messages.confirm_delete') }}');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-end">
+                                                    <button type="submit" class="btn btn-sm btn-danger">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                                 </form>

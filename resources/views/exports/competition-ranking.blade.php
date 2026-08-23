@@ -14,12 +14,12 @@
             direction: rtl;
         }
         h1 {
-            color: #333;
+            color: #191c1e;
             text-align: center;
             margin-bottom: 10px;
         }
         h2 {
-            color: #666;
+            color: #3525cd;
             text-align: center;
             margin-bottom: 30px;
             font-size: 18px;
@@ -27,7 +27,7 @@
         .info {
             margin-bottom: 20px;
             text-align: center;
-            color: #555;
+            color: #464555;
         }
         table {
             width: 100%;
@@ -35,7 +35,7 @@
             margin-top: 20px;
         }
         th {
-            background-color: #4a90e2;
+            background-color: #3525cd;
             color: white;
             padding: 12px;
             text-align: right;
@@ -43,11 +43,11 @@
         }
         td {
             padding: 10px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #e0e3e5;
             text-align: right;
         }
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f2f4f6;
         }
         .rank-1 {
             background-color: #ffd700 !important;
