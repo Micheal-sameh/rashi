@@ -24,6 +24,7 @@ class UserResource extends JsonResource
             'points' => $this->points,
             'role' => $this->whenLoaded('roles', fn () => $this->roles->first()->name),
             'groups' => $this->whenLoaded('groups', fn () => $this->groups->map->only('id', 'name')),
+            'stage' => $this->whenLoaded('stage', fn () => $this->stage?->only('id', 'name', 'code')),
             'profile_image' => $this->whenLoaded('media', fn () => $this->getFirstMediaUrl('profile_images')),
         ];
     }

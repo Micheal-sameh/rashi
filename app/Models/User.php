@@ -62,6 +62,11 @@ class User extends Authenticatable implements HasMedia
         return $this->belongsToMany(Group::class, 'user_groups');
     }
 
+    public function stage()
+    {
+        return $this->belongsTo(Stage::class);
+    }
+
     public function fcmTokens()
     {
         return $this->hasMany(FcmToken::class);

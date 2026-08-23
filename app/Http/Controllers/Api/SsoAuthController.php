@@ -46,6 +46,7 @@ class SsoAuthController extends BaseController
         $user->load([
             'roles:id,name',
             'media',
+            'stage:id,name,code',
             'groups' => function ($q) {
                 $q->where('group_id', '!=', 1);
             },
