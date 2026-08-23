@@ -92,6 +92,8 @@ return [
     'add_another_user' => 'Add Another User',
     'select_type' => 'Select Type',
     'unauthorized' => 'Unauthorized',
+    'sso_unavailable' => 'The login service is temporarily unavailable. Please try again shortly.',
+    'login_with_sso' => 'Login with Avarewase SSO',
     'wrong credentials' => 'Wrong credentials',
     'failed' => 'Failed',
     'Request was successful.' => 'Request was successful.',

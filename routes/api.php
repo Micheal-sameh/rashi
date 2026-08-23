@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\QuizQuestionController;
 use App\Http\Controllers\Api\RewardController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SocialMediaController;
+use App\Http\Controllers\Api\SsoAuthController;
 use App\Http\Controllers\Api\UserAnswerController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
@@ -46,6 +47,8 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+    Route::post('/sso/login', [SsoAuthController::class, 'login']);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'check.competition', 'cache.auth.user']], function () {

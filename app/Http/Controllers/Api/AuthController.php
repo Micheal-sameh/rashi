@@ -10,11 +10,14 @@ use App\Http\Resources\UserResource;
 use App\Services\FcmTokenService;
 use App\Services\RefreshTokenService;
 use App\Services\UserService;
+use App\Traits\IssuesSanctumTokens;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 class AuthController extends BaseController
 {
+    use IssuesSanctumTokens;
+
     public function __construct(
         protected UserService $userService,
         protected FcmTokenService $fcmTokenService,
@@ -96,20 +99,6 @@ class AuthController extends BaseController
         auth()->guard('web')->logout();
 
         return $this->apiResponse(message: 'logout successfuly');
-    }
-
-    protected function generateToken($user)
-    {
-        $tokenResult = $user->createToken(config('app.name'));
-        $token = $tokenResult->plainTextToken;
-
-        // set short expiration (use sanctum expiration configuration if available)
-        $expires = now()->addMinutes(config('sanctum.expiration') ?: 60);
-        $tokenModel = $tokenResult->accessToken;
-        $tokenModel->expires_at = $expires;
-        $tokenModel->save();
-
-        return $token;
     }
 
     private function getCredentials($qr_code)

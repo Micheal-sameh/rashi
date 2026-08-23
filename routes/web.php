@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AvarewaseSsoController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BonusPenaltyController;
@@ -57,6 +58,9 @@ Route::group(['middleware' => ['setlocale']], function () {
         Route::get('/login', [AuthController::class, 'loginPage'])->name('loginPage');
         Route::post('/login', [AuthController::class, 'login'])->name('login');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+        Route::get('/login/avarewase', [AvarewaseSsoController::class, 'redirect'])->name('avarewase.login');
+        Route::get('/login/avarewase/callback', [AvarewaseSsoController::class, 'callback'])->name('avarewase.callback');
 
         // Password Reset Routes
         Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');

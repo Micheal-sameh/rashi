@@ -93,6 +93,8 @@ return [
     'add_another_user' => 'اضف مستخدم اخر',
     'select_type' => 'اختر النوع',
     'unauthorized' => 'ليس لديك صلاحيات',
+    'sso_unavailable' => 'خدمة تسجيل الدخول غير متاحة حاليًا، يرجى المحاولة لاحقًا.',
+    'login_with_sso' => 'تسجيل الدخول عبر Avarewase SSO',
     'wrong credentials' => 'بيانات الدخول غير صحيحة',
     'failed' => 'فشل',
     'Request was successful.' => 'تمت الطلب بنجاح',
