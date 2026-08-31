@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "avarewase/sso-client",
-            "version": "v1.4.0",
+            "version": "v1.5.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:Micheal-sameh/ar-sso-handler.git",
-                "reference": "d081e6319f886058c6222e87825b1410950219a5"
+                "url": "https://github.com/Micheal-sameh/ar-sso-handler.git",
+                "reference": "ad12e4d4995583830b6e8b573622a6bac89bb5df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Micheal-sameh/ar-sso-handler/zipball/d081e6319f886058c6222e87825b1410950219a5",
-                "reference": "d081e6319f886058c6222e87825b1410950219a5",
+                "url": "https://api.github.com/repos/Micheal-sameh/ar-sso-handler/zipball/ad12e4d4995583830b6e8b573622a6bac89bb5df",
+                "reference": "ad12e4d4995583830b6e8b573622a6bac89bb5df",
                 "shasum": ""
             },
             "require": {
@@ -29,7 +29,11 @@
             },
             "require-dev": {
                 "orchestra/testbench": "^8.0|^9.0|^10.0|^11.0",
-                "phpunit/phpunit": "^10.5|^11.0|^12.0"
+                "phpunit/phpunit": "^10.5|^11.0|^12.0",
+                "spatie/laravel-medialibrary": "^10.0|^11.0"
+            },
+            "suggest": {
+                "spatie/laravel-medialibrary": "Store the SSO profile picture in the user's `avatar` media collection instead of only the avarewase_avatar URL column."
             },
             "type": "library",
             "extra": {
@@ -64,10 +68,10 @@
                 "sso"
             ],
             "support": {
-                "source": "https://github.com/Micheal-sameh/ar-sso-handler/tree/v1.4.0",
+                "source": "https://github.com/Micheal-sameh/ar-sso-handler/tree/v1.5.0",
                 "issues": "https://github.com/Micheal-sameh/ar-sso-handler/issues"
             },
-            "time": "2026-08-22T18:34:30+00:00"
+            "time": "2026-08-31T16:12:23+00:00"
         },
         {
             "name": "barryvdh/laravel-dompdf",
