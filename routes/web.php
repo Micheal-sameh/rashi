@@ -102,6 +102,7 @@ Route::group(['middleware' => ['setlocale']], function () {
             Route::get('/leaderboard/export', [UserController::class, 'exportLeaderboard'])->name('users.leaderboard.export');
             Route::get('/export', [UserController::class, 'exportUsers'])->name('users.export');
             Route::put('/{id}/update-groups', [UserController::class, 'updateGroups'])->name('users.updateGroups');
+            Route::put('/{id}/update-role', [UserController::class, 'updateRole'])->name('users.updateRole');
         });
 
         Route::prefix('competitions')->group(function () {

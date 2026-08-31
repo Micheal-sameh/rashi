@@ -181,6 +181,8 @@ return [
     'user_details' => 'تفاصيل المستخدم',
     'no_points_found' => 'لا توجد نقاط',
     'update_user_groups' => 'تحديث مجموعات المستخدم',
+    'role' => 'الدور',
+    'update_user_role' => 'تحديث دور المستخدم',
     'Quiz' => 'اختبار',
     'quantity' => 'الكمية',
     'create_reward' => 'اضف جائزة',

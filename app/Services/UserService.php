@@ -58,6 +58,14 @@ class UserService
         return $user;
     }
 
+    public function updateRole($role, $id)
+    {
+        $user = $this->userRepository->updateRole($role, $id);
+        $user->load('roles', 'groups', 'media');
+
+        return $user;
+    }
+
     public function leaderboard($groupId = null)
     {
         $users = $this->userRepository->leaderboard($groupId);

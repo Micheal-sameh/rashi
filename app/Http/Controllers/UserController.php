@@ -6,6 +6,7 @@ use App\DTOs\UsersFilterDTO;
 use App\Exports\UsersExport;
 use App\Http\Requests\LeaderBoardRequest;
 use App\Http\Requests\UpdateUserGroupRequest;
+use App\Http\Requests\UpdateUserRoleRequest;
 use App\Http\Resources\UserResource;
 use App\Repositories\GroupRepository;
 use App\Repositories\PointHistoryRepository;
@@ -13,6 +14,7 @@ use App\Services\UserService;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Mpdf\Mpdf;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -52,8 +54,9 @@ class UserController extends Controller
         $user = $this->userService->show($id);
         $points = $this->pointHistoryRepository->userHistory($id);
         $groups = $this->groupRepository->dropdown();
+        $roles = Role::pluck('name');
 
-        return view('users.show', compact('user', 'points', 'groups'));
+        return view('users.show', compact('user', 'points', 'groups', 'roles'));
     }
 
     public function updateGroups(UpdateUserGroupRequest $request, $id)
@@ -61,6 +64,13 @@ class UserController extends Controller
         $user = $this->userService->updateGroups($request->groups, $id);
 
         $groupNames = $user->groups->pluck('name')->join(', ') ?: __('messages.not_assigned');
+
+        return redirect()->back()->with('message', 'sucess updated');
+    }
+
+    public function updateRole(UpdateUserRoleRequest $request, $id)
+    {
+        $this->userService->updateRole($request->role, $id);
 
         return redirect()->back()->with('message', 'sucess updated');
     }
