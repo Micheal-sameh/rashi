@@ -6,6 +6,7 @@ use App\Http\Requests\SsoLoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\FcmTokenService;
+use App\Services\RefreshTokenService;
 use App\Traits\IssuesSanctumTokens;
 use Avarewase\SsoClient\Contracts\ProvisionsAvarewaseUsers;
 use Avarewase\SsoClient\Exceptions\AvarewaseConnectionException;
@@ -24,7 +25,10 @@ class SsoAuthController extends BaseController
 {
     use IssuesSanctumTokens;
 
-    public function __construct(protected FcmTokenService $fcmTokenService) {}
+    public function __construct(
+        protected FcmTokenService $fcmTokenService,
+        protected RefreshTokenService $refreshTokenService,
+    ) {}
 
     public function login(SsoLoginRequest $request, ProvisionsAvarewaseUsers $provisioner)
     {
@@ -62,9 +66,15 @@ class SsoAuthController extends BaseController
         }
 
         $token = $this->generateToken($user);
+        $refreshToken = $this->refreshTokenService->createForUser(
+            $user,
+            $request->device_type ?? null,
+            $request->imei ?? null
+        );
 
         return $this->apiResponse([
             'token' => $token,
+            'refresh_token' => $refreshToken,
             'user' => new UserResource($user),
         ], trans('messages.login successfuly'));
     }
