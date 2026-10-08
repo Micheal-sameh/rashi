@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Auth\AvarewaseTokenAudience;
 use App\Exceptions\SsoProvisioningException;
 use App\Http\Requests\SsoLoginRequest;
 use App\Http\Resources\UserResource;
@@ -31,13 +32,24 @@ class SsoAuthController extends BaseController
         protected RefreshTokenService $refreshTokenService,
     ) {}
 
-    public function login(SsoLoginRequest $request, ProvisionsAvarewaseUsers $provisioner)
-    {
+    public function login(
+        SsoLoginRequest $request,
+        ProvisionsAvarewaseUsers $provisioner,
+        AvarewaseTokenAudience $tokenAudience,
+    ) {
+        $accessToken = (string) $request->string('access_token');
+
         try {
-            $userInfo = AvarewaseSso::userInfo($request->string('access_token'));
+            $userInfo = AvarewaseSso::userInfo($accessToken);
         } catch (AvarewaseConnectionException $e) {
             return $this->apiErrorResponse(trans('messages.sso_unavailable'), 503);
         } catch (AvarewaseTokenException $e) {
+            return $this->apiErrorResponse(trans('auth.failed'), 401);
+        }
+
+        // userinfo accepts a token issued to any client on the SSO — only
+        // honour ones issued to rashi's own mobile client.
+        if (! $tokenAudience->isAllowed($accessToken)) {
             return $this->apiErrorResponse(trans('auth.failed'), 401);
         }
 

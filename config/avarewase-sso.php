@@ -27,6 +27,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Accepted access-token audiences (mobile login)
+    |--------------------------------------------------------------------------
+    | OAuth client IDs whose access tokens POST /api/sso/login will accept
+    | (checked against the token's `aud` claim by App\Auth\AvarewaseTokenAudience).
+    | Defaults to the rashi mobile app's client ID — public anyway, it ships in
+    | the app binary. Comma-separated to allow several (e.g. during a client
+    | rotation). Leaving this empty rejects every mobile SSO login.
+    */
+    'allowed_audiences' => array_filter(array_map('trim', explode(',', env(
+        'AVAREWASE_SSO_ALLOWED_AUDIENCES',
+        '01a02e99-1ea3-7085-bd1d-a8c2c800ab8a'
+    )))),
+
+    /*
+    |--------------------------------------------------------------------------
     | HTTP resilience
     |--------------------------------------------------------------------------
     | Applied to every call the package makes to the SSO server (token
