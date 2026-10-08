@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Auth\RashiAvarewaseUserProvisioner;
+use App\Http\Controllers\Auth\RashiAvarewaseLogoutWebhookController;
 use Avarewase\SsoClient\Contracts\ProvisionsAvarewaseUsers;
+use Avarewase\SsoClient\Http\Controllers\AvarewaseLogoutWebhookController;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -16,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ProvisionsAvarewaseUsers::class, RashiAvarewaseUserProvisioner::class);
+        $this->app->bind(AvarewaseLogoutWebhookController::class, RashiAvarewaseLogoutWebhookController::class);
     }
 
     /**
