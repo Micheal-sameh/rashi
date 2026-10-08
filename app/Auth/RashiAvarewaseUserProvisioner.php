@@ -10,6 +10,7 @@ use Avarewase\SsoClient\DataObjects\AvarewaseUserInfo;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Str;
 use RuntimeException;
+use Throwable;
 
 /**
  * Matches an Avarewase SSO identity to rashi's own User model, keyed on
@@ -63,7 +64,36 @@ class RashiAvarewaseUserProvisioner implements ProvisionsAvarewaseUsers
 
         $this->syncGroups($user, $userInfo->raw['groups'] ?? null);
 
+        if ($userInfo->picture) {
+            $this->syncAvatarFromSso($user, $userInfo->picture);
+        }
+
         return $user;
+    }
+
+    /**
+     * Populates the `profile_images` media collection (what the admin table
+     * and UserResource actually display) from the SSO's avatar the first
+     * time a user has none — e.g. a user who's only ever logged in via SSO
+     * and never used rashi's own self-service upload (see
+     * UserRepository::profilePic()). Only that upload flow was previously
+     * wired to this collection, so anyone without one showed up as N/A.
+     * Never overwrites an existing image: once a user has any photo here,
+     * whether from a prior sync or their own manual upload, it takes
+     * permanent precedence over the SSO's picture.
+     */
+    protected function syncAvatarFromSso(User $user, string $pictureUrl): void
+    {
+        if ($user->getMedia('profile_images')->isNotEmpty()) {
+            return;
+        }
+
+        try {
+            $user->addMediaFromUrl($pictureUrl)->toMediaCollection('profile_images');
+        } catch (Throwable) {
+            // Network hiccups or an unreachable/invalid picture URL shouldn't
+            // block login — avarewase_avatar above still has the raw URL.
+        }
     }
 
     /**

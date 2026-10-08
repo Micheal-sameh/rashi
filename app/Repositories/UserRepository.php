@@ -121,6 +121,15 @@ class UserRepository extends BaseRepository
         return $user;
     }
 
+    public function updateRole($role, $id)
+    {
+        $user = $this->findById($id);
+        $user->syncRoles([$role]);
+        $user->load('roles');
+
+        return $user;
+    }
+
     public function redeemPoints($points)
     {
         $user = Cache::get('auth_user_'.auth()->id()) ?? auth()->user();

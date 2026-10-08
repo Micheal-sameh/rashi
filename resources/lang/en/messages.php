@@ -179,6 +179,8 @@ return [
     'user_details' => 'User Details',
     'no_points_found' => 'No points found',
     'update_user_groups' => 'Update User Groups',
+    'role' => 'Role',
+    'update_user_role' => 'Update User Role',
     'Quiz' => 'Quiz',
     'quantity' => 'Quantity',
     'create_reward' => 'Create New Reward',

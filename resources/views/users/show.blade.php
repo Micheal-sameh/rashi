@@ -52,6 +52,17 @@
                             </button>
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <p class="rs-label-md mb-1">{{ __('messages.role') }}</p>
+                        <div class="fw-semibold">
+                            <span id="userRoleText">
+                                {{ $user->roles->pluck('name')->join(', ') ?: __('messages.not_assigned') }}
+                            </span>
+                            <button type="button" class="btn btn-sm btn-secondary ms-2" data-bs-toggle="modal" data-bs-target="#updateRoleModal">
+                                <i class="fa fa-edit me-1"></i>{{ __('messages.edit') }}
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row gy-4 mt-1">
@@ -154,6 +165,41 @@
                                 </div>
                             @endforeach
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa fa-times me-1"></i>{{ __('messages.cancel') }}
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-save me-1"></i>{{ __('messages.update') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Role Modal -->
+    <div class="modal fade" id="updateRoleModal" tabindex="-1" aria-labelledby="updateRoleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateRoleModalLabel">
+                        <i class="fa fa-user-shield me-2"></i>{{ __('messages.update_user_role') }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="{{ route('users.updateRole', $user->id) }}">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <select class="form-select" name="role" required>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role }}" {{ $user->roles->pluck('name')->contains($role) ? 'selected' : '' }}>
+                                    {{ $role }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
