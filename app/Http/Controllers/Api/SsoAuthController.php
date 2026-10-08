@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\SsoProvisioningException;
 use App\Http\Requests\SsoLoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -43,7 +44,7 @@ class SsoAuthController extends BaseController
         try {
             /** @var User $user */
             $user = $provisioner->resolve($userInfo);
-        } catch (\RuntimeException $e) {
+        } catch (SsoProvisioningException $e) {
             return $this->apiErrorResponse($e->getMessage(), 422);
         }
 

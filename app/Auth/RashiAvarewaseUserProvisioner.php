@@ -8,8 +8,8 @@ use App\Models\User;
 use Avarewase\SsoClient\Contracts\ProvisionsAvarewaseUsers;
 use Avarewase\SsoClient\DataObjects\AvarewaseUserInfo;
 use Illuminate\Contracts\Auth\Authenticatable;
+use App\Exceptions\SsoProvisioningException;
 use Illuminate\Support\Str;
-use RuntimeException;
 use Throwable;
 
 /**
@@ -51,7 +51,7 @@ class RashiAvarewaseUserProvisioner implements ProvisionsAvarewaseUsers
             $user->forceFill($attributes)->save();
         } else {
             if (! $userInfo->membershipCode) {
-                throw new RuntimeException(
+                throw new SsoProvisioningException(
                     'Avarewase SSO login has no membership_code and no matching local account exists — cannot provision a new rashi user.'
                 );
             }
