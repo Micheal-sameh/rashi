@@ -28,6 +28,7 @@ services:
     restart: unless-stopped
     working_dir: /var/www/rashi
     command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
+    stop_grace_period: 60s
     volumes:
       - ./:/var/www/rashi
       - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
