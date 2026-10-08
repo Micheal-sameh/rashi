@@ -1,11 +1,15 @@
+x-php-image: &php-image
+  image: rashi-php:latest
+  build:
+    args:
+      user: rashi
+      uid: 1001
+    context: ./docker/php
+    dockerfile: Dockerfile
+
 services:
   app:
-    build:
-      args:
-        user: rashi
-        uid: 1001
-      context: ./docker/php
-      dockerfile: Dockerfile
+    <<: *php-image
     container_name: rashi
     restart: unless-stopped
     working_dir: /var/www/rashi
@@ -19,12 +23,7 @@ services:
       - central_net
 
   queue:
-    build:
-      args:
-        user: rashi
-        uid: 1001
-      context: ./docker/php
-      dockerfile: Dockerfile
+    <<: *php-image
     container_name: rashi-queue
     restart: unless-stopped
     working_dir: /var/www/rashi
@@ -39,12 +38,7 @@ services:
       - app
 
   reverb:
-    build:
-      args:
-        user: rashi
-        uid: 1001
-      context: ./docker/php
-      dockerfile: Dockerfile
+    <<: *php-image
     container_name: rashi-reverb
     restart: unless-stopped
     working_dir: /var/www/rashi
