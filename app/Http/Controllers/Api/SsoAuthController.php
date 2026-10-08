@@ -69,26 +69,6 @@ class SsoAuthController extends BaseController
             },
         ]);
 
-        if ($request->has('fcm_token')) {
-            $this->fcmTokenService->updateOrCreate([
-                'user_id' => $user->id,
-                'token' => $request->fcm_token,
-                'device_type' => $request->device_type,
-                'imei' => $request->imei,
-            ]);
-        }
-
-        $token = $this->generateToken($user);
-        $refreshToken = $this->refreshTokenService->createForUser(
-            $user,
-            $request->device_type ?? null,
-            $request->imei ?? null
-        );
-
-        return $this->apiResponse([
-            'token' => $token,
-            'refresh_token' => $refreshToken,
-            'user' => new UserResource($user),
-        ], trans('messages.login successfuly'));
+        return $this->completeMobileLogin($request, $user);
     }
 }

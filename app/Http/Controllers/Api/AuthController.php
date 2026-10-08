@@ -48,21 +48,7 @@ class AuthController extends BaseController
                 },
             ]);
 
-            $this->updateOrCreateFcmToken($request, $user);
-
-            $token = $this->generateToken($user);
-            $refreshToken = $this->refreshTokenService->createForUser(
-                $user,
-                $request->device_type ?? null,
-                $request->imei ?? null
-            );
-
-            return $this->apiResponse([
-                'token' => $token,
-                'refresh_token' => $refreshToken,
-                'user' => new UserResource($user),
-            ], trans('messages.login successfuly'));
-
+            return $this->completeMobileLogin($request, $user);
         } catch (\Exception $e) {
             return $this->apiErrorResponse($e->getMessage(), 400);
         }
@@ -128,20 +114,6 @@ class AuthController extends BaseController
         }
 
         return compact('membership_code', 'name', 'groups');
-    }
-
-    private function updateOrCreateFcmToken($request, $user)
-    {
-        if ($request->has('fcm_token')) {
-            $data = [
-                'user_id' => $user->id,
-                'token' => $request->fcm_token,
-                'device_type' => $request->device_type,
-                'imei' => $request->imei,
-            ];
-
-            $this->fcmTokenService->updateOrCreate($data);
-        }
     }
 
     /**
