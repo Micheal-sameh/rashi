@@ -30,12 +30,24 @@ class RashiAvarewaseUserProvisioner implements ProvisionsAvarewaseUsers
     {
         $user = User::query()->where('avarewase_sub', $userInfo->sub)->first();
 
+        // Fallback matches only ever claim accounts not yet linked to an SSO
+        // identity — an already-linked account must never be re-linked to a
+        // different `sub`, or whoever controls that sub takes it over.
         if (! $user && $userInfo->membershipCode) {
-            $user = User::query()->where('membership_code', $userInfo->membershipCode)->first();
+            $user = User::query()
+                ->whereNull('avarewase_sub')
+                ->where('membership_code', $userInfo->membershipCode)
+                ->first();
         }
 
-        if (! $user && $userInfo->email) {
-            $user = User::query()->where('email', $userInfo->email)->first();
+        // Email is only trusted as an identifier once the SSO has verified
+        // it; otherwise anyone could claim a local account by typing its
+        // email into their SSO profile.
+        if (! $user && $userInfo->email && $userInfo->emailVerified) {
+            $user = User::query()
+                ->whereNull('avarewase_sub')
+                ->where('email', $userInfo->email)
+                ->first();
         }
 
         $attributes = array_filter([
@@ -53,6 +65,12 @@ class RashiAvarewaseUserProvisioner implements ProvisionsAvarewaseUsers
             if (! $userInfo->membershipCode) {
                 throw new SsoProvisioningException(
                     'Avarewase SSO login has no membership_code and no matching local account exists — cannot provision a new rashi user.'
+                );
+            }
+
+            if (User::query()->where('membership_code', $userInfo->membershipCode)->exists()) {
+                throw new SsoProvisioningException(
+                    'Avarewase SSO login\'s membership_code belongs to a rashi account already linked to a different SSO identity.'
                 );
             }
 
